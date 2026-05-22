@@ -1,0 +1,6 @@
+server.err.log
+server.out.log
+.env
+.env.*
+.git
+node_modules

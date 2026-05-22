@@ -16,6 +16,24 @@ Then visit:
 http://127.0.0.1:4173/index.html
 ```
 
+## Deploy to Vercel
+
+This is a static browser app, so Vercel can host it without a build step.
+
+```powershell
+npm install -g vercel
+vercel login
+vercel
+vercel --prod
+```
+
+When Vercel asks for settings, use:
+
+- Framework Preset: `Other`
+- Build Command: leave empty or use `npm run build`
+- Output Directory: `.`
+- Install Command: leave empty
+
 ## Features
 
 Browser-native tools that generate downloadable files:

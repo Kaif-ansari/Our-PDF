@@ -319,8 +319,15 @@ const runToolButton = document.querySelector("#run-tool");
 const clearFilesButton = document.querySelector("#clear-files");
 const toolStatus = document.querySelector("#tool-status");
 const workspaceDownloads = document.querySelector("#workspace-downloads");
+const progressSteps = document.querySelector("#progress-steps");
 const resultList = document.querySelector("#result-list");
+const historyList = document.querySelector("#history-list");
+const sessionState = document.querySelector("#session-state");
 const privacyState = document.querySelector("#privacy-state");
+const metricTotal = document.querySelector("#metric-total");
+const metricCompleted = document.querySelector("#metric-completed");
+const metricFailed = document.querySelector("#metric-failed");
+const metricMode = document.querySelector("#metric-mode");
 
 let selectedCategory = "All";
 let selectedTool = tools[0];
@@ -328,11 +335,13 @@ let selectedFiles = [];
 let mergeSlotCount = 2;
 let mergeSlots = [];
 let outputUrls = [];
+let jobHistory = loadLocalHistory();
 
 renderCategories();
 renderTools();
 selectTool("merge");
 wireUpload();
+renderHistory();
 
 function renderCategories() {
   categoryTabs.innerHTML = "";
@@ -394,10 +403,27 @@ function selectTool(toolId, shouldOpenWorkspace = false) {
   renderFiles();
   renderResult([]);
   setStatus("Ready");
+  renderProgress("idle");
   renderTools();
   if (shouldOpenWorkspace) {
     openWorkspace();
   }
+}
+
+function renderProgress(active) {
+  const steps = [
+    ["queued", "Queued"],
+    ["processing", "Processing"],
+    ["preview", "Preview ready"],
+    ["completed", "Download ready"],
+  ];
+  const activeIndex = steps.findIndex(([key]) => key === active);
+  progressSteps.innerHTML = steps
+    .map(([key, label], index) => {
+      const state = active === "failed" && index === activeIndex ? "failed" : activeIndex >= index ? "complete" : "";
+      return `<li class="${state}" data-step="${escapeHtml(key)}">${escapeHtml(label)}</li>`;
+    })
+    .join("");
 }
 
 function openWorkspace() {
@@ -633,19 +659,32 @@ function renderMergeFiles() {
 }
 
 async function runSelectedTool() {
+  let job = null;
   try {
     validateFiles();
-    setStatus("Processing...");
+    job = createJobRecord("processing");
+    renderProgress("queued");
+    setStatus("Queued...");
     renderResult([]);
     const options = Object.fromEntries(new FormData(optionsForm).entries());
+    await syncJobRecord(job);
+    renderProgress("processing");
+    setStatus("Processing...");
     const started = performance.now();
     const outputs = await selectedTool.run(selectedFiles, options);
     const durationMs = Math.round(performance.now() - started);
+    renderProgress("preview");
     renderResult(outputs);
+    renderProgress("completed");
     setStatus(`Completed in ${durationMs} ms`);
+    updateJobRecord(job.id, { status: "completed", durationMs, outputCount: outputs.length });
   } catch (error) {
     console.error(error);
+    renderProgress("failed");
     setStatus(error.message || "Unable to process file");
+    if (job) {
+      updateJobRecord(job.id, { status: "failed", safeErrorCode: "CLIENT_PROCESSING_ERROR" });
+    }
   }
 }
 
@@ -859,6 +898,70 @@ function outputKind(output) {
   if (name.endsWith(".zip")) return "ZIP archive";
   if (name.endsWith(".pdf")) return "PDF";
   return output.blob.type || "converted file";
+}
+
+function createJobRecord(status) {
+  const record = {
+    id: crypto.randomUUID(),
+    operation: selectedTool.id,
+    toolName: selectedTool.name,
+    status,
+    fileCount: selectedFiles.length,
+    fileNames: selectedFiles.map((file) => file.name),
+    outputCount: 0,
+    durationMs: null,
+    safeErrorCode: null,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  };
+  jobHistory = [record, ...jobHistory].slice(0, 20);
+  persistLocalHistory();
+  renderHistory();
+  return record;
+}
+
+function updateJobRecord(id, changes) {
+  jobHistory = jobHistory.map((job) => (job.id === id ? { ...job, ...changes, updatedAt: new Date().toISOString() } : job));
+  persistLocalHistory();
+  renderHistory();
+}
+
+function renderHistory() {
+  if (!jobHistory.length) {
+    historyList.innerHTML = `<p>No jobs yet.</p>`;
+  } else {
+    historyList.innerHTML = "";
+    for (const job of jobHistory) {
+      const item = document.createElement("div");
+      item.className = `history-item ${job.status}`;
+      item.innerHTML = `
+        <div>
+          <strong>${escapeHtml(job.toolName)}</strong>
+          <small>${escapeHtml(job.status)} - ${job.fileCount} file(s) - ${new Date(job.createdAt).toLocaleString()}</small>
+        </div>
+        <span>${job.durationMs ? `${job.durationMs} ms` : "Live"}</span>
+      `;
+      historyList.append(item);
+    }
+  }
+  const completed = jobHistory.filter((job) => job.status === "completed").length;
+  const failed = jobHistory.filter((job) => job.status === "failed").length;
+  metricTotal.textContent = String(jobHistory.length);
+  metricCompleted.textContent = String(completed);
+  metricFailed.textContent = String(failed);
+  metricMode.textContent = "Browser";
+}
+
+function loadLocalHistory() {
+  try {
+    return JSON.parse(localStorage.getItem("ourpdf.jobs") || "[]");
+  } catch {
+    return [];
+  }
+}
+
+function persistLocalHistory() {
+  localStorage.setItem("ourpdf.jobs", JSON.stringify(jobHistory));
 }
 
 async function mergePdf(files) {

@@ -21,6 +21,7 @@
       <nav class="nav-links" aria-label="Primary navigation">
         <a href="#tools">Tools</a>
         <a href="#workspace">Workspace</a>
+        <a href="#dashboard">Dashboard</a>
       </nav>
       <a class="primary-link" href="#workspace">Start</a>
     </header>
@@ -37,6 +38,7 @@
           </p>
           <div class="hero-actions">
             <a class="button primary" href="#workspace">Choose a tool</a>
+            <a class="button secondary" href="#dashboard">View dashboard</a>
           </div>
         </div>
         <div class="hero-panel" aria-label="Tool preview">
@@ -73,6 +75,7 @@
             <p id="workspace-description">Combine multiple PDF files in the order you choose.</p>
           </div>
           <div class="status-card">
+            <span id="session-state">Guest mode</span>
             <strong id="privacy-state">Files stay in this browser session</strong>
           </div>
         </div>
@@ -98,6 +101,8 @@
               <span class="tool-status" id="tool-status">Ready</span>
             </div>
 
+            <ol class="progress-steps" id="progress-steps" aria-label="Processing progress"></ol>
+
             <div class="workspace-downloads" id="workspace-downloads" aria-live="polite"></div>
           </section>
 
@@ -109,6 +114,30 @@
               </div>
             </section>
           </aside>
+        </div>
+      </section>
+
+      <section id="dashboard" class="dashboard-shell" aria-labelledby="dashboard-title">
+        <div class="section-heading">
+          <p class="eyebrow">Dynamic dashboard</p>
+          <h2 id="dashboard-title">Recent jobs and live platform state.</h2>
+        </div>
+        <div class="dashboard-grid">
+          <section class="dashboard-panel">
+            <h3>Job History</h3>
+            <div id="history-list" class="history-list">
+              <p>No jobs yet.</p>
+            </div>
+          </section>
+          <section class="dashboard-panel">
+            <h3>Platform</h3>
+            <div class="metric-grid">
+              <div><strong id="metric-total">0</strong><span>Total jobs</span></div>
+              <div><strong id="metric-completed">0</strong><span>Completed</span></div>
+              <div><strong id="metric-failed">0</strong><span>Failed</span></div>
+              <div><strong id="metric-mode">Browser</strong><span>Processing mode</span></div>
+            </div>
+          </section>
         </div>
       </section>
 
