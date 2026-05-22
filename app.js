@@ -662,12 +662,11 @@ async function runSelectedTool() {
   let job = null;
   try {
     validateFiles();
-    job = createJobRecord("processing");
+    job = safeCreateJobRecord("processing");
     renderProgress("queued");
     setStatus("Queued...");
     renderResult([]);
     const options = Object.fromEntries(new FormData(optionsForm).entries());
-    await syncJobRecord(job);
     renderProgress("processing");
     setStatus("Processing...");
     const started = performance.now();
@@ -902,7 +901,7 @@ function outputKind(output) {
 
 function createJobRecord(status) {
   const record = {
-    id: crypto.randomUUID(),
+    id: createId(),
     operation: selectedTool.id,
     toolName: selectedTool.name,
     status,
@@ -920,13 +919,27 @@ function createJobRecord(status) {
   return record;
 }
 
+function safeCreateJobRecord(status) {
+  try {
+    return createJobRecord(status);
+  } catch (error) {
+    console.warn("Job history unavailable; continuing without metadata.", error);
+    return null;
+  }
+}
+
 function updateJobRecord(id, changes) {
-  jobHistory = jobHistory.map((job) => (job.id === id ? { ...job, ...changes, updatedAt: new Date().toISOString() } : job));
-  persistLocalHistory();
-  renderHistory();
+  try {
+    jobHistory = jobHistory.map((job) => (job.id === id ? { ...job, ...changes, updatedAt: new Date().toISOString() } : job));
+    persistLocalHistory();
+    renderHistory();
+  } catch (error) {
+    console.warn("Unable to update job history.", error);
+  }
 }
 
 function renderHistory() {
+  if (!historyList || !metricTotal || !metricCompleted || !metricFailed || !metricMode) return;
   if (!jobHistory.length) {
     historyList.innerHTML = `<p>No jobs yet.</p>`;
   } else {
@@ -954,14 +967,19 @@ function renderHistory() {
 
 function loadLocalHistory() {
   try {
-    return JSON.parse(localStorage.getItem("ourpdf.jobs") || "[]");
+    const parsed = JSON.parse(localStorage.getItem("ourpdf.jobs") || "[]");
+    return Array.isArray(parsed) ? parsed : [];
   } catch {
     return [];
   }
 }
 
 function persistLocalHistory() {
-  localStorage.setItem("ourpdf.jobs", JSON.stringify(jobHistory));
+  try {
+    localStorage.setItem("ourpdf.jobs", JSON.stringify(jobHistory));
+  } catch (error) {
+    console.warn("Local job history could not be saved.", error);
+  }
 }
 
 async function mergePdf(files) {
@@ -1737,6 +1755,16 @@ function pointsToEmu(points) {
 async function sha256(buffer) {
   const digest = await crypto.subtle.digest("SHA-256", buffer);
   return [...new Uint8Array(digest)].map((byte) => byte.toString(16).padStart(2, "0")).join("");
+}
+
+function createId() {
+  const cryptoApi = globalThis.crypto;
+  if (cryptoApi?.randomUUID) return cryptoApi.randomUUID();
+  const bytes = cryptoApi?.getRandomValues ? cryptoApi.getRandomValues(new Uint8Array(16)) : null;
+  if (!bytes) return `job-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+  bytes[6] = (bytes[6] & 0x0f) | 0x40;
+  bytes[8] = (bytes[8] & 0x3f) | 0x80;
+  return [...bytes].map((byte, index) => `${index === 4 || index === 6 || index === 8 || index === 10 ? "-" : ""}${byte.toString(16).padStart(2, "0")}`).join("");
 }
 
 function formatBytes(bytes) {
