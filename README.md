@@ -1,6 +1,6 @@
 # Our PDF
 
-Our PDF is an original iLovePDF-style PDF toolkit with optional Supabase authentication. Guests can use the workspace without logging in. Registered users can sync safe job history metadata.
+Our PDF is an original iLovePDF-style PDF toolkit that runs as a browser-first local workspace. There is no account registration or login flow.
 
 ## Local Website
 
@@ -26,7 +26,7 @@ Browser-native tools that generate downloadable files:
 - Repair PDF
 - JPG/PNG to PDF
 - PDF to JPG
-- PDF to Word-compatible `.doc`
+- PDF to Word-compatible `.docx`
 - PDF to PowerPoint-compatible `.ppt`
 - PDF to Excel-compatible `.xls`
 - DOCX to PDF with original source attached
@@ -53,31 +53,13 @@ These require a server-side worker for real PDF encryption or password removal. 
 
 ## Fidelity Notes
 
-The browser conversion path is private and downloadable, but it cannot perfectly reconstruct every arbitrary PDF or Office layout. PDF-to-Office exports include extracted text plus rendered page previews to preserve visible content. Office-to-PDF exports readable text and attaches the original source file inside the generated PDF when supported by the PDF reader.
+The browser conversion path is private and downloadable, but it cannot perfectly reconstruct every arbitrary PDF or Office layout. PDF-to-Word exports a real `.docx` and places each rendered PDF page at the original page size to preserve the visible layout, including scanned pages, tables, images, and complex typography. Office-to-PDF exports readable text and attaches the original source file inside the generated PDF when supported by the PDF reader.
 
-For exact enterprise-grade conversion with complex tables, fonts, comments, tracked changes, embedded media, scanned OCR, and encrypted PDFs, connect Supabase Edge Functions to a worker with LibreOffice, OCR, and a PDF security tool such as qpdf or a commercial SDK.
-
-## Supabase
-
-1. Run `supabase/schema.sql` in your Supabase project.
-2. Enable email authentication in Supabase Auth.
-3. Add your frontend keys in `index.html`:
-
-```html
-<script>
-  window.OUR_PDF_SUPABASE = {
-    url: "https://your-project.supabase.co",
-    anonKey: "your-anon-key"
-  };
-</script>
-```
-
-Supabase stores only account and job metadata. It does not store uploaded PDFs, generated PDFs, OCR text, previews, thumbnails, or permanent file URLs.
+For exact enterprise-grade conversion with complex tables, fonts, comments, tracked changes, embedded media, scanned OCR, and encrypted PDFs, connect a secure worker with LibreOffice, OCR, and a PDF security tool such as qpdf or a commercial SDK.
 
 ## Important Files
 
-- `index.html` contains the app shell and optional Supabase config.
-- `app.js` contains tool definitions, browser PDF processing, optional auth, and history sync.
+- `index.html` contains the app shell.
+- `app.js` contains tool definitions and browser PDF processing.
 - `styles.css` contains the responsive app UI.
-- `supabase/schema.sql` defines profiles, job history, RLS, and metadata-only guards.
 - `scripts/static-server.mjs` serves the static app locally.

@@ -1,6 +1,5 @@
 import { PDFDocument, StandardFonts, rgb, degrees } from "https://cdn.skypack.dev/pdf-lib@1.17.1";
 import JSZip from "https://cdn.skypack.dev/jszip@3.10.1";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import * as pdfjsLib from "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.min.mjs";
 
 pdfjsLib.GlobalWorkerOptions.workerSrc =
@@ -9,12 +8,40 @@ pdfjsLib.GlobalWorkerOptions.workerSrc =
 const categories = ["All", "Organize PDF", "Optimize PDF", "Convert PDF", "Edit PDF", "PDF Security", "PDF Intelligence"];
 
 const categoryStyles = {
-  "Organize PDF": { icon: "ORG", tone: "teal" },
-  "Optimize PDF": { icon: "ZIP", tone: "gold" },
-  "Convert PDF": { icon: "CVT", tone: "blue" },
-  "Edit PDF": { icon: "EDT", tone: "red" },
-  "PDF Security": { icon: "SEC", tone: "ink" },
-  "PDF Intelligence": { icon: "AI", tone: "violet" },
+  "Organize PDF": { tone: "coral" },
+  "Optimize PDF": { tone: "green" },
+  "Convert PDF": { tone: "blue" },
+  "Edit PDF": { tone: "purple" },
+  "PDF Security": { tone: "blue" },
+  "PDF Intelligence": { tone: "green" },
+};
+
+const toolLogos = {
+  merge: { tone: "coral", type: "arrows", labels: ["↘", "↖"] },
+  split: { tone: "coral", type: "arrows split", labels: ["↖", "↘"] },
+  "remove-pages": { tone: "coral", type: "stack", labels: ["−", "×"] },
+  "extract-pages": { tone: "coral", type: "stack", labels: ["↗", "PDF"] },
+  compress: { tone: "green", type: "quad", labels: ["↘", "↙", "↗", "↖"] },
+  repair: { tone: "green", type: "single", labels: ["⌘"] },
+  "jpg-to-pdf": { tone: "yellow", type: "swap", labels: ["JPG", "↘"] },
+  "pdf-to-word": { tone: "blue", type: "swap", labels: ["↘", "W"] },
+  "pdf-to-powerpoint": { tone: "coral", type: "swap", labels: ["↘", "P"] },
+  "pdf-to-excel": { tone: "green", type: "swap", labels: ["↘", "X"] },
+  "pdf-to-jpg": { tone: "yellow", type: "image", labels: ["↘", "◆"] },
+  "word-to-pdf": { tone: "blue", type: "swap reverse", labels: ["W", "↘"] },
+  "powerpoint-to-pdf": { tone: "coral", type: "swap reverse", labels: ["P", "↘"] },
+  "excel-to-pdf": { tone: "green", type: "swap reverse", labels: ["X", "↘"] },
+  rotate: { tone: "purple", type: "single", labels: ["↻"] },
+  watermark: { tone: "purple", type: "single", labels: ["♟"] },
+  "page-numbers": { tone: "purple", type: "quad", labels: ["1", "2", "3", "4"] },
+  crop: { tone: "purple", type: "single", labels: ["⌗"] },
+  sign: { tone: "blue", type: "single", labels: ["✒"] },
+  redact: { tone: "purple", type: "single", labels: ["▰"] },
+  protect: { tone: "blue", type: "single", labels: ["♙"] },
+  unlock: { tone: "blue", type: "single", labels: ["↥"] },
+  compare: { tone: "blue", type: "book", labels: ["▥", "▥"] },
+  ocr: { tone: "green", type: "document", labels: ["OCR"] },
+  summarize: { tone: "coral", type: "scan", labels: ["▣"] },
 };
 
 const tools = [
@@ -96,7 +123,7 @@ const tools = [
     id: "pdf-to-word",
     name: "PDF to Word",
     category: "Convert PDF",
-    description: "Export PDF text and page previews as a Word-compatible DOC file.",
+    description: "Export each PDF page into a layout-preserving Word DOCX file.",
     accept: ".pdf,application/pdf",
     multiple: false,
     options: [],
@@ -270,7 +297,7 @@ const tools = [
     id: "summarize",
     name: "AI Summarizer",
     category: "PDF Intelligence",
-    description: "Create a metadata summary and Supabase-ready AI job.",
+    description: "Create a local text summary from selectable PDF content.",
     accept: ".pdf,application/pdf",
     multiple: false,
     options: [],
@@ -291,31 +318,21 @@ const optionsForm = document.querySelector("#options-form");
 const runToolButton = document.querySelector("#run-tool");
 const clearFilesButton = document.querySelector("#clear-files");
 const toolStatus = document.querySelector("#tool-status");
+const workspaceDownloads = document.querySelector("#workspace-downloads");
 const resultList = document.querySelector("#result-list");
-const historyList = document.querySelector("#history-list");
-const authState = document.querySelector("#auth-state");
 const privacyState = document.querySelector("#privacy-state");
-const authEmail = document.querySelector("#auth-email");
-const authPassword = document.querySelector("#auth-password");
-const authMessage = document.querySelector("#auth-message");
 
 let selectedCategory = "All";
 let selectedTool = tools[0];
 let selectedFiles = [];
-let currentUser = null;
-let supabase = null;
-
-const config = window.OUR_PDF_SUPABASE ?? {};
-if (config.url && config.anonKey) {
-  supabase = createClient(config.url, config.anonKey);
-}
+let mergeSlotCount = 2;
+let mergeSlots = [];
+let outputUrls = [];
 
 renderCategories();
 renderTools();
 selectTool("merge");
 wireUpload();
-wireAuth();
-initAuth();
 
 function renderCategories() {
   categoryTabs.innerHTML = "";
@@ -337,22 +354,27 @@ function renderTools() {
   toolGrid.innerHTML = "";
   const visibleTools = selectedCategory === "All" ? tools : tools.filter((tool) => tool.category === selectedCategory);
   for (const tool of visibleTools) {
-    const style = categoryStyles[tool.category];
+    const style = toolLogos[tool.id] ?? categoryStyles[tool.category];
     const button = document.createElement("button");
     button.type = "button";
     button.className = `tool-card ${tool.id === selectedTool.id ? "active" : ""}`;
     button.dataset.tone = style.tone;
     button.innerHTML = `
-      <span class="tool-icon" aria-hidden="true">${style.icon}</span>
+      ${renderToolLogo(tool)}
       <span class="tool-copy">
         <strong>${tool.name}</strong>
         <small>${tool.category}</small>
-        <span>${tool.description}</span>
       </span>
     `;
     button.addEventListener("click", () => selectTool(tool.id, true));
     toolGrid.append(button);
   }
+}
+
+function renderToolLogo(tool) {
+  const logo = toolLogos[tool.id] ?? { tone: categoryStyles[tool.category].tone, type: "single", labels: [tool.name.slice(0, 1)] };
+  const pieces = logo.labels.map((label) => `<span>${escapeHtml(label)}</span>`).join("");
+  return `<span class="feature-logo ${logo.type}" data-tone="${logo.tone}" aria-hidden="true">${pieces}</span>`;
 }
 
 function selectTool(toolId, shouldOpenWorkspace = false) {
@@ -362,12 +384,15 @@ function selectTool(toolId, shouldOpenWorkspace = false) {
   workspaceDescription.textContent = selectedTool.description;
   fileInput.accept = selectedTool.accept;
   fileInput.multiple = selectedTool.multiple;
-  fileHelp.textContent = selectedTool.multiple ? "Multiple files supported" : "One file required";
+  fileHelp.textContent = isMergeTool() ? "Fill numbered PDF slots in the merge order" : selectedTool.multiple ? "Multiple files supported" : "One file required";
   runToolButton.textContent = selectedTool.name;
   selectedFiles = [];
+  mergeSlotCount = isMergeTool() ? Math.max(selectedTool.minFiles ?? 2, 2) : 2;
+  mergeSlots = Array.from({ length: mergeSlotCount }, () => null);
   fileInput.value = "";
   renderOptions();
   renderFiles();
+  renderResult([]);
   setStatus("Ready");
   renderTools();
   if (shouldOpenWorkspace) {
@@ -382,6 +407,10 @@ function openWorkspace() {
 
 function renderOptions() {
   optionsForm.innerHTML = "";
+  if (isMergeTool()) {
+    renderMergeOptions();
+    return;
+  }
   if (selectedTool.options.length === 0) {
     optionsForm.innerHTML = `<p class="option-wide small-note">No extra settings for this tool.</p>`;
     return;
@@ -415,6 +444,24 @@ function renderOptions() {
   }
 }
 
+function renderMergeOptions() {
+  const label = document.createElement("label");
+  label.className = "option-wide";
+  label.textContent = "Number of PDFs to merge";
+
+  const field = document.createElement("input");
+  field.type = "number";
+  field.min = "2";
+  field.max = "20";
+  field.step = "1";
+  field.value = String(mergeSlotCount);
+  field.addEventListener("change", () => setMergeSlotCount(field.value));
+  field.addEventListener("input", () => setMergeSlotCount(field.value));
+
+  label.append(field);
+  optionsForm.append(label);
+}
+
 function wireUpload() {
   for (const eventName of ["dragenter", "dragover"]) {
     dropzone.addEventListener(eventName, (event) => {
@@ -432,6 +479,9 @@ function wireUpload() {
   fileInput.addEventListener("change", (event) => setFiles([...event.target.files]));
   clearFilesButton.addEventListener("click", () => {
     selectedFiles = [];
+    if (isMergeTool()) {
+      mergeSlots = Array.from({ length: mergeSlotCount }, () => null);
+    }
     fileInput.value = "";
     renderFiles();
     renderResult([]);
@@ -441,6 +491,10 @@ function wireUpload() {
 }
 
 function setFiles(files) {
+  if (isMergeTool()) {
+    setMergeFiles(files);
+    return;
+  }
   selectedFiles = selectedTool.multiple ? files : files.slice(0, 1);
   renderFiles();
   setStatus(`${selectedFiles.length} file${selectedFiles.length === 1 ? "" : "s"} selected`);
@@ -448,6 +502,10 @@ function setFiles(files) {
 
 function renderFiles() {
   fileList.innerHTML = "";
+  if (isMergeTool()) {
+    renderMergeFiles();
+    return;
+  }
   if (selectedFiles.length === 0) {
     fileList.innerHTML = `<p class="small-note">No files selected.</p>`;
     return;
@@ -469,6 +527,111 @@ function renderFiles() {
   });
 }
 
+function setMergeSlotCount(value) {
+  const count = Math.min(20, Math.max(2, Number.parseInt(value, 10) || 2));
+  if (count === mergeSlotCount) return;
+  mergeSlotCount = count;
+  mergeSlots = Array.from({ length: mergeSlotCount }, (_, index) => mergeSlots[index] ?? null);
+  syncMergeFiles();
+  renderOptions();
+  renderFiles();
+}
+
+function setMergeFiles(files) {
+  const pdfFiles = files.filter((file) => fileAllowed(file, selectedTool.accept));
+  mergeSlotCount = Math.min(20, Math.max(2, pdfFiles.length, mergeSlotCount));
+  mergeSlots = Array.from({ length: mergeSlotCount }, (_, index) => pdfFiles[index] ?? mergeSlots[index] ?? null);
+  syncMergeFiles();
+  renderOptions();
+  renderFiles();
+  setMergeStatus();
+}
+
+function setMergeSlotFile(index, file) {
+  mergeSlots[index] = file ?? null;
+  syncMergeFiles();
+  renderFiles();
+  setMergeStatus();
+}
+
+function setMergeSlotPosition(index, position) {
+  const target = Number.parseInt(position, 10) - 1;
+  if (target < 0 || target >= mergeSlots.length) return;
+  [mergeSlots[index], mergeSlots[target]] = [mergeSlots[target], mergeSlots[index]];
+  syncMergeFiles();
+  renderFiles();
+  setMergeStatus();
+}
+
+function syncMergeFiles() {
+  selectedFiles = mergeSlots.filter(Boolean);
+}
+
+function setMergeStatus() {
+  const ready = selectedFiles.length;
+  setStatus(`${ready} of ${mergeSlotCount} merge slot${mergeSlotCount === 1 ? "" : "s"} filled`);
+}
+
+function renderMergeFiles() {
+  const intro = document.createElement("p");
+  intro.className = "small-note";
+  intro.textContent = "Files are merged by position number. Set each PDF as 1st, 2nd, 3rd, and so on.";
+  fileList.append(intro);
+
+  mergeSlots.forEach((file, index) => {
+    const item = document.createElement("div");
+    item.className = `file-item merge-slot ${file ? "" : "empty"}`;
+
+    const details = document.createElement("div");
+    details.innerHTML = file
+      ? `<strong>${index + 1}. ${escapeHtml(file.name)}</strong><small>${formatBytes(file.size)} - ${file.type || "application/pdf"}</small>`
+      : `<strong>${index + 1}. Choose PDF</strong><small>This slot will be ${ordinal(index + 1)} in the merged file.</small>`;
+
+    const actions = document.createElement("div");
+    actions.className = "file-actions";
+
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = selectedTool.accept;
+    input.addEventListener("change", (event) => {
+      setMergeSlotFile(index, event.target.files[0] ?? null);
+      event.target.value = "";
+    });
+
+    const choose = document.createElement("button");
+    choose.className = "button secondary";
+    choose.type = "button";
+    choose.textContent = file ? "Replace" : "Upload";
+    choose.addEventListener("click", () => input.click());
+
+    const positionLabel = document.createElement("label");
+    positionLabel.className = "position-control";
+    positionLabel.textContent = "Position";
+    const position = document.createElement("select");
+    position.disabled = !file;
+    for (let slot = 1; slot <= mergeSlotCount; slot += 1) {
+      const option = document.createElement("option");
+      option.value = String(slot);
+      option.textContent = `${slot}`;
+      option.selected = slot === index + 1;
+      position.append(option);
+    }
+    position.addEventListener("change", () => setMergeSlotPosition(index, position.value));
+    positionLabel.append(position);
+
+    const remove = document.createElement("button");
+    remove.className = "button quiet";
+    remove.type = "button";
+    remove.textContent = "Remove";
+    remove.disabled = !file;
+    remove.addEventListener("click", () => setMergeSlotFile(index, null));
+
+    actions.append(input, choose, positionLabel, remove);
+    item.append(details, actions);
+    fileList.append(item);
+  });
+}
+
 async function runSelectedTool() {
   try {
     validateFiles();
@@ -480,16 +643,17 @@ async function runSelectedTool() {
     const durationMs = Math.round(performance.now() - started);
     renderResult(outputs);
     setStatus(`Completed in ${durationMs} ms`);
-    await saveHistory("completed", durationMs);
   } catch (error) {
     console.error(error);
     setStatus(error.message || "Unable to process file");
-    await saveHistory("failed", null, error.message);
   }
 }
 
 function validateFiles() {
   const minFiles = selectedTool.minFiles ?? 1;
+  if (isMergeTool() && selectedFiles.length !== mergeSlotCount) {
+    throw new Error(`Fill all ${mergeSlotCount} merge slots, or reduce the number of PDFs to merge.`);
+  }
   if (selectedFiles.length < minFiles) {
     throw new Error(`${selectedTool.name} needs at least ${minFiles} file${minFiles === 1 ? "" : "s"}.`);
   }
@@ -514,23 +678,187 @@ function setStatus(message) {
 }
 
 function renderResult(outputs) {
+  clearOutputUrls();
   resultList.innerHTML = "";
+  workspaceDownloads.innerHTML = "";
   if (!outputs.length) {
     resultList.innerHTML = `<p>No processed files yet.</p>`;
     return;
   }
-  for (const output of outputs) {
+
+  renderWorkspaceDownloads(outputs);
+
+  for (const [index, output] of outputs.entries()) {
     const item = document.createElement("div");
-    item.className = "result-item";
+    item.className = "result-item output-card";
     const url = URL.createObjectURL(output.blob);
-    item.innerHTML = `<div><strong>${escapeHtml(output.name)}</strong><small>${formatBytes(output.blob.size)}</small></div>`;
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = output.name;
-    link.textContent = "Download";
-    item.append(link);
+    outputUrls.push(url);
+
+    const header = document.createElement("div");
+    header.className = "output-header";
+    header.innerHTML = `<div><strong>${escapeHtml(output.name)}</strong><small>${formatBytes(output.blob.size)} - ${escapeHtml(outputKind(output))}</small></div>`;
+
+    const preview = document.createElement("div");
+    preview.className = "output-preview";
+    renderOutputPreview(output, url, preview, index);
+
+    const link = outputDownloadButton(output, url, "Download file");
+    item.append(header, preview, link);
     resultList.append(item);
   }
+}
+
+function renderWorkspaceDownloads(outputs) {
+  const title = document.createElement("strong");
+  title.textContent = "Ready to download";
+  workspaceDownloads.append(title);
+
+  const list = document.createElement("div");
+  list.className = "download-button-row";
+  for (const output of outputs) {
+    const url = URL.createObjectURL(output.blob);
+    outputUrls.push(url);
+    list.append(outputDownloadButton(output, url, `Download ${output.name}`));
+  }
+  workspaceDownloads.append(list);
+}
+
+function outputDownloadButton(output, url, label) {
+  const link = document.createElement("a");
+  link.className = "button primary download-button";
+  link.href = url;
+  link.download = output.name;
+  link.textContent = label;
+  return link;
+}
+
+async function renderOutputPreview(output, url, container, index) {
+  const name = output.name.toLowerCase();
+  const type = output.blob.type;
+  if (output.preview?.type === "pages") {
+    renderPagePreview(output.preview.pages, container);
+    return;
+  }
+  if (output.preview?.type === "images") {
+    renderImagePreviewGrid(output.preview.images, container);
+    return;
+  }
+  if (output.preview?.type === "table") {
+    renderTablePreview(output.preview, container);
+    return;
+  }
+  if (type === "application/pdf" || name.endsWith(".pdf")) {
+    const frame = document.createElement("iframe");
+    frame.title = `Preview of ${output.name}`;
+    frame.src = url;
+    container.append(frame);
+    return;
+  }
+  if (type.startsWith("image/") || /\.(jpe?g|png|webp)$/i.test(name)) {
+    const image = document.createElement("img");
+    image.alt = `Preview of ${output.name}`;
+    image.src = url;
+    container.append(image);
+    return;
+  }
+  if (type.startsWith("text/") || /\.(txt|csv|json)$/i.test(name)) {
+    const pre = document.createElement("pre");
+    pre.textContent = truncateText(await output.blob.text(), 1600);
+    container.append(pre);
+    return;
+  }
+  if (name.endsWith(".zip")) {
+    const summary = document.createElement("div");
+    summary.className = "preview-summary";
+    summary.textContent = "Archive generated. Download to open the converted files inside.";
+    container.append(summary);
+    return;
+  }
+
+  const summary = document.createElement("div");
+  summary.className = "preview-summary";
+  summary.innerHTML = `<strong>${escapeHtml(selectedTool.name)} completed</strong><span>${escapeHtml(outputKind(output))} output ${index + 1} is ready.</span>`;
+  container.append(summary);
+}
+
+function renderPagePreview(pages, container) {
+  const previewPages = pages.slice(0, 4);
+  const wrap = document.createElement("div");
+  wrap.className = "page-preview-grid";
+  for (const page of previewPages) {
+    const figure = document.createElement("figure");
+    const image = document.createElement("img");
+    image.src = page.imageDataUrl;
+    image.alt = `Converted page ${page.number}`;
+    const caption = document.createElement("figcaption");
+    caption.textContent = `Page ${page.number}`;
+    figure.append(image, caption);
+    wrap.append(figure);
+  }
+  container.append(wrap);
+  if (pages.length > previewPages.length) {
+    const note = document.createElement("p");
+    note.className = "preview-note";
+    note.textContent = `Showing ${previewPages.length} of ${pages.length} converted pages.`;
+    container.append(note);
+  }
+}
+
+function renderImagePreviewGrid(images, container) {
+  const previewImages = images.slice(0, 6);
+  const wrap = document.createElement("div");
+  wrap.className = "image-preview-grid";
+  for (const imageData of previewImages) {
+    const figure = document.createElement("figure");
+    const image = document.createElement("img");
+    image.src = imageData.src;
+    image.alt = imageData.label;
+    const caption = document.createElement("figcaption");
+    caption.textContent = imageData.label;
+    figure.append(image, caption);
+    wrap.append(figure);
+  }
+  container.append(wrap);
+  if (images.length > previewImages.length) {
+    const note = document.createElement("p");
+    note.className = "preview-note";
+    note.textContent = `Showing ${previewImages.length} of ${images.length} generated images.`;
+    container.append(note);
+  }
+}
+
+function renderTablePreview(preview, container) {
+  const table = document.createElement("table");
+  table.className = "preview-table";
+  const head = document.createElement("thead");
+  head.innerHTML = `<tr>${preview.headers.map((header) => `<th>${escapeHtml(header)}</th>`).join("")}</tr>`;
+  const body = document.createElement("tbody");
+  for (const row of preview.rows.slice(0, 12)) {
+    body.innerHTML += `<tr>${row.map((cell) => `<td>${escapeHtml(cell)}</td>`).join("")}</tr>`;
+  }
+  table.append(head, body);
+  container.append(table);
+  if (preview.rows.length > 12) {
+    const note = document.createElement("p");
+    note.className = "preview-note";
+    note.textContent = `Showing 12 of ${preview.rows.length} rows.`;
+    container.append(note);
+  }
+}
+
+function clearOutputUrls() {
+  outputUrls.forEach((url) => URL.revokeObjectURL(url));
+  outputUrls = [];
+}
+
+function outputKind(output) {
+  const name = output.name.toLowerCase();
+  if (name.endsWith(".docx") || name.endsWith(".doc")) return "Word document";
+  if (name.endsWith(".ppt") || name.endsWith(".pptx")) return "PowerPoint file";
+  if (name.endsWith(".xls") || name.endsWith(".xlsx")) return "Excel file";
+  if (name.endsWith(".zip")) return "ZIP archive";
+  if (name.endsWith(".pdf")) return "PDF";
+  return output.blob.type || "converted file";
 }
 
 async function mergePdf(files) {
@@ -611,27 +939,20 @@ async function pdfToJpg(files, options) {
   const pdf = await pdfjsLib.getDocument({ data: bytes }).promise;
   const zip = new JSZip();
   const scale = Number(options.scale || 1.5);
+  const images = [];
   for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber += 1) {
     const canvas = await renderPdfPageToCanvas(pdf, pageNumber, scale);
     const blob = await new Promise((resolve) => canvas.toBlob(resolve, "image/jpeg", 0.9));
     zip.file(`page-${pageNumber}.jpg`, blob);
+    images.push({ label: `Page ${pageNumber}.jpg`, src: canvas.toDataURL("image/jpeg", 0.82) });
   }
-  return [{ name: "pdf-pages-jpg.zip", blob: await zip.generateAsync({ type: "blob" }) }];
+  return [{ name: "pdf-pages-jpg.zip", blob: await zip.generateAsync({ type: "blob" }), preview: { type: "images", images } }];
 }
 
 async function pdfToWord(files) {
   const data = await extractPdfForOffice(files[0]);
-  const sections = data.pages
-    .map(
-      (page) => `
-        <h2>Page ${page.number}</h2>
-        <p><img src="${page.image}" alt="Page ${page.number} preview" style="max-width:100%;height:auto;" /></p>
-        <pre>${escapeHtml(page.text || "[No selectable text detected on this page.]")}</pre>
-      `,
-    )
-    .join('<br style="page-break-after:always" />');
-  const html = officeHtmlDocument(files[0].name, sections);
-  return [{ name: replaceExtension(files[0].name, ".doc"), blob: new Blob([html], { type: "application/msword" }) }];
+  const blob = await buildLayoutDocx(files[0].name, data.pages);
+  return [{ name: replaceExtension(files[0].name, ".docx"), blob, preview: officePagePreview(data.pages) }];
 }
 
 async function pdfToPowerPoint(files) {
@@ -641,22 +962,31 @@ async function pdfToPowerPoint(files) {
       (page) => `
         <section style="width:960px;height:540px;page-break-after:always;padding:24px;font-family:Arial,sans-serif;">
           <h1 style="font-size:24px;margin:0 0 16px;">Page ${page.number}</h1>
-          <img src="${page.image}" alt="Page ${page.number}" style="max-width:912px;max-height:420px;display:block;margin-bottom:12px;" />
+          <img src="${page.imageDataUrl}" alt="Page ${page.number}" style="max-width:912px;max-height:420px;display:block;margin-bottom:12px;" />
           <p style="font-size:12px;white-space:pre-wrap;">${escapeHtml(page.text.slice(0, 900))}</p>
         </section>
       `,
     )
     .join("");
-  return [{ name: replaceExtension(files[0].name, ".ppt"), blob: new Blob([officeHtmlDocument(files[0].name, slides)], { type: "application/vnd.ms-powerpoint" }) }];
+  return [
+    {
+      name: replaceExtension(files[0].name, ".ppt"),
+      blob: new Blob([officeHtmlDocument(files[0].name, slides)], { type: "application/vnd.ms-powerpoint" }),
+      preview: officePagePreview(data.pages),
+    },
+  ];
 }
 
 async function pdfToExcel(files) {
   const data = await extractPdfText(files[0]);
+  const previewRows = [];
   const rows = data.pages
     .flatMap((page) =>
       page.lines.map(
-        (line, index) =>
-          `<tr><td>${page.number}</td><td>${index + 1}</td><td>${escapeHtml(line)}</td></tr>`,
+        (line, index) => {
+          previewRows.push([String(page.number), String(index + 1), line]);
+          return `<tr><td>${page.number}</td><td>${index + 1}</td><td>${escapeHtml(line)}</td></tr>`;
+        },
       ),
     )
     .join("");
@@ -668,7 +998,13 @@ async function pdfToExcel(files) {
       <body><table><tr><th>Page</th><th>Line</th><th>Text</th></tr>${rows}</table></body>
     </html>
   `;
-  return [{ name: replaceExtension(files[0].name, ".xls"), blob: new Blob([workbook], { type: "application/vnd.ms-excel" }) }];
+  return [
+    {
+      name: replaceExtension(files[0].name, ".xls"),
+      blob: new Blob([workbook], { type: "application/vnd.ms-excel" }),
+      preview: { type: "table", headers: ["Page", "Line", "Text"], rows: previewRows },
+    },
+  ];
 }
 
 async function rotatePdf(files, options) {
@@ -823,10 +1159,9 @@ async function serverWorkerManifest(files, options) {
     fileSize: file.size,
     fileType: file.type || "unknown",
     requestedAt: new Date().toISOString(),
-    authenticatedUser: currentUser?.id ?? null,
     options: redactSensitiveOptions(options),
     nextStep:
-      "Send this safe metadata and a temporary object reference to a Supabase Edge Function or worker. Do not store document bytes in Supabase.",
+      "Send this safe metadata and a temporary object reference to a secure worker. Do not store document bytes.",
   };
   return [
     {
@@ -838,7 +1173,7 @@ async function serverWorkerManifest(files, options) {
 
 async function serverRequired() {
   throw new Error(
-    `${selectedTool.name} needs a secure server worker for production-grade encryption/decryption. Configure the Supabase worker endpoint before enabling this action.`,
+    `${selectedTool.name} needs a secure server worker for production-grade encryption/decryption. Configure a worker endpoint before enabling this action.`,
   );
 }
 
@@ -861,12 +1196,191 @@ async function extractPdfForOffice(file) {
   const pages = [];
   for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber += 1) {
     const page = await pdf.getPage(pageNumber);
+    const viewport = page.getViewport({ scale: 1 });
     const content = await page.getTextContent();
     const text = content.items.map((item) => item.str).join(" ").replace(/\s+/g, " ").trim();
-    const canvas = await renderPdfPageToCanvas(pdf, pageNumber, 1.45);
-    pages.push({ number: pageNumber, text, image: canvas.toDataURL("image/jpeg", 0.88) });
+    const canvas = await renderPdfPageToCanvas(pdf, pageNumber, 2);
+    const image = await canvasToBlob(canvas, "image/jpeg", 0.92);
+    const imageDataUrl = canvas.toDataURL("image/jpeg", 0.84);
+    pages.push({ number: pageNumber, text, image, imageDataUrl, widthPt: viewport.width, heightPt: viewport.height });
   }
   return { pages };
+}
+
+function officePagePreview(pages) {
+  return {
+    type: "pages",
+    pages: pages.map((page) => ({
+      number: page.number,
+      text: page.text,
+      imageDataUrl: page.imageDataUrl,
+    })),
+  };
+}
+
+async function buildLayoutDocx(sourceName, pages) {
+  const zip = new JSZip();
+  zip.file("[Content_Types].xml", docxContentTypes(pages));
+  zip.folder("_rels").file(".rels", docxRootRelationships());
+  zip.folder("docProps").file("core.xml", docxCoreProperties(sourceName));
+  zip.folder("docProps").file("app.xml", docxAppProperties(pages.length));
+
+  const word = zip.folder("word");
+  word.file("document.xml", docxDocumentXml(sourceName, pages));
+  word.folder("_rels").file("document.xml.rels", docxDocumentRelationships(pages));
+
+  const media = word.folder("media");
+  for (const page of pages) {
+    media.file(`page-${page.number}.jpg`, page.image);
+  }
+
+  return zip.generateAsync({
+    type: "blob",
+    mimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    compression: "DEFLATE",
+  });
+}
+
+function docxDocumentXml(sourceName, pages) {
+  const body = pages.map((page, index) => docxPageXml(page, index < pages.length - 1)).join("");
+  const finalPage = pages.at(-1) ?? { widthPt: 612, heightPt: 792 };
+  return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<w:document xmlns:wpc="http://schemas.microsoft.com/office/word/2010/wordprocessingCanvas"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  xmlns:o="urn:schemas-microsoft-com:office:office"
+  xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"
+  xmlns:m="http://schemas.openxmlformats.org/officeDocument/2006/math"
+  xmlns:v="urn:schemas-microsoft-com:vml"
+  xmlns:wp14="http://schemas.microsoft.com/office/word/2010/wordprocessingDrawing"
+  xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing"
+  xmlns:w10="urn:schemas-microsoft-com:office:word"
+  xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"
+  xmlns:w14="http://schemas.microsoft.com/office/word/2010/wordml"
+  xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"
+  xmlns:pic="http://schemas.openxmlformats.org/drawingml/2006/picture"
+  mc:Ignorable="w14 wp14">
+  <w:body>
+    ${body}
+    <w:sectPr>
+      ${docxPageSection(finalPage)}
+    </w:sectPr>
+  </w:body>
+</w:document>`;
+}
+
+function docxPageXml(page, addBreak) {
+  const widthEmu = pointsToEmu(page.widthPt);
+  const heightEmu = pointsToEmu(page.heightPt);
+  const alt = escapeHtml(truncateText(`Page ${page.number} from PDF. ${page.text || "No selectable text detected."}`, 500));
+  return `
+    <w:p>
+      <w:pPr>
+        <w:spacing w:before="0" w:after="0" w:line="240" w:lineRule="auto"/>
+      </w:pPr>
+      <w:r>
+        <w:drawing>
+          <wp:inline distT="0" distB="0" distL="0" distR="0">
+            <wp:extent cx="${widthEmu}" cy="${heightEmu}"/>
+            <wp:effectExtent l="0" t="0" r="0" b="0"/>
+            <wp:docPr id="${page.number}" name="PDF page ${page.number}" descr="${alt}"/>
+            <wp:cNvGraphicFramePr>
+              <a:graphicFrameLocks noChangeAspect="1"/>
+            </wp:cNvGraphicFramePr>
+            <a:graphic>
+              <a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/picture">
+                <pic:pic>
+                  <pic:nvPicPr>
+                    <pic:cNvPr id="${page.number}" name="page-${page.number}.jpg" descr="${alt}"/>
+                    <pic:cNvPicPr/>
+                  </pic:nvPicPr>
+                  <pic:blipFill>
+                    <a:blip r:embed="rIdImage${page.number}" cstate="print"/>
+                    <a:stretch><a:fillRect/></a:stretch>
+                  </pic:blipFill>
+                  <pic:spPr>
+                    <a:xfrm>
+                      <a:off x="0" y="0"/>
+                      <a:ext cx="${widthEmu}" cy="${heightEmu}"/>
+                    </a:xfrm>
+                    <a:prstGeom prst="rect"><a:avLst/></a:prstGeom>
+                  </pic:spPr>
+                </pic:pic>
+              </a:graphicData>
+            </a:graphic>
+          </wp:inline>
+        </w:drawing>
+      </w:r>
+    </w:p>
+    ${addBreak ? `<w:p><w:pPr><w:sectPr><w:type w:val="nextPage"/>${docxPageSection(page)}</w:sectPr></w:pPr></w:p>` : ""}`;
+}
+
+function docxPageSection(page) {
+  return `
+      <w:pgSz w:w="${pointsToTwips(page.widthPt)}" w:h="${pointsToTwips(page.heightPt)}"/>
+      <w:pgMar w:top="0" w:right="0" w:bottom="0" w:left="0" w:header="0" w:footer="0" w:gutter="0"/>
+      <w:cols w:space="0"/>
+      <w:docGrid w:linePitch="360"/>`;
+}
+
+function docxContentTypes(pages) {
+  const imageOverrides = pages
+    .map((page) => `<Override PartName="/word/media/page-${page.number}.jpg" ContentType="image/jpeg"/>`)
+    .join("");
+  return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
+  <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
+  <Default Extension="xml" ContentType="application/xml"/>
+  <Default Extension="jpg" ContentType="image/jpeg"/>
+  <Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>
+  <Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties+xml"/>
+  <Override PartName="/docProps/app.xml" ContentType="application/vnd.openxmlformats-officedocument.extended-properties+xml"/>
+  ${imageOverrides}
+</Types>`;
+}
+
+function docxRootRelationships() {
+  return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/>
+  <Relationship Id="rId2" Type="http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties" Target="docProps/core.xml"/>
+  <Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/extended-properties" Target="docProps/app.xml"/>
+</Relationships>`;
+}
+
+function docxDocumentRelationships(pages) {
+  const relationships = pages
+    .map(
+      (page) =>
+        `<Relationship Id="rIdImage${page.number}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="media/page-${page.number}.jpg"/>`,
+    )
+    .join("");
+  return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">${relationships}</Relationships>`;
+}
+
+function docxCoreProperties(sourceName) {
+  const now = new Date().toISOString();
+  return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties"
+  xmlns:dc="http://purl.org/dc/elements/1.1/"
+  xmlns:dcterms="http://purl.org/dc/terms/"
+  xmlns:dcmitype="http://purl.org/dc/dcmitype/"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <dc:title>${escapeHtml(sourceName)}</dc:title>
+  <dc:creator>Our PDF</dc:creator>
+  <cp:lastModifiedBy>Our PDF</cp:lastModifiedBy>
+  <dcterms:created xsi:type="dcterms:W3CDTF">${now}</dcterms:created>
+  <dcterms:modified xsi:type="dcterms:W3CDTF">${now}</dcterms:modified>
+</cp:coreProperties>`;
+}
+
+function docxAppProperties(pageCount) {
+  return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties"
+  xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes">
+  <Application>Our PDF</Application>
+  <Pages>${pageCount}</Pages>
+</Properties>`;
 }
 
 async function extractPdfText(file) {
@@ -1097,6 +1611,26 @@ function fitRect(sourceWidth, sourceHeight, boxWidth, boxHeight) {
   return { x: (boxWidth - width) / 2, y: (boxHeight - height) / 2, width, height };
 }
 
+function canvasToBlob(canvas, type, quality) {
+  return new Promise((resolve, reject) => {
+    canvas.toBlob((blob) => {
+      if (blob) {
+        resolve(blob);
+      } else {
+        reject(new Error("Unable to render PDF page image."));
+      }
+    }, type, quality);
+  });
+}
+
+function pointsToTwips(points) {
+  return Math.round(points * 20);
+}
+
+function pointsToEmu(points) {
+  return Math.round(points * 12700);
+}
+
 async function sha256(buffer) {
   const digest = await crypto.subtle.digest("SHA-256", buffer);
   return [...new Uint8Array(digest)].map((byte) => byte.toString(16).padStart(2, "0")).join("");
@@ -1109,97 +1643,25 @@ function formatBytes(bytes) {
   return `${(bytes / 1024 ** index).toFixed(index === 0 ? 0 : 1)} ${units[index]}`;
 }
 
+function isMergeTool() {
+  return selectedTool.id === "merge";
+}
+
+function ordinal(value) {
+  const suffixes = ["th", "st", "nd", "rd"];
+  const remainder = value % 100;
+  return `${value}${suffixes[(remainder - 20) % 10] || suffixes[remainder] || suffixes[0]}`;
+}
+
 function escapeHtml(value) {
   return String(value).replace(/[&<>"']/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;" })[char]);
 }
 
+function truncateText(value, maxLength) {
+  const text = String(value).replace(/\s+/g, " ").trim();
+  return text.length > maxLength ? `${text.slice(0, maxLength - 3)}...` : text;
+}
+
 function replaceExtension(fileName, extension) {
   return fileName.replace(/\.[^.]+$/, "") + extension;
-}
-
-function wireAuth() {
-  document.querySelector("#sign-in").addEventListener("click", () => signIn());
-  document.querySelector("#sign-up").addEventListener("click", () => signUp());
-  document.querySelector("#sign-out").addEventListener("click", () => signOut());
-}
-
-async function initAuth() {
-  if (!supabase) {
-    updateAuthUi(null);
-    return;
-  }
-  const { data } = await supabase.auth.getUser();
-  updateAuthUi(data.user);
-  supabase.auth.onAuthStateChange((_event, session) => updateAuthUi(session?.user ?? null));
-}
-
-async function signIn() {
-  if (!supabase) return setAuthMessage("Supabase is not configured yet.");
-  const { error } = await supabase.auth.signInWithPassword({ email: authEmail.value, password: authPassword.value });
-  setAuthMessage(error ? error.message : "Signed in.");
-}
-
-async function signUp() {
-  if (!supabase) return setAuthMessage("Supabase is not configured yet.");
-  const { error } = await supabase.auth.signUp({ email: authEmail.value, password: authPassword.value });
-  setAuthMessage(error ? error.message : "Account created. Check email confirmation settings in Supabase.");
-}
-
-async function signOut() {
-  if (!supabase) return setAuthMessage("Supabase is not configured yet.");
-  await supabase.auth.signOut();
-  setAuthMessage("Signed out.");
-}
-
-function updateAuthUi(user) {
-  currentUser = user;
-  authState.textContent = user ? user.email : "Guest mode";
-  privacyState.textContent = user ? "Safe metadata sync enabled" : "Files stay in this browser session";
-  setAuthMessage(user ? `Signed in as ${user.email}` : "Guest mode is active. Sign in only if you want history.");
-  loadHistory();
-}
-
-function setAuthMessage(message) {
-  authMessage.textContent = message;
-}
-
-async function saveHistory(status, durationMs, errorMessage = null) {
-  if (!currentUser || !supabase) return;
-  await supabase.from("jobs").insert({
-    user_id: currentUser.id,
-    operation: selectedTool.id,
-    status,
-    file_count: selectedFiles.length,
-    file_names: selectedFiles.map((file) => file.name),
-    processing_duration_ms: durationMs,
-    safe_error_code: errorMessage ? "CLIENT_PROCESSING_ERROR" : null,
-  });
-  await loadHistory();
-}
-
-async function loadHistory() {
-  if (!currentUser || !supabase) {
-    historyList.innerHTML = `<p>Sign in to sync safe job metadata with Supabase.</p>`;
-    return;
-  }
-  const { data, error } = await supabase
-    .from("jobs")
-    .select("operation,status,file_count,created_at,processing_duration_ms")
-    .order("created_at", { ascending: false })
-    .limit(8);
-  if (error) {
-    historyList.innerHTML = `<p>${escapeHtml(error.message)}</p>`;
-    return;
-  }
-  if (!data.length) {
-    historyList.innerHTML = `<p>No saved jobs yet.</p>`;
-    return;
-  }
-  historyList.innerHTML = "";
-  for (const job of data) {
-    const item = document.createElement("div");
-    item.className = "history-item";
-    item.innerHTML = `<div><strong>${escapeHtml(job.operation)}</strong><small>${job.status} - ${job.file_count} file(s) - ${new Date(job.created_at).toLocaleString()}</small></div>`;
-    historyList.append(item);
-  }
 }

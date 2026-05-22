@@ -5,27 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta
       name="description"
-      content="Our PDF is a browser-first PDF toolkit with optional Supabase authentication and private job history."
+      content="Our PDF is a browser-first PDF toolkit for private local PDF actions."
     />
     <title>Our PDF - Browser PDF Toolkit</title>
+    <link rel="icon" type="image/png" href="./assets/ourpdf-logo-red.png" />
+    <link rel="apple-touch-icon" href="./assets/ourpdf-logo-red.png" />
     <link rel="stylesheet" href="./styles.css" />
-    <script>
-      window.OUR_PDF_SUPABASE = {
-        url: "",
-        anonKey: ""
-      };
-    </script>
   </head>
   <body>
     <header class="topbar">
       <a class="brand" href="#tools" aria-label="Our PDF home">
-        <span class="brand-mark" aria-hidden="true">PDF</span>
+        <img class="brand-logo" src="./assets/ourpdf-logo-red.png" alt="" aria-hidden="true" />
         <span>Our PDF</span>
       </a>
       <nav class="nav-links" aria-label="Primary navigation">
         <a href="#tools">Tools</a>
         <a href="#workspace">Workspace</a>
-        <a href="#account">Account</a>
       </nav>
       <a class="primary-link" href="#workspace">Start</a>
     </header>
@@ -33,7 +28,7 @@
     <main>
       <section class="hero" aria-labelledby="hero-title">
         <div class="hero-copy">
-          <p class="eyebrow">PDF tools that run without forcing an account</p>
+          <p class="eyebrow">PDF tools that run in your browser</p>
           <h1 id="hero-title">Our PDF</h1>
           <p>
             Merge, split, compress, convert images, rotate, remove pages, extract pages,
@@ -42,7 +37,6 @@
           </p>
           <div class="hero-actions">
             <a class="button primary" href="#workspace">Choose a tool</a>
-            <a class="button secondary" href="#account">Optional sign in</a>
           </div>
         </div>
         <div class="hero-panel" aria-label="Tool preview">
@@ -79,7 +73,6 @@
             <p id="workspace-description">Combine multiple PDF files in the order you choose.</p>
           </div>
           <div class="status-card">
-            <span id="auth-state">Guest mode</span>
             <strong id="privacy-state">Files stay in this browser session</strong>
           </div>
         </div>
@@ -95,67 +88,27 @@
               </label>
             </div>
 
-            <div class="file-list" id="file-list" aria-live="polite"></div>
-
             <form class="options-panel" id="options-form" aria-label="Tool options"></form>
+
+            <div class="file-list" id="file-list" aria-live="polite"></div>
 
             <div class="action-row">
               <button class="button primary" type="button" id="run-tool">Process</button>
               <button class="button secondary" type="button" id="clear-files">Clear</button>
               <span class="tool-status" id="tool-status">Ready</span>
             </div>
+
+            <div class="workspace-downloads" id="workspace-downloads" aria-live="polite"></div>
           </section>
 
-          <aside class="result-panel" aria-label="Results and history">
+          <aside class="result-panel" aria-label="Results">
             <section>
               <h3>Result</h3>
               <div id="result-list" class="result-list">
                 <p>No processed files yet.</p>
               </div>
             </section>
-
-            <section>
-              <h3>Signed-in History</h3>
-              <div id="history-list" class="history-list">
-                <p>Sign in to sync safe job metadata with Supabase.</p>
-              </div>
-            </section>
           </aside>
-        </div>
-      </section>
-
-      <section id="account" class="account-band" aria-labelledby="account-title">
-        <div class="section-heading">
-          <p class="eyebrow">Optional authentication</p>
-          <h2 id="account-title">Register only if you want saved history.</h2>
-        </div>
-        <div class="account-grid">
-          <form class="auth-card" id="auth-form">
-            <label>
-              Email
-              <input id="auth-email" type="email" autocomplete="email" placeholder="you@example.com" />
-            </label>
-            <label>
-              Password
-              <input id="auth-password" type="password" autocomplete="current-password" placeholder="At least 6 characters" />
-            </label>
-            <div class="action-row">
-              <button class="button primary" type="button" id="sign-in">Sign in</button>
-              <button class="button secondary" type="button" id="sign-up">Create account</button>
-              <button class="button quiet" type="button" id="sign-out">Sign out</button>
-            </div>
-            <p id="auth-message" class="small-note">
-              Add your Supabase URL and anon key in <code>index.html</code> to enable live authentication.
-            </p>
-          </form>
-          <div class="auth-card">
-            <h3>Supabase stores metadata, not documents.</h3>
-            <ul class="plain-list">
-              <li>User account and plan</li>
-              <li>Tool name, status, timestamps, file count, and safe file names</li>
-              <li>No PDF bytes, extracted text, previews, thumbnails, or permanent URLs</li>
-            </ul>
-          </div>
         </div>
       </section>
 
