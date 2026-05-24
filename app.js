@@ -5,6 +5,55 @@ import * as pdfjsLib from "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38
 pdfjsLib.GlobalWorkerOptions.workerSrc =
   "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.worker.min.mjs";
 
+const MAX_UPLOAD_BYTES = 10 * 1024 * 1024;
+const MAX_PDF_PAGES = 300;
+const MAX_PDF_RENDER_PIXELS = 24_000_000;
+const ALLOWED_PDF_TYPES = new Set(["", "application/pdf", "application/x-pdf"]);
+const ALLOWED_IMAGE_TYPES = new Set(["image/jpeg", "image/png"]);
+const ALLOWED_OFFICE_TYPES = new Set([
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+]);
+const DANGEROUS_EXTENSIONS = new Set([
+  "ade",
+  "adp",
+  "apk",
+  "app",
+  "bat",
+  "bin",
+  "cmd",
+  "com",
+  "cpl",
+  "dll",
+  "dmg",
+  "exe",
+  "hta",
+  "jar",
+  "js",
+  "jse",
+  "msi",
+  "msp",
+  "pif",
+  "ps1",
+  "scr",
+  "sh",
+  "vb",
+  "vbe",
+  "vbs",
+  "wsf",
+]);
+const PDF_SCRIPT_MARKERS = [
+  "/JavaScript",
+  "/JS",
+  "/OpenAction",
+  "/AA",
+  "/Launch",
+  "/RichMedia",
+  "/EmbeddedFile",
+  "/XFA",
+];
+
 const categories = ["All", "Organize PDF", "Optimize PDF", "Convert PDF", "Edit PDF", "PDF Security", "PDF Intelligence"];
 
 const categoryStyles = {
@@ -164,7 +213,7 @@ const tools = [
     name: "Word to PDF",
     category: "Convert PDF",
     description: "Convert DOCX text to PDF and attach the original document.",
-    accept: ".doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    accept: ".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document",
     multiple: false,
     options: [],
     run: wordToPdf,
@@ -174,7 +223,7 @@ const tools = [
     name: "PowerPoint to PDF",
     category: "Convert PDF",
     description: "Convert PPTX slide text to PDF and attach the original deck.",
-    accept: ".ppt,.pptx,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation",
+    accept: ".pptx,application/vnd.openxmlformats-officedocument.presentationml.presentation",
     multiple: false,
     options: [],
     run: powerPointToPdf,
@@ -184,7 +233,7 @@ const tools = [
     name: "Excel to PDF",
     category: "Convert PDF",
     description: "Convert XLSX sheet text to PDF and attach the original workbook.",
-    accept: ".xls,.xlsx,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    accept: ".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     multiple: false,
     options: [],
     run: excelToPdf,
@@ -253,26 +302,6 @@ const tools = [
     run: redactPdf,
   },
   {
-    id: "protect",
-    name: "Protect PDF",
-    category: "PDF Security",
-    description: "Encrypt a PDF with a password using a secure server worker.",
-    accept: ".pdf,application/pdf",
-    multiple: false,
-    options: [{ name: "password", label: "Password", type: "text", value: "" }],
-    run: serverRequired,
-  },
-  {
-    id: "unlock",
-    name: "Unlock PDF",
-    category: "PDF Security",
-    description: "Remove a known password using a secure server worker.",
-    accept: ".pdf,application/pdf",
-    multiple: false,
-    options: [{ name: "password", label: "Current password", type: "text", value: "" }],
-    run: serverRequired,
-  },
-  {
     id: "compare",
     name: "Compare PDF",
     category: "PDF Security",
@@ -285,9 +314,9 @@ const tools = [
   },
   {
     id: "ocr",
-    name: "OCR Preview",
+    name: "Text Extract",
     category: "PDF Intelligence",
-    description: "Render page previews for OCR worker handoff.",
+    description: "Export selectable PDF text from chosen pages.",
     accept: ".pdf,application/pdf",
     multiple: false,
     options: [{ name: "pages", label: "Pages to preview", type: "text", value: "1" }],
@@ -295,7 +324,7 @@ const tools = [
   },
   {
     id: "summarize",
-    name: "AI Summarizer",
+    name: "Local Summary",
     category: "PDF Intelligence",
     description: "Create a local text summary from selectable PDF content.",
     accept: ".pdf,application/pdf",
@@ -539,7 +568,7 @@ function renderFiles() {
   selectedFiles.forEach((file, index) => {
     const item = document.createElement("div");
     item.className = "file-item";
-    item.innerHTML = `<div><strong>${escapeHtml(file.name)}</strong><small>${formatBytes(file.size)} - ${file.type || "unknown type"}</small></div>`;
+    item.innerHTML = `<div><strong>${escapeHtml(file.name)}</strong><small>${formatBytes(file.size)}</small></div>`;
     const remove = document.createElement("button");
     remove.className = "button quiet";
     remove.type = "button";
@@ -610,7 +639,7 @@ function renderMergeFiles() {
 
     const details = document.createElement("div");
     details.innerHTML = file
-      ? `<strong>${index + 1}. ${escapeHtml(file.name)}</strong><small>${formatBytes(file.size)} - ${file.type || "application/pdf"}</small>`
+      ? `<strong>${index + 1}. ${escapeHtml(file.name)}</strong><small>${formatBytes(file.size)}</small>`
       : `<strong>${index + 1}. Choose PDF</strong><small>This slot will be ${ordinal(index + 1)} in the merged file.</small>`;
 
     const actions = document.createElement("div");
@@ -661,7 +690,7 @@ function renderMergeFiles() {
 async function runSelectedTool() {
   let job = null;
   try {
-    validateFiles();
+    await validateFiles();
     job = safeCreateJobRecord("processing");
     renderProgress("queued");
     setStatus("Queued...");
@@ -678,7 +707,6 @@ async function runSelectedTool() {
     setStatus(`Completed in ${durationMs} ms`);
     updateJobRecord(job.id, { status: "completed", durationMs, outputCount: outputs.length });
   } catch (error) {
-    console.error(error);
     renderProgress("failed");
     setStatus(error.message || "Unable to process file");
     if (job) {
@@ -687,7 +715,7 @@ async function runSelectedTool() {
   }
 }
 
-function validateFiles() {
+async function validateFiles() {
   const minFiles = selectedTool.minFiles ?? 1;
   if (isMergeTool() && selectedFiles.length !== mergeSlotCount) {
     throw new Error(`Fill all ${mergeSlotCount} merge slots, or reduce the number of PDFs to merge.`);
@@ -697,8 +725,9 @@ function validateFiles() {
   }
   const acceptsImages = selectedTool.accept.includes("image");
   for (const file of selectedFiles) {
-    const isPdf = file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf");
-    const isImage = file.type.startsWith("image/") || /\.(jpe?g|png)$/i.test(file.name);
+    await validateFileSecurity(file, selectedTool.accept);
+    const isPdf = isPdfName(file.name) && ALLOWED_PDF_TYPES.has(file.type);
+    const isImage = ALLOWED_IMAGE_TYPES.has(file.type) && /\.(jpe?g|png)$/i.test(file.name);
     if (acceptsImages && !isImage) {
       throw new Error("This tool accepts JPG and PNG files only.");
     }
@@ -869,10 +898,22 @@ function renderTablePreview(preview, container) {
   const table = document.createElement("table");
   table.className = "preview-table";
   const head = document.createElement("thead");
-  head.innerHTML = `<tr>${preview.headers.map((header) => `<th>${escapeHtml(header)}</th>`).join("")}</tr>`;
+  const headRow = document.createElement("tr");
+  for (const header of preview.headers) {
+    const cell = document.createElement("th");
+    cell.textContent = header;
+    headRow.append(cell);
+  }
+  head.append(headRow);
   const body = document.createElement("tbody");
   for (const row of preview.rows.slice(0, 12)) {
-    body.innerHTML += `<tr>${row.map((cell) => `<td>${escapeHtml(cell)}</td>`).join("")}</tr>`;
+    const tableRow = document.createElement("tr");
+    for (const value of row) {
+      const cell = document.createElement("td");
+      cell.textContent = value;
+      tableRow.append(cell);
+    }
+    body.append(tableRow);
   }
   table.append(head, body);
   container.append(table);
@@ -906,7 +947,6 @@ function createJobRecord(status) {
     toolName: selectedTool.name,
     status,
     fileCount: selectedFiles.length,
-    fileNames: selectedFiles.map((file) => file.name),
     outputCount: 0,
     durationMs: null,
     safeErrorCode: null,
@@ -923,7 +963,7 @@ function safeCreateJobRecord(status) {
   try {
     return createJobRecord(status);
   } catch (error) {
-    console.warn("Job history unavailable; continuing without metadata.", error);
+    console.warn("Job history unavailable; continuing without metadata.");
     return null;
   }
 }
@@ -934,7 +974,7 @@ function updateJobRecord(id, changes) {
     persistLocalHistory();
     renderHistory();
   } catch (error) {
-    console.warn("Unable to update job history.", error);
+    console.warn("Unable to update job history.");
   }
 }
 
@@ -978,14 +1018,189 @@ function persistLocalHistory() {
   try {
     localStorage.setItem("ourpdf.jobs", JSON.stringify(jobHistory));
   } catch (error) {
-    console.warn("Local job history could not be saved.", error);
+    console.warn("Local job history could not be saved.");
   }
+}
+
+async function validateFileSecurity(file, accept) {
+  if (!(file instanceof File)) {
+    throw new Error("Invalid file input.");
+  }
+
+  if (file.size <= 0) {
+    throw new Error("Empty files are not accepted.");
+  }
+
+  if (file.size > MAX_UPLOAD_BYTES) {
+    throw new Error(`Uploads are limited to ${formatBytes(MAX_UPLOAD_BYTES)} per file.`);
+  }
+
+  const safeName = sanitizeFileName(file.name);
+  const parts = safeName.toLowerCase().split(".").filter(Boolean);
+  const extension = parts.at(-1) ?? "";
+
+  if (parts.length < 2 || DANGEROUS_EXTENSIONS.has(extension) || parts.slice(0, -1).some((part) => DANGEROUS_EXTENSIONS.has(part))) {
+    throw new Error("This filename or extension is not allowed.");
+  }
+
+  if (hasDoubleExtension(parts, accept)) {
+    throw new Error("Double-extension filenames are not accepted.");
+  }
+
+  if (!fileAllowed(file, accept)) {
+    throw new Error(`This tool accepts: ${accept.replaceAll(",", ", ")}.`);
+  }
+
+  const header = new Uint8Array(await file.slice(0, 8192).arrayBuffer());
+  if (accept.includes("application/pdf")) {
+    await validatePdfFile(file, header);
+    return;
+  }
+
+  if (accept.includes("image/")) {
+    validateImageFile(file, header);
+    return;
+  }
+
+  if (accept.includes("officedocument")) {
+    await validateOfficeOpenXmlFile(file, header);
+  }
+}
+
+async function validatePdfFile(file, header) {
+  if (!isPdfName(file.name)) {
+    throw new Error("Only files with a safe .pdf filename are accepted.");
+  }
+
+  if (!ALLOWED_PDF_TYPES.has(file.type)) {
+    throw new Error("This file reports a non-PDF MIME type and was blocked.");
+  }
+
+  if (!startsWithAscii(header, "%PDF-")) {
+    throw new Error("The file signature is not a valid PDF.");
+  }
+
+  const textWindow = asciiFromBytes(header);
+  if (PDF_SCRIPT_MARKERS.some((marker) => textWindow.includes(marker))) {
+    throw new Error("PDFs with embedded scripts, launches, forms, or attachments are not accepted.");
+  }
+
+  const bytes = await file.arrayBuffer();
+  if (!asciiFromBytes(new Uint8Array(bytes.slice(Math.max(0, bytes.byteLength - 2048)))).includes("%%EOF")) {
+    throw new Error("Malformed PDF: missing EOF marker.");
+  }
+
+  let doc;
+  try {
+    doc = await PDFDocument.load(bytes, { ignoreEncryption: false, updateMetadata: false });
+  } catch {
+    throw new Error("Malformed or encrypted PDFs are not accepted.");
+  }
+
+  if (doc.isEncrypted) {
+    throw new Error("Encrypted PDFs are not accepted.");
+  }
+
+  if (doc.getPageCount() < 1 || doc.getPageCount() > MAX_PDF_PAGES) {
+    throw new Error(`PDFs must contain between 1 and ${MAX_PDF_PAGES} pages.`);
+  }
+}
+
+async function loadSafePdf(file) {
+  return PDFDocument.load(await file.arrayBuffer(), { ignoreEncryption: false, updateMetadata: false });
+}
+
+function validateImageFile(file, header) {
+  const lowerName = file.name.toLowerCase();
+  const isJpeg = file.type === "image/jpeg" && /\.(jpe?g)$/.test(lowerName) && header[0] === 0xff && header[1] === 0xd8 && header[2] === 0xff;
+  const isPng =
+    file.type === "image/png" &&
+    lowerName.endsWith(".png") &&
+    header[0] === 0x89 &&
+    header[1] === 0x50 &&
+    header[2] === 0x4e &&
+    header[3] === 0x47 &&
+    header[4] === 0x0d &&
+    header[5] === 0x0a &&
+    header[6] === 0x1a &&
+    header[7] === 0x0a;
+
+  if (!isJpeg && !isPng) {
+    throw new Error("Only valid JPG and PNG image files are accepted.");
+  }
+}
+
+async function validateOfficeOpenXmlFile(file, header) {
+  const lowerName = file.name.toLowerCase();
+  const validExtension = lowerName.endsWith(".docx") || lowerName.endsWith(".pptx") || lowerName.endsWith(".xlsx");
+
+  if (!validExtension || !ALLOWED_OFFICE_TYPES.has(file.type)) {
+    throw new Error("Only DOCX, PPTX, and XLSX OpenXML files are accepted.");
+  }
+
+  if (!(header[0] === 0x50 && header[1] === 0x4b && header[2] === 0x03 && header[3] === 0x04)) {
+    throw new Error("The Office file signature is not valid.");
+  }
+
+  const zip = await JSZip.loadAsync(await file.arrayBuffer());
+  const entries = Object.values(zip.files);
+  if (entries.some((entry) => entry.name.includes("..") || entry.name.startsWith("/") || /^[a-z]:/i.test(entry.name))) {
+    throw new Error("Archive paths are unsafe.");
+  }
+
+  const uncompressedBytes = entries.reduce((total, entry) => total + (entry._data?.uncompressedSize ?? 0), 0);
+  if (uncompressedBytes > MAX_UPLOAD_BYTES * 4) {
+    throw new Error("Archive expands beyond safe processing limits.");
+  }
+}
+
+function sanitizeFileName(name) {
+  return String(name || "upload")
+    .normalize("NFKC")
+    .replace(/[\\/:*?"<>|\u0000-\u001f]/g, "_")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, 180);
+}
+
+function hasDoubleExtension(parts, accept) {
+  const allowedExtensions = accept
+    .split(",")
+    .map((item) => item.trim().toLowerCase())
+    .filter((item) => item.startsWith("."))
+    .map((item) => item.slice(1));
+
+  if (parts.length <= 2) return false;
+
+  const finalExtension = parts.at(-1);
+  return allowedExtensions.includes(finalExtension) && parts.slice(0, -1).some((part) => allowedExtensions.includes(part) || DANGEROUS_EXTENSIONS.has(part));
+}
+
+function isPdfName(name) {
+  const safeName = sanitizeFileName(name);
+  const lowerName = safeName.toLowerCase();
+
+  if (!lowerName.endsWith(".pdf")) {
+    return false;
+  }
+
+  const stem = safeName.slice(0, -4).trim();
+  const meaningfulStem = stem.replace(/[._ -]+/g, "");
+  return meaningfulStem.length > 0 && stem !== "." && stem !== "..";
+}
+
+function startsWithAscii(bytes, expected) {
+  return asciiFromBytes(bytes.slice(0, expected.length)) === expected;
+}
+
+function asciiFromBytes(bytes) {
+  return [...bytes].map((byte) => String.fromCharCode(byte)).join("");
 }
 
 async function mergePdf(files) {
   const merged = await PDFDocument.create();
   for (const file of files) {
-    const source = await PDFDocument.load(await file.arrayBuffer(), { ignoreEncryption: true });
+    const source = await loadSafePdf(file);
     const pages = await merged.copyPages(source, source.getPageIndices());
     pages.forEach((page) => merged.addPage(page));
   }
@@ -993,7 +1208,7 @@ async function mergePdf(files) {
 }
 
 async function splitPdf(files, options) {
-  const source = await PDFDocument.load(await files[0].arrayBuffer(), { ignoreEncryption: true });
+  const source = await loadSafePdf(files[0]);
   const ranges =
     options.splitMode === "Custom ranges"
       ? parseRanges(options.ranges, source.getPageCount()).map((range) => range.pages)
@@ -1009,7 +1224,7 @@ async function splitPdf(files, options) {
 }
 
 async function removePages(files, options) {
-  const source = await PDFDocument.load(await files[0].arrayBuffer(), { ignoreEncryption: true });
+  const source = await loadSafePdf(files[0]);
   const remove = new Set(flattenRanges(options.pages, source.getPageCount()));
   const keep = source.getPageIndices().filter((index) => !remove.has(index));
   if (keep.length === 0) throw new Error("At least one page must remain.");
@@ -1017,13 +1232,13 @@ async function removePages(files, options) {
 }
 
 async function extractPages(files, options) {
-  const source = await PDFDocument.load(await files[0].arrayBuffer(), { ignoreEncryption: true });
+  const source = await loadSafePdf(files[0]);
   const keep = flattenRanges(options.pages, source.getPageCount());
   return [await copyPages(source, keep, "pages-extracted.pdf")];
 }
 
 async function compressPdf(files) {
-  const source = await PDFDocument.load(await files[0].arrayBuffer(), { ignoreEncryption: true });
+  const source = await loadSafePdf(files[0]);
   source.setTitle("");
   source.setSubject("");
   source.setKeywords([]);
@@ -1033,7 +1248,7 @@ async function compressPdf(files) {
 }
 
 async function repairPdf(files) {
-  const source = await PDFDocument.load(await files[0].arrayBuffer(), { ignoreEncryption: true, updateMetadata: false });
+  const source = await loadSafePdf(files[0]);
   const repaired = await PDFDocument.create();
   const pages = await repaired.copyPages(source, source.getPageIndices());
   pages.forEach((page) => repaired.addPage(page));
@@ -1057,7 +1272,7 @@ async function imagesToPdf(files, options) {
 
 async function pdfToJpg(files, options) {
   const bytes = await files[0].arrayBuffer();
-  const pdf = await pdfjsLib.getDocument({ data: bytes }).promise;
+  const pdf = await loadPdfJsSafe(bytes);
   const zip = new JSZip();
   const scale = Number(options.scale || 1.5);
   const images = [];
@@ -1129,14 +1344,14 @@ async function pdfToExcel(files) {
 }
 
 async function rotatePdf(files, options) {
-  const source = await PDFDocument.load(await files[0].arrayBuffer(), { ignoreEncryption: true });
+  const source = await loadSafePdf(files[0]);
   const angle = Number(options.angle || 90);
   source.getPages().forEach((page) => page.setRotation(degrees(angle)));
   return [pdfOutput(await source.save(), "rotated.pdf")];
 }
 
 async function addWatermark(files, options) {
-  const source = await PDFDocument.load(await files[0].arrayBuffer(), { ignoreEncryption: true });
+  const source = await loadSafePdf(files[0]);
   const font = await source.embedFont(StandardFonts.HelveticaBold);
   const text = options.text || "CONFIDENTIAL";
   const opacity = Number(options.opacity || 0.28);
@@ -1156,7 +1371,7 @@ async function addWatermark(files, options) {
 }
 
 async function addPageNumbers(files, options) {
-  const source = await PDFDocument.load(await files[0].arrayBuffer(), { ignoreEncryption: true });
+  const source = await loadSafePdf(files[0]);
   const font = await source.embedFont(StandardFonts.Helvetica);
   const pages = source.getPages();
   pages.forEach((page, index) => {
@@ -1174,7 +1389,7 @@ async function addPageNumbers(files, options) {
 }
 
 async function cropPdf(files, options) {
-  const source = await PDFDocument.load(await files[0].arrayBuffer(), { ignoreEncryption: true });
+  const source = await loadSafePdf(files[0]);
   const margin = Math.max(0, Number(options.margin || 0));
   source.getPages().forEach((page) => {
     const { width, height } = page.getSize();
@@ -1185,7 +1400,7 @@ async function cropPdf(files, options) {
 }
 
 async function signPdf(files, options) {
-  const source = await PDFDocument.load(await files[0].arrayBuffer(), { ignoreEncryption: true });
+  const source = await loadSafePdf(files[0]);
   const font = await source.embedFont(StandardFonts.TimesRomanItalic);
   const page = source.getPage(0);
   page.drawText(options.signature || "Signed", {
@@ -1200,7 +1415,7 @@ async function signPdf(files, options) {
 }
 
 async function redactPdf(files, options) {
-  const source = await PDFDocument.load(await files[0].arrayBuffer(), { ignoreEncryption: true });
+  const source = await loadSafePdf(files[0]);
   const font = await source.embedFont(StandardFonts.HelveticaBold);
   source.getPages().forEach((page) => {
     const width = page.getWidth();
@@ -1214,7 +1429,7 @@ async function comparePdf(files) {
   const lines = [];
   for (const file of files) {
     const bytes = await file.arrayBuffer();
-    const doc = await PDFDocument.load(bytes, { ignoreEncryption: true });
+    const doc = await PDFDocument.load(bytes, { ignoreEncryption: false, updateMetadata: false });
     const hash = await sha256(bytes);
     lines.push(`${file.name}
 Pages: ${doc.getPageCount()}
@@ -1231,7 +1446,7 @@ async function ocrPreview(files, options) {
   const selected = new Set(flattenRanges(options.pages || "1", data.pages.length));
   const text = data.pages
     .filter((page) => selected.has(page.number - 1))
-    .map((page) => `Page ${page.number}\n${page.lines.join("\n") || "[No selectable text found. Use a server OCR worker for scanned pages.]"}`)
+    .map((page) => `Page ${page.number}\n${page.lines.join("\n") || "[No selectable text found. Scanned pages need OCR, which this browser-only app does not perform.]"}`)
     .join("\n\n");
   return [{ name: replaceExtension(files[0].name, "-ocr.txt"), blob: new Blob([text], { type: "text/plain" }) }];
 }
@@ -1248,7 +1463,7 @@ File: ${files[0].name}
 Pages: ${data.pages.length}
 Size: ${formatBytes(files[0].size)}
 
-${preview || "No selectable text was found. Connect a server OCR/AI worker for scanned documents."}
+${preview || "No selectable text was found. Scanned documents need OCR, which this browser-only app does not perform."}
 `,
     ],
     { type: "text/plain" },
@@ -1257,8 +1472,14 @@ ${preview || "No selectable text was found. Connect a server OCR/AI worker for s
 }
 
 async function wordToPdf(files) {
-  const text = await extractDocxText(files[0]);
-  return [await textToPdfWithOriginal(files[0], text, "word-converted.pdf", "Word to PDF")];
+  const content = await extractDocxContent(files[0]);
+  if (content.text) {
+    return [await textToPdfWithOriginal(files[0], content.text, "word-converted.pdf", "Word to PDF")];
+  }
+  if (content.images.length) {
+    return [await imagesToPdfWithOriginal(files[0], content.images, "word-converted.pdf", "Word to PDF")];
+  }
+  return [await textToPdfWithOriginal(files[0], "No readable text or embedded page images were found.", "word-converted.pdf", "Word to PDF")];
 }
 
 async function powerPointToPdf(files) {
@@ -1271,39 +1492,6 @@ async function excelToPdf(files) {
   return [await textToPdfWithOriginal(files[0], text, "excel-converted.pdf", "Excel to PDF")];
 }
 
-async function serverWorkerManifest(files, options) {
-  const file = files[0];
-  const manifest = {
-    tool: selectedTool.id,
-    toolName: selectedTool.name,
-    fileName: file.name,
-    fileSize: file.size,
-    fileType: file.type || "unknown",
-    requestedAt: new Date().toISOString(),
-    options: redactSensitiveOptions(options),
-    nextStep:
-      "Send this safe metadata and a temporary object reference to a secure worker. Do not store document bytes.",
-  };
-  return [
-    {
-      name: `${selectedTool.id}-worker-manifest.json`,
-      blob: new Blob([JSON.stringify(manifest, null, 2)], { type: "application/json" }),
-    },
-  ];
-}
-
-async function serverRequired() {
-  throw new Error(
-    `${selectedTool.name} needs a secure server worker for production-grade encryption/decryption. Configure a worker endpoint before enabling this action.`,
-  );
-}
-
-function redactSensitiveOptions(options) {
-  return Object.fromEntries(
-    Object.entries(options).map(([key, value]) => [key, key.toLowerCase().includes("password") ? "[redacted]" : value]),
-  );
-}
-
 async function copyPages(source, indices, name) {
   const doc = await PDFDocument.create();
   const pages = await doc.copyPages(source, indices);
@@ -1313,7 +1501,7 @@ async function copyPages(source, indices, name) {
 
 async function extractPdfForOffice(file) {
   const bytes = await file.arrayBuffer();
-  const pdf = await pdfjsLib.getDocument({ data: bytes }).promise;
+  const pdf = await loadPdfJsSafe(bytes);
   const pages = [];
   for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber += 1) {
     const page = await pdf.getPage(pageNumber);
@@ -1506,7 +1694,7 @@ function docxAppProperties(pageCount) {
 
 async function extractPdfText(file) {
   const bytes = await file.arrayBuffer();
-  const pdf = await pdfjsLib.getDocument({ data: bytes }).promise;
+  const pdf = await loadPdfJsSafe(bytes);
   const pages = [];
   for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber += 1) {
     const page = await pdf.getPage(pageNumber);
@@ -1520,12 +1708,30 @@ async function extractPdfText(file) {
 async function renderPdfPageToCanvas(pdf, pageNumber, scale) {
   const page = await pdf.getPage(pageNumber);
   const viewport = page.getViewport({ scale });
+  if (viewport.width * viewport.height > MAX_PDF_RENDER_PIXELS) {
+    throw new Error("PDF page is too large to render safely.");
+  }
   const canvas = window.document.createElement("canvas");
   const context = canvas.getContext("2d");
   canvas.width = Math.ceil(viewport.width);
   canvas.height = Math.ceil(viewport.height);
   await page.render({ canvasContext: context, viewport }).promise;
   return canvas;
+}
+
+async function loadPdfJsSafe(bytes) {
+  const task = pdfjsLib.getDocument({
+    data: bytes,
+    disableAutoFetch: true,
+    disableStream: true,
+    isEvalSupported: false,
+    stopAtErrors: true,
+  });
+  const pdf = await task.promise;
+  if (pdf.numPages < 1 || pdf.numPages > MAX_PDF_PAGES) {
+    throw new Error(`PDFs must contain between 1 and ${MAX_PDF_PAGES} pages.`);
+  }
+  return pdf;
 }
 
 function groupTextItemsIntoLines(items) {
@@ -1567,18 +1773,24 @@ function officeHtmlDocument(title, body) {
 }
 
 async function extractDocxText(file) {
+  return (await extractDocxContent(file)).text;
+}
+
+async function extractDocxContent(file) {
   if (!file.name.toLowerCase().endsWith(".docx")) {
-    throw new Error("Browser conversion supports DOCX. Use the worker path for legacy DOC files.");
+    throw new Error("Browser conversion supports DOCX files only.");
   }
   const zip = await JSZip.loadAsync(await file.arrayBuffer());
   const xml = await zip.file("word/document.xml")?.async("text");
   if (!xml) throw new Error("Unable to read DOCX document text.");
-  return xmlText(xml).join("\n");
+  const text = firstMeaningfulText([xmlText(xml), docxDescriptionText(xml)]).join("\n");
+  const images = await docxImages(zip);
+  return { text, images };
 }
 
 async function extractPptxText(file) {
   if (!file.name.toLowerCase().endsWith(".pptx")) {
-    throw new Error("Browser conversion supports PPTX. Use the worker path for legacy PPT files.");
+    throw new Error("Browser conversion supports PPTX files only.");
   }
   const zip = await JSZip.loadAsync(await file.arrayBuffer());
   const slideFiles = Object.keys(zip.files)
@@ -1594,7 +1806,7 @@ async function extractPptxText(file) {
 
 async function extractXlsxText(file) {
   if (!file.name.toLowerCase().endsWith(".xlsx")) {
-    throw new Error("Browser conversion supports XLSX. Use the worker path for legacy XLS files.");
+    throw new Error("Browser conversion supports XLSX files only.");
   }
   const zip = await JSZip.loadAsync(await file.arrayBuffer());
   const shared = zip.file("xl/sharedStrings.xml")
@@ -1619,6 +1831,40 @@ async function extractXlsxText(file) {
     sheets.push(`Sheet ${sheetIndex + 1}\n${rows.filter(Boolean).join("\n")}`);
   }
   return sheets.join("\n\n");
+}
+
+async function docxImages(zip) {
+  const imageFiles = Object.values(zip.files)
+    .filter((entry) => /^word\/media\/.+\.(jpe?g|png)$/i.test(entry.name))
+    .sort((a, b) => naturalCompare(a.name, b.name));
+
+  const images = [];
+  for (const entry of imageFiles) {
+    const bytes = await entry.async("arraybuffer");
+    const lowerName = entry.name.toLowerCase();
+    images.push({
+      bytes,
+      name: entry.name,
+      type: lowerName.endsWith(".png") ? "image/png" : "image/jpeg",
+    });
+  }
+  return images;
+}
+
+function docxDescriptionText(xml) {
+  return [...xml.matchAll(/\s(?:descr|title)="([^"]+)"/g)]
+    .map((match) => decodeXml(match[1]).replace(/\s+/g, " ").trim())
+    .filter((value) => value && !/^page \d+ from pdf\. no selectable text detected\.$/i.test(value));
+}
+
+function firstMeaningfulText(groups) {
+  for (const group of groups) {
+    const cleaned = group.map((value) => value.replace(/\s+/g, " ").trim()).filter(Boolean);
+    if (cleaned.length) {
+      return cleaned;
+    }
+  }
+  return [];
 }
 
 async function textToPdfWithOriginal(file, text, outputName, title) {
@@ -1650,8 +1896,41 @@ async function textToPdfWithOriginal(file, text, outputName, title) {
   return pdfOutput(await pdf.save(), outputName);
 }
 
+async function imagesToPdfWithOriginal(file, images, outputName, title) {
+  const pdf = await PDFDocument.create();
+  const font = await pdf.embedFont(StandardFonts.HelveticaBold);
+
+  for (const [index, image] of images.entries()) {
+    const embedded = image.type === "image/png" ? await pdf.embedPng(image.bytes) : await pdf.embedJpg(image.bytes);
+    const page = pdf.addPage([embedded.width, embedded.height]);
+    page.drawImage(embedded, { x: 0, y: 0, width: embedded.width, height: embedded.height });
+
+    if (index === 0) {
+      page.drawText(title, {
+        x: 24,
+        y: Math.max(24, embedded.height - 34),
+        size: Math.max(12, Math.min(24, embedded.width / 28)),
+        font,
+        color: rgb(0.08, 0.09, 0.12),
+        opacity: 0,
+      });
+    }
+  }
+
+  if (typeof pdf.attach === "function") {
+    await pdf.attach(await file.arrayBuffer(), file.name, {
+      mimeType: file.type || "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      description: "Original source file attached by Our PDF to preserve source information.",
+      creationDate: new Date(),
+      modificationDate: new Date(),
+    });
+  }
+
+  return pdfOutput(await pdf.save(), outputName);
+}
+
 function xmlText(xml) {
-  return [...xml.matchAll(/<[^:/>\s]+:t[^>]*>([\s\S]*?)<\/[^:/>\s]+:t>/g)]
+  return [...xml.matchAll(/<(?:[^:/>\s]+:)?t[^>]*>([\s\S]*?)<\/(?:[^:/>\s]+:)?t>/g)]
     .map((match) => decodeXml(match[1]).trim())
     .filter(Boolean);
 }
@@ -1659,6 +1938,10 @@ function xmlText(xml) {
 function decodeXml(value) {
   const parser = new DOMParser();
   return parser.parseFromString(`<x>${value}</x>`, "text/xml").documentElement.textContent ?? "";
+}
+
+function naturalCompare(a, b) {
+  return a.localeCompare(b, undefined, { numeric: true, sensitivity: "base" });
 }
 
 function wrapText(text, maxLength) {

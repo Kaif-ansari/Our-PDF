@@ -1,9 +1,10 @@
 import { createReadStream, existsSync, statSync } from "node:fs";
 import { createServer } from "node:http";
-import { extname, join, normalize, resolve } from "node:path";
+import { extname, join, normalize, relative, resolve } from "node:path";
 
 const root = resolve(process.cwd());
 const port = Number(process.env.PORT ?? 4173);
+const STREAM_CHUNK_BYTES = 64 * 1024;
 
 const contentTypes = {
   ".html": "text/html; charset=utf-8",
@@ -15,22 +16,63 @@ const contentTypes = {
   ".md": "text/markdown; charset=utf-8",
 };
 
+const securityHeaders = {
+  "Content-Security-Policy":
+    "default-src 'self'; script-src 'self' https://cdn.skypack.dev https://cdnjs.cloudflare.com; worker-src 'self' blob: https://cdnjs.cloudflare.com; style-src 'self'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; frame-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'",
+  "Cross-Origin-Opener-Policy": "same-origin",
+  "Cross-Origin-Resource-Policy": "same-origin",
+  "Permissions-Policy": "camera=(), microphone=(), geolocation=(), payment=(), usb=(), serial=(), bluetooth=(), clipboard-read=(), clipboard-write=(self)",
+  "Referrer-Policy": "strict-origin-when-cross-origin",
+  "X-Content-Type-Options": "nosniff",
+  "X-Frame-Options": "DENY",
+  "X-Permitted-Cross-Domain-Policies": "none",
+};
+
+function getCacheControl(pathname) {
+  if (pathname === "/index.html") {
+    return "public, max-age=0, must-revalidate";
+  }
+
+  if (pathname.startsWith("/assets/")) {
+    return "public, max-age=31536000, immutable";
+  }
+
+  return "public, max-age=3600, stale-while-revalidate=86400";
+}
+
 createServer((request, response) => {
+  if (!["GET", "HEAD"].includes(request.method ?? "GET")) {
+    response.writeHead(405, {
+      "allow": "GET, HEAD",
+      "content-type": "text/plain; charset=utf-8",
+      ...securityHeaders,
+    });
+    response.end("Method not allowed");
+    return;
+  }
+
   const url = new URL(request.url ?? "/", `http://${request.headers.host}`);
   const requestedPath = url.pathname === "/" ? "/index.html" : url.pathname;
   const filePath = resolve(join(root, normalize(decodeURIComponent(requestedPath))));
+  const relativePath = relative(root, filePath);
 
-  if (!filePath.startsWith(root) || !existsSync(filePath) || !statSync(filePath).isFile()) {
-    response.writeHead(404, { "content-type": "text/plain; charset=utf-8" });
+  if (relativePath.startsWith("..") || relativePath === "" || resolve(relativePath) === relativePath || !existsSync(filePath) || !statSync(filePath).isFile()) {
+    response.writeHead(404, { "content-type": "text/plain; charset=utf-8", ...securityHeaders });
     response.end("Not found");
     return;
   }
 
   response.writeHead(200, {
     "content-type": contentTypes[extname(filePath)] ?? "application/octet-stream",
-    "cache-control": "no-store",
+    "cache-control": getCacheControl(requestedPath),
+    ...securityHeaders,
   });
-  createReadStream(filePath).pipe(response);
+  if (request.method === "HEAD") {
+    response.end();
+    return;
+  }
+
+  createReadStream(filePath, { highWaterMark: STREAM_CHUNK_BYTES }).pipe(response);
 }).listen(port, "127.0.0.1", () => {
   console.log(`Static server running at http://127.0.0.1:${port}`);
 });

@@ -1,52 +1,22 @@
-# Cloudflare Zero-Persistence Checklist
+# Cloudflare Static Deployment Checklist
 
-Use this checklist when configuring infrastructure and reviewing pull requests.
+This browser-only build does not require Cloudflare R2, Supabase, worker queues, or upload presign routes.
 
-## Cloudflare
+## Required
 
-- CDN is enabled for frontend traffic.
-- WAF managed rules are enabled.
-- Bot protection is enabled.
-- Rate Limiting protects auth, upload, OCR, conversion, contact, and download endpoints.
-- Turnstile site keys are configured for signup, login, upload, and contact forms.
-- Zero Trust protects admin dashboards, internal observability, worker consoles, and R2 administration.
-- Optional Workers reject malformed traffic and oversized upload preflight requests at the edge.
+- Deploy as a static site through Cloudflare Pages or place Cloudflare in front of the static host.
+- Run `npm run build` and publish the `public/` directory.
+- Keep strict security headers from `_headers` or `vercel.json`.
+- Enable Cloudflare WAF managed rules and DDoS protection.
+- Set SSL/TLS to Full (strict).
+- Cache `/assets/*` at the edge with immutable caching.
+- Cache `/app.js` and `/styles.css` with short stale-while-revalidate caching.
+- Do not create public upload endpoints.
+- Do not add document storage buckets.
+- Do not configure backend secrets unless a backend feature is deliberately introduced.
 
-## R2
+## Optional
 
-- Temporary uploads use `temp/uploads`.
-- Temporary results use `temp/results`.
-- Public access is disabled.
-- Lifecycle rules delete all temporary objects within 15 minutes.
-- Signed upload URLs expire within minutes.
-- Signed download URLs expire within minutes.
-- One-time download tokens are enforced by the application.
-- No permanent buckets, archives, user libraries, backups, or historical file copies exist.
-
-## Backend
-
-- Backend routes do not accept file bytes for normal uploads.
-- Upload presign routes require JWT/session auth, Turnstile, file size checks, content type checks, and plan limit checks.
-- Download routes require ownership, complete job status, unexpired result objects, and unused one-time tokens.
-- Logs contain only job IDs, durations, safe error codes, and system metrics.
-- Database schemas do not include file bytes, OCR text, previews, thumbnails, or permanent file URLs.
-
-## Workers
-
-- Workers run in isolated containers.
-- Workers use isolated temp filesystems.
-- Workers wipe temp directories after every job.
-- Workers have CPU, memory, and timeout limits.
-- Workers do not have general outbound internet access.
-- Workers delete uploads after success or failure.
-- Workers delete results after failed jobs.
-
-## Cleanup
-
-- Cleanup runs every 5 minutes.
-- Expired uploads are deleted.
-- Expired results are deleted.
-- Failed job objects are deleted.
-- Orphan files are purged.
-- Missing objects are treated as already cleaned.
-
+- Use Cloudflare rate limiting for abusive static asset traffic.
+- Enable bot controls if traffic patterns look automated.
+- Use privacy-safe uptime monitoring that does not upload user documents.

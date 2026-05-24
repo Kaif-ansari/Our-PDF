@@ -1,6 +1,6 @@
 # Our PDF
 
-Our PDF is an original iLovePDF-style PDF toolkit that runs as a browser-first local workspace. There is no account registration or login flow.
+Our PDF is an original iLovePDF-style PDF toolkit that runs as a browser-only local workspace. There is no account registration, premium subscription, upload API, database, or server-side document storage.
 
 ## Local Website
 
@@ -18,7 +18,7 @@ http://127.0.0.1:4173/index.html
 
 ## Deploy to Vercel
 
-This is a static browser app, so Vercel can host it without a build step.
+This is a static browser app, so Vercel can host it without API functions or backend services.
 
 ```powershell
 npm install -g vercel
@@ -31,8 +31,32 @@ When Vercel asks for settings, use:
 
 - Framework Preset: `Other`
 - Build Command: leave empty or use `npm run build`
-- Output Directory: `.`
-- Install Command: leave empty
+- Output Directory: `public`
+- Install Command: leave empty or `npm install`
+
+## Deploy to Cloudflare Pages
+
+Cloudflare should sit at the edge as the traffic and security layer. Deploy the generated static output, not API functions:
+
+```powershell
+npm run build
+```
+
+Cloudflare Pages settings:
+
+- Build command: `npm run build`
+- Build output directory: `public`
+- Root directory: repository root
+
+The build copies `_headers` and `_redirects` into `public/`, so Cloudflare applies strict security headers, no document-upload routes, immutable asset caching, and single-page fallback routing. Large traffic is handled by Cloudflare edge caching instead of a stateful origin server.
+
+Recommended Cloudflare security settings:
+
+- Enable WAF managed rules and DDoS protection.
+- Add a rate limit rule for excessive requests to `/app.js`, `/styles.css`, and `/assets/*`.
+- Set SSL/TLS mode to Full (strict).
+- Keep Bot Fight Mode or bot management enabled if available.
+- Do not add R2 buckets or Workers that receive user document bytes.
 
 ## Features
 
@@ -59,21 +83,24 @@ Browser-native tools that generate downloadable files:
 - Sign PDF
 - Redact PDF
 - Compare PDF
-- Selectable-text OCR export
-- Basic PDF text summary
-
-Worker-required tools:
-
-- Protect PDF
-- Unlock PDF
-
-These require a server-side worker for real PDF encryption or password removal. The browser app intentionally does not fake protected output.
+- Selectable PDF text export
+- Local PDF text summary
 
 ## Fidelity Notes
 
 The browser conversion path is private and downloadable, but it cannot perfectly reconstruct every arbitrary PDF or Office layout. PDF-to-Word exports a real `.docx` and places each rendered PDF page at the original page size to preserve the visible layout, including scanned pages, tables, images, and complex typography. Office-to-PDF exports readable text and attaches the original source file inside the generated PDF when supported by the PDF reader.
 
-For exact enterprise-grade conversion with complex tables, fonts, comments, tracked changes, embedded media, scanned OCR, and encrypted PDFs, connect a secure worker with LibreOffice, OCR, and a PDF security tool such as qpdf or a commercial SDK.
+This browser-only build intentionally does not unlock encrypted PDFs, perform scanned-document OCR, or call AI services. Those features would require a backend worker and a different privacy/security model.
+
+## Security Model
+
+- Files are processed locally in the browser.
+- Document bytes are not uploaded to this application server.
+- Uploads are limited to 10 MB per file.
+- File type, extension, magic bytes, PDF structure, encryption state, and risky PDF active-content markers are validated before processing.
+- The deployed site is static and uses strict security headers.
+- Static assets are cacheable at the CDN edge to absorb high traffic in small independent file requests.
+- No Supabase, R2, Stripe, OpenAI, subscription, JWT, or database credentials are required.
 
 ## Important Files
 
