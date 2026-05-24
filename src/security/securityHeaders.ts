@@ -1,12 +1,12 @@
 export const securityHeaders: Record<string, string> = {
   "Content-Security-Policy": [
     "default-src 'self'",
-    "script-src 'self' https://cdn.skypack.dev https://cdnjs.cloudflare.com",
+    "script-src 'self' 'unsafe-inline' https://cdn.skypack.dev https://cdnjs.cloudflare.com https://www.googletagmanager.com",
     "worker-src 'self' blob: https://cdnjs.cloudflare.com",
-    "frame-src 'self' blob:",
-    "connect-src 'self'",
-    "img-src 'self' data: blob:",
-    "style-src 'self'",
+    "frame-src 'self' blob: https://www.googletagmanager.com",
+    "connect-src 'self' https://www.googletagmanager.com",
+    "img-src 'self' data: blob: https://www.googletagmanager.com",
+    "style-src 'self' 'unsafe-inline'",
     "font-src 'self'",
     "object-src 'none'",
     "base-uri 'self'",
