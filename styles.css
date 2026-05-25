@@ -196,7 +196,7 @@ code {
 }
 
 .brand-logo {
-  width: 48px;
+  width: 58px;
   height: 38px;
   object-fit: contain;
   filter: drop-shadow(0 5px 8px rgba(31, 37, 58, 0.16));
@@ -1949,17 +1949,17 @@ h3 {
 
 .dropzone {
   position: relative;
-  border: 2px dashed rgba(255, 79, 94, 0.4);
+  border: 2px dashed rgba(17, 20, 29, 0.46);
   border-radius: 22px;
   background:
-    radial-gradient(circle at 50% 0%, rgba(255, 191, 47, 0.2), transparent 35%),
-    linear-gradient(135deg, rgba(255, 79, 94, 0.08), rgba(53, 167, 255, 0.08)),
+    radial-gradient(circle at 50% 0%, rgba(17, 20, 29, 0.1), transparent 35%),
+    linear-gradient(135deg, rgba(17, 20, 29, 0.08), rgba(53, 167, 255, 0.06)),
     var(--surface-2);
 }
 
 .dropzone.dragging {
-  border-color: var(--accent);
-  background: var(--surface-3);
+  border-color: #11141d;
+  background: color-mix(in srgb, #11141d 8%, var(--surface-2));
 }
 
 .dropzone input {
@@ -1987,7 +1987,7 @@ h3 {
   height: 58px;
   place-items: center;
   border-radius: 50%;
-  background: linear-gradient(135deg, #ff4f5e, #ff8a00);
+  background: linear-gradient(135deg, #232733, #05070b);
   color: white;
   font-size: 2rem;
   font-weight: 900;
@@ -2539,8 +2539,8 @@ h3 {
   }
 
   .brand-logo {
-    width: 42px;
-    height: 34px;
+    width: 50px;
+    height: 32px;
   }
 
   .brand span {

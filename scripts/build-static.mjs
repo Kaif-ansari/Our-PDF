@@ -231,19 +231,19 @@ function buildToolPage(tool) {
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
     <meta name="theme-color" content="#fffaf2" />
     <link rel="canonical" href="${url}" />
-    <link rel="icon" type="image/svg+xml" href="/assets/favicon-merge.svg?v=1" />
-    <link rel="apple-touch-icon" href="/assets/ourpdf-logo-red.png?v=2" />
+    <link rel="icon" type="image/png" href="/assets/ourpdf-current-favicon.png?v=1" />
+    <link rel="apple-touch-icon" href="/assets/ourpdf-current-favicon.png?v=1" />
     <link rel="manifest" href="/site.webmanifest" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Our PDF" />
     <meta property="og:title" content="${escapeHtml(tool.title)}" />
     <meta property="og:description" content="${escapeHtml(tool.description)}" />
     <meta property="og:url" content="${url}" />
-    <meta property="og:image" content="${siteUrl}/assets/ourpdf-logo-red.png" />
+    <meta property="og:image" content="${siteUrl}/assets/ourpdf-new-logo.png" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="${escapeHtml(tool.title)}" />
     <meta name="twitter:description" content="${escapeHtml(tool.description)}" />
-    <meta name="twitter:image" content="${siteUrl}/assets/ourpdf-logo-red.png" />
+    <meta name="twitter:image" content="${siteUrl}/assets/ourpdf-new-logo.png" />
     <script>
       (() => {
         const saved = localStorage.getItem("ourpdf.theme");
@@ -254,13 +254,13 @@ function buildToolPage(tool) {
         document.querySelector('meta[name="theme-color"]')?.setAttribute("content", theme === "dark" ? "#10131a" : "#fffaf2");
       })();
     </script>
-    <link rel="stylesheet" href="/styles.css?v=visual-labels" />
+    <link rel="stylesheet" href="/styles.css?v=black-dropzone" />
     <script type="application/ld+json">${jsonLd.replace(/</g, "\\u003c")}</script>
   </head>
   <body>
     <header class="topbar">
       <a class="brand" href="/" aria-label="Our PDF home">
-        <img class="brand-logo" src="/assets/favicon-merge.svg?v=1" alt="" width="48" height="48" aria-hidden="true" />
+        <img class="brand-logo" src="/assets/ourpdf-current-logo.png?v=1" alt="" width="56" height="36" aria-hidden="true" />
         <span>Our PDF</span>
       </a>
       <nav class="nav-links" aria-label="Primary navigation">

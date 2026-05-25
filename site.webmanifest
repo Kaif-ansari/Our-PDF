@@ -4,12 +4,12 @@
   "description": "Free online PDF tools to merge, compress, convert, edit, sign, redact, and extract PDF content.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#a31f1f",
+  "background_color": "#101216",
+  "theme_color": "#10131a",
   "icons": [
     {
-      "src": "/assets/ourpdf-logo-red.png",
-      "sizes": "192x192",
+      "src": "/assets/ourpdf-current-favicon.png",
+      "sizes": "512x512",
       "type": "image/png"
     }
   ]
