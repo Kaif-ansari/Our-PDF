@@ -57,12 +57,12 @@ const PDF_SCRIPT_MARKERS = [
 const categories = ["All", "Organize PDF", "Optimize PDF", "Convert PDF", "Edit PDF", "PDF Security", "PDF Intelligence"];
 
 const categoryStyles = {
-  "Organize PDF": { tone: "coral" },
-  "Optimize PDF": { tone: "green" },
-  "Convert PDF": { tone: "blue" },
-  "Edit PDF": { tone: "purple" },
-  "PDF Security": { tone: "blue" },
-  "PDF Intelligence": { tone: "green" },
+  "Organize PDF": { tone: "rose" },
+  "Optimize PDF": { tone: "mint" },
+  "Convert PDF": { tone: "sky" },
+  "Edit PDF": { tone: "violet" },
+  "PDF Security": { tone: "indigo" },
+  "PDF Intelligence": { tone: "gold" },
 };
 
 const toolLogos = {
@@ -370,6 +370,7 @@ renderCategories();
 renderTools();
 selectTool("merge");
 wireUpload();
+wireTiltCards();
 renderHistory();
 
 function renderCategories() {
@@ -402,7 +403,6 @@ function renderTools() {
       <span class="tool-copy">
         <strong>${tool.name}</strong>
         <small>${tool.category}</small>
-        <span class="tool-description">${tool.description}</span>
       </span>
     `;
     button.addEventListener("click", () => selectTool(tool.id, true));
@@ -459,6 +459,27 @@ function renderProgress(active) {
 function openWorkspace() {
   history.replaceState(null, "", "#workspace");
   document.querySelector("#workspace").scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function wireTiltCards() {
+  const tiltTargets = document.querySelectorAll(".hero-visual, .mock-docs article, .mock-action, .collage article, .tool-card, .seo-link-grid a, .tilt-card");
+  for (const target of tiltTargets) {
+    target.addEventListener("pointermove", (event) => {
+      const rect = target.getBoundingClientRect();
+      const x = (event.clientX - rect.left) / rect.width - 0.5;
+      const y = (event.clientY - rect.top) / rect.height - 0.5;
+      target.style.setProperty("--tilt-x", `${(-y * 12).toFixed(2)}deg`);
+      target.style.setProperty("--tilt-y", `${(x * -12).toFixed(2)}deg`);
+      target.style.setProperty("--lift-x", `${(-x * 12).toFixed(1)}px`);
+      target.style.setProperty("--lift-y", `${(-y * 12).toFixed(1)}px`);
+    });
+    target.addEventListener("pointerleave", () => {
+      target.style.removeProperty("--tilt-x");
+      target.style.removeProperty("--tilt-y");
+      target.style.removeProperty("--lift-x");
+      target.style.removeProperty("--lift-y");
+    });
+  }
 }
 
 function renderOptions() {
@@ -985,7 +1006,7 @@ function renderHistory() {
     historyList.innerHTML = `<p>No jobs yet.</p>`;
   } else {
     historyList.innerHTML = "";
-    for (const job of jobHistory) {
+    for (const job of jobHistory.slice(0, 6)) {
       const item = document.createElement("div");
       item.className = `history-item ${job.status}`;
       item.innerHTML = `
@@ -996,6 +1017,12 @@ function renderHistory() {
         <span>${job.durationMs ? `${job.durationMs} ms` : "Live"}</span>
       `;
       historyList.append(item);
+    }
+    if (jobHistory.length > 6) {
+      const note = document.createElement("p");
+      note.className = "history-note";
+      note.textContent = `${jobHistory.length - 6} older jobs hidden`;
+      historyList.append(note);
     }
   }
   const completed = jobHistory.filter((job) => job.status === "completed").length;

@@ -13,10 +13,10 @@
     <meta name="application-name" content="Our PDF" />
     <meta name="theme-color" content="#a31f1f" />
     <link rel="canonical" href="https://our-pdf-beryl.vercel.app/" />
-    <link rel="icon" type="image/png" href="/assets/ourpdf-logo-red.png" />
-    <link rel="apple-touch-icon" href="/assets/ourpdf-logo-red.png" />
+    <link rel="icon" type="image/png" href="/assets/ourpdf-logo-red.png?v=2" />
+    <link rel="apple-touch-icon" href="/assets/ourpdf-logo-red.png?v=2" />
     <link rel="manifest" href="/site.webmanifest" />
-    <link rel="preload" as="image" href="/assets/ourpdf-logo-red.png" />
+    <link rel="preload" as="image" href="/assets/ourpdf-logo-red.png?v=2" />
     <link rel="preconnect" href="https://cdn.skypack.dev" crossorigin />
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
     <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin />
@@ -37,7 +37,7 @@
       content="Merge PDF, compress PDF, convert PDF, edit documents, sign files, and extract text with free online PDF tools that run in your browser."
     />
     <meta name="twitter:image" content="https://our-pdf-beryl.vercel.app/assets/ourpdf-logo-red.png" />
-    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="/styles.css?v=colorful-icons" />
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -142,7 +142,6 @@
 
       gtag('config', 'G-D05GDHTV7C');
     </script>
-    <meta charset="utf-8" />
     <!-- Google Tag Manager -->
     <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
     new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -158,14 +157,14 @@
     <!-- End Google Tag Manager (noscript) -->
     <header class="topbar">
       <a class="brand" href="/" aria-label="Our PDF home">
-        <img class="brand-logo" src="/assets/ourpdf-logo-red.png" alt="" width="48" height="38" aria-hidden="true" />
+        <img class="brand-logo" src="/assets/ourpdf-logo-red.png?v=2" alt="" width="48" height="38" aria-hidden="true" />
         <span>Our PDF</span>
       </a>
       <nav class="nav-links" aria-label="Primary navigation">
         <a href="#tools">Tools</a>
-        <a href="#pdf-converter">Converters</a>
-        <a href="#faq">FAQ</a>
         <a href="#workspace">Workspace</a>
+        <a href="#popular">Popular</a>
+        <a href="#faq">FAQ</a>
       </nav>
       <a class="primary-link" href="#workspace">Start</a>
     </header>
@@ -179,41 +178,62 @@
       </nav>
       <section class="hero" aria-labelledby="hero-title">
         <div class="hero-copy">
-          <p class="eyebrow">Free online PDF tools</p>
-          <h1 id="hero-title">Merge, compress, convert, and edit PDF files online</h1>
-          <p>
+          <p class="eyebrow">Private PDF studio</p>
+          <h1 id="hero-title">PDF tools that feel instant.</h1>
+          <p class="hero-short">Merge. Compress. Convert. Sign. Done.</p>
+          <p class="seo-copy">
             Our PDF is a fast browser-based PDF toolkit for everyday document work. Use it to
             merge PDF files, split pages, compress PDF documents, convert PDF to JPG, create PDF
             files from images, rotate pages, add watermarks, sign documents, redact content, and
             extract text without a complicated account flow.
           </p>
           <div class="hero-actions">
-            <a class="button primary" href="#workspace">Choose a PDF tool</a>
-            <a class="button secondary" href="#tools">Browse all tools</a>
+            <a class="button primary" href="#workspace">Start</a>
+            <a class="button secondary" href="#tools">Explore</a>
+          </div>
+          <div class="trust-strip" aria-label="Highlights">
+            <span>Local</span>
+            <span>Fast</span>
+            <span>No signup</span>
           </div>
         </div>
-        <div class="hero-panel" aria-label="Tool preview">
-          <div class="preview-bar">
-            <span></span>
-            <span></span>
-            <span></span>
+        <figure class="hero-visual" aria-label="Our PDF workspace preview">
+          <div class="mock-window">
+            <div class="mock-top"><span></span><span></span><span></span></div>
+            <div class="mock-docs">
+              <article class="visual-tile" aria-label="Merge PDF">
+                <span class="tile-art merge-art" aria-hidden="true">
+                  <span></span><span></span><span></span>
+                </span>
+                <strong>Merge</strong>
+              </article>
+              <article class="visual-tile" aria-label="Compress PDF">
+                <span class="tile-art compress-art" aria-hidden="true">
+                  <span></span><span></span><span></span><span></span>
+                </span>
+                <strong>Compress</strong>
+              </article>
+              <article class="visual-tile" aria-label="Convert PDF">
+                <span class="tile-art convert-art" aria-hidden="true">
+                  <img src="/assets/ourpdf-logo-red.png?v=2" alt="" width="48" height="38" />
+                  <span></span><span></span>
+                </span>
+                <strong>Convert</strong>
+              </article>
+            </div>
+            <div class="mock-action" aria-label="Drop PDF files">
+              <span class="drop-art" aria-hidden="true"></span>
+              <strong>Drop</strong>
+            </div>
           </div>
-          <div class="preview-grid">
-            <div>Merge</div>
-            <div>Split</div>
-            <div>Compress</div>
-            <div>Convert</div>
-            <div>Edit</div>
-            <div>Secure</div>
-          </div>
-        </div>
+        </figure>
       </section>
 
       <section id="tools" class="tool-directory" aria-labelledby="tools-title">
         <div class="section-heading">
-          <p class="eyebrow">PDF tool directory</p>
-          <h2 id="tools-title">Free PDF tools for converting, editing, organizing, and securing documents.</h2>
-          <p>
+          <p class="eyebrow">Choose your move</p>
+          <h2 id="tools-title">Tap a tool. Drop a file. Keep flowing.</h2>
+          <p class="seo-copy">
             Choose a focused PDF workspace for the task you need: online PDF converter,
             merge PDF, compress PDF, PDF splitter, JPG to PDF, PDF to JPG, watermark PDF,
             rotate PDF, sign PDF, redact PDF, and more.
@@ -223,11 +243,31 @@
         <div class="tool-grid" id="tool-grid"></div>
       </section>
 
+      <section id="popular" class="visual-band" aria-labelledby="popular-title">
+        <div class="visual-copy">
+          <p class="eyebrow">Popular paths</p>
+          <h2 id="popular-title">The PDF actions people repeat.</h2>
+          <div class="quick-paths">
+            <a href="/tools/merge-pdf/">Merge PDF</a>
+            <a href="/tools/compress-pdf/">Compress PDF</a>
+            <a href="/tools/pdf-to-jpg/">PDF to JPG</a>
+            <a href="/tools/jpg-to-pdf/">JPG to PDF</a>
+            <a href="/tools/sign-pdf/">Sign PDF</a>
+          </div>
+        </div>
+        <div class="collage" aria-label="Colorful collage of PDF tool cards">
+          <article aria-label="Merge PDF"><span class="tile-art merge-art" aria-hidden="true"><span></span><span></span><span></span></span><strong>Merge</strong></article>
+          <article aria-label="PDF to JPG"><span class="tile-art image-art" aria-hidden="true"><span></span><span></span></span><strong>JPG</strong></article>
+          <article aria-label="Compress PDF"><span class="tile-art compress-art" aria-hidden="true"><span></span><span></span><span></span><span></span></span><strong>Compress</strong></article>
+          <article aria-label="Sign PDF"><span class="tile-art sign-art" aria-hidden="true"><span></span><span></span></span><strong>Sign</strong></article>
+        </div>
+      </section>
+
       <section id="pdf-converter" class="seo-section" aria-labelledby="converter-title">
         <div class="section-heading">
           <p class="eyebrow">Online PDF converter</p>
-          <h2 id="converter-title">Convert PDF files and images without leaving your browser.</h2>
-          <p>
+          <h2 id="converter-title">Convert without friction.</h2>
+          <p class="seo-copy">
             Our PDF supports common document conversion workflows including PDF to JPG, JPG to PDF,
             PDF to Word-compatible DOCX, PDF to PowerPoint-compatible slides, PDF to Excel-compatible
             tables, Word to PDF, PowerPoint to PDF, and Excel to PDF. These conversion tools are built
@@ -298,8 +338,8 @@
 
       <section id="dashboard" class="dashboard-shell" aria-labelledby="dashboard-title">
         <div class="section-heading">
-          <p class="eyebrow">Dynamic dashboard</p>
-          <h2 id="dashboard-title">Recent jobs and live platform state.</h2>
+          <p class="eyebrow">Session pulse</p>
+          <h2 id="dashboard-title">Your recent PDF actions.</h2>
         </div>
         <div class="dashboard-grid">
           <section class="dashboard-panel">
@@ -349,12 +389,6 @@
 
     <footer class="site-footer">
       <strong>Our PDF</strong>
-      <nav aria-label="Footer navigation">
-        <a href="/sitemap.xml">Sitemap</a>
-        <a href="/robots.txt">Robots</a>
-        <a href="#tools">All PDF tools</a>
-        <a href="#faq">FAQ</a>
-      </nav>
     </footer>
 
     <script type="module" src="/app.js"></script>

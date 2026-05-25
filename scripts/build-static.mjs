@@ -149,7 +149,12 @@ function buildToolPage(tool) {
     .map((item) => `<a href="/tools/${item.slug}/">${escapeHtml(item.name)}</a>`)
     .join("");
 
-  const keywordList = tool.keywords.map((keyword) => `<li>${escapeHtml(keyword)}</li>`).join("");
+  const keywordList = tool.keywords
+    .map(
+      (keyword, index) =>
+        `<span class="keyword-chip keyword-chip-${index + 1}" aria-label="${escapeHtml(keyword)}"><i aria-hidden="true"></i><b class="sr-only">${escapeHtml(keyword)}</b></span>`
+    )
+    .join("");
   const jsonLd = JSON.stringify(
     {
       "@context": "https://schema.org",
@@ -211,8 +216,8 @@ function buildToolPage(tool) {
     <meta name="description" content="${escapeHtml(tool.description)}" />
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
     <link rel="canonical" href="${url}" />
-    <link rel="icon" type="image/png" href="/assets/ourpdf-logo-red.png" />
-    <link rel="apple-touch-icon" href="/assets/ourpdf-logo-red.png" />
+    <link rel="icon" type="image/png" href="/assets/ourpdf-logo-red.png?v=2" />
+    <link rel="apple-touch-icon" href="/assets/ourpdf-logo-red.png?v=2" />
     <link rel="manifest" href="/site.webmanifest" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Our PDF" />
@@ -224,13 +229,13 @@ function buildToolPage(tool) {
     <meta name="twitter:title" content="${escapeHtml(tool.title)}" />
     <meta name="twitter:description" content="${escapeHtml(tool.description)}" />
     <meta name="twitter:image" content="${siteUrl}/assets/ourpdf-logo-red.png" />
-    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="/styles.css?v=colorful-icons" />
     <script type="application/ld+json">${jsonLd.replace(/</g, "\\u003c")}</script>
   </head>
   <body>
     <header class="topbar">
       <a class="brand" href="/" aria-label="Our PDF home">
-        <img class="brand-logo" src="/assets/ourpdf-logo-red.png" alt="" width="48" height="38" aria-hidden="true" />
+        <img class="brand-logo" src="/assets/ourpdf-logo-red.png?v=2" alt="" width="48" height="38" aria-hidden="true" />
         <span>Our PDF</span>
       </a>
       <nav class="nav-links" aria-label="Primary navigation">
@@ -259,9 +264,12 @@ function buildToolPage(tool) {
             <a class="button secondary" href="/#tools">Browse all PDF tools</a>
           </div>
         </div>
-        <div class="hero-panel" aria-label="${escapeHtml(tool.name)} highlights">
-          <h2>${escapeHtml(tool.name)} keywords</h2>
-          <ul class="keyword-list">${keywordList}</ul>
+        <div class="hero-panel keyword-panel tilt-card" aria-label="${escapeHtml(tool.name)} highlights">
+          <div class="keyword-art" aria-hidden="true">
+            <span></span><span></span><span></span>
+          </div>
+          <h2>${escapeHtml(tool.name)} signals</h2>
+          <div class="keyword-list">${keywordList}</div>
         </div>
       </section>
       <section class="seo-section" aria-labelledby="how-title">
@@ -269,10 +277,22 @@ function buildToolPage(tool) {
           <p class="eyebrow">How it works</p>
           <h2 id="how-title">A simple workflow for ${escapeHtml(tool.name.toLowerCase())}.</h2>
         </div>
-        <div class="faq-grid">
-          <article><h3>1. Choose your file</h3><p>Open the Our PDF workspace and select the PDF or image files needed for this task.</p></article>
-          <article><h3>2. Adjust options</h3><p>Use the available controls for page ranges, order, conversion quality, labels, or document settings.</p></article>
-          <article><h3>3. Download the result</h3><p>Process the file in the browser and download the finished document when the preview is ready.</p></article>
+        <div class="workflow-flow tilt-card" aria-label="Workflow: choose file, adjust options, download result">
+          <div class="flow-step">
+            <span class="workflow-icon file-icon" aria-hidden="true"></span>
+            <strong>Choose</strong>
+          </div>
+          <span class="flow-arrow" aria-hidden="true"></span>
+          <div class="flow-step">
+            <span class="workflow-icon adjust-icon" aria-hidden="true"></span>
+            <strong>Adjust</strong>
+          </div>
+          <span class="flow-arrow" aria-hidden="true"></span>
+          <div class="flow-step">
+            <span class="workflow-icon download-icon" aria-hidden="true"></span>
+            <strong>Download</strong>
+          </div>
+          <p>Open the workspace, set the options, then download the finished file.</p>
         </div>
       </section>
       <section class="seo-section" aria-labelledby="related-title">
@@ -285,11 +305,6 @@ function buildToolPage(tool) {
     </main>
     <footer class="site-footer">
       <strong>Our PDF</strong>
-      <nav aria-label="Footer navigation">
-        <a href="/sitemap.xml">Sitemap</a>
-        <a href="/robots.txt">Robots</a>
-        <a href="/#tools">All PDF tools</a>
-      </nav>
     </footer>
   </body>
 </html>
