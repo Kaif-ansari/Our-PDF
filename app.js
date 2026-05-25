@@ -8,6 +8,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc =
 const MAX_UPLOAD_BYTES = 10 * 1024 * 1024;
 const MAX_PDF_PAGES = 300;
 const MAX_PDF_RENDER_PIXELS = 24_000_000;
+const PDF_PREVIEW_MAX_WIDTH = 900;
 const ALLOWED_PDF_TYPES = new Set(["", "application/pdf", "application/x-pdf"]);
 const ALLOWED_IMAGE_TYPES = new Set(["image/jpeg", "image/png"]);
 const ALLOWED_OFFICE_TYPES = new Set([
@@ -366,6 +367,8 @@ let mergeSlotCount = 2;
 let mergeSlots = [];
 let outputUrls = [];
 let jobHistory = loadLocalHistory();
+let processingRunId = 0;
+let isProcessing = false;
 
 renderCategories();
 renderTools();
@@ -419,6 +422,7 @@ function renderToolLogo(tool) {
 }
 
 function selectTool(toolId, shouldOpenWorkspace = false) {
+  cancelActiveProcessing();
   selectedTool = tools.find((tool) => tool.id === toolId) ?? tools[0];
   activeCategory.textContent = selectedTool.category;
   workspaceTitle.textContent = selectedTool.name;
@@ -584,8 +588,12 @@ function wireUpload() {
     });
   }
   dropzone.addEventListener("drop", (event) => setFiles([...event.dataTransfer.files]));
-  fileInput.addEventListener("change", (event) => setFiles([...event.target.files]));
+  fileInput.addEventListener("change", (event) => {
+    setFiles([...event.target.files]);
+    event.target.value = "";
+  });
   clearFilesButton.addEventListener("click", () => {
+    cancelActiveProcessing();
     selectedFiles = [];
     if (isMergeTool()) {
       mergeSlots = Array.from({ length: mergeSlotCount }, () => null);
@@ -599,6 +607,7 @@ function wireUpload() {
 }
 
 function setFiles(files) {
+  cancelActiveProcessing();
   if (isMergeTool()) {
     setMergeFiles(files);
     return;
@@ -636,6 +645,7 @@ function renderFiles() {
 }
 
 function setMergeSlotCount(value) {
+  cancelActiveProcessing();
   const count = Math.min(20, Math.max(2, Number.parseInt(value, 10) || 2));
   if (count === mergeSlotCount) return;
   mergeSlotCount = count;
@@ -656,6 +666,7 @@ function setMergeFiles(files) {
 }
 
 function setMergeSlotFile(index, file) {
+  cancelActiveProcessing();
   mergeSlots[index] = file ?? null;
   syncMergeFiles();
   renderFiles();
@@ -663,6 +674,7 @@ function setMergeSlotFile(index, file) {
 }
 
 function setMergeSlotPosition(index, position) {
+  cancelActiveProcessing();
   const target = Number.parseInt(position, 10) - 1;
   if (target < 0 || target >= mergeSlots.length) return;
   [mergeSlots[index], mergeSlots[target]] = [mergeSlots[target], mergeSlots[index]];
@@ -742,52 +754,76 @@ function renderMergeFiles() {
 
 async function runSelectedTool() {
   let job = null;
+  const runId = processingRunId + 1;
+  processingRunId = runId;
+  const tool = selectedTool;
+  const files = [...selectedFiles];
+  const options = Object.fromEntries(new FormData(optionsForm).entries());
+  setProcessingState(true);
   try {
-    await validateFiles();
-    job = safeCreateJobRecord("processing");
+    await validateFiles(tool, files);
+    job = safeCreateJobRecord("processing", tool, files.length);
     renderProgress("queued");
     setStatus("Queued...");
     renderResult([]);
-    const options = Object.fromEntries(new FormData(optionsForm).entries());
     renderProgress("processing");
     setStatus("Processing...");
     const started = performance.now();
-    const outputs = await selectedTool.run(selectedFiles, options);
+    const outputs = await tool.run(files, options);
+    if (runId !== processingRunId) return;
     const durationMs = Math.round(performance.now() - started);
     renderProgress("preview");
     renderResult(outputs);
     renderProgress("completed");
     setStatus(`Completed in ${durationMs} ms`);
-    updateJobRecord(job.id, { status: "completed", durationMs, outputCount: outputs.length });
+    if (job) updateJobRecord(job.id, { status: "completed", durationMs, outputCount: outputs.length });
   } catch (error) {
+    if (runId !== processingRunId) return;
     renderProgress("failed");
     setStatus(error.message || "Unable to process file");
     if (job) {
       updateJobRecord(job.id, { status: "failed", safeErrorCode: "CLIENT_PROCESSING_ERROR" });
     }
+  } finally {
+    if (runId === processingRunId) {
+      setProcessingState(false);
+    }
   }
 }
 
-async function validateFiles() {
-  const minFiles = selectedTool.minFiles ?? 1;
-  if (isMergeTool() && selectedFiles.length !== mergeSlotCount) {
+function setProcessingState(nextProcessingState) {
+  isProcessing = Boolean(nextProcessingState);
+  runToolButton.disabled = isProcessing;
+  clearFilesButton.disabled = isProcessing;
+  runToolButton.setAttribute("aria-busy", String(isProcessing));
+}
+
+function cancelActiveProcessing() {
+  if (!isProcessing) return;
+  processingRunId += 1;
+  setProcessingState(false);
+}
+
+async function validateFiles(tool, files) {
+  const minFiles = tool.minFiles ?? 1;
+  if (tool.id === "merge" && files.length !== mergeSlotCount) {
     throw new Error(`Fill all ${mergeSlotCount} merge slots, or reduce the number of PDFs to merge.`);
   }
-  if (selectedFiles.length < minFiles) {
-    throw new Error(`${selectedTool.name} needs at least ${minFiles} file${minFiles === 1 ? "" : "s"}.`);
+  if (files.length < minFiles) {
+    throw new Error(`${tool.name} needs at least ${minFiles} file${minFiles === 1 ? "" : "s"}.`);
   }
-  const acceptsImages = selectedTool.accept.includes("image");
-  for (const file of selectedFiles) {
-    await validateFileSecurity(file, selectedTool.accept);
+  const acceptsImages = tool.accept.includes("image");
+  for (const file of files) {
+    await validateFileSecurity(file, tool.accept);
     const isPdf = isPdfName(file.name) && ALLOWED_PDF_TYPES.has(file.type);
     const isImage = ALLOWED_IMAGE_TYPES.has(file.type) && /\.(jpe?g|png)$/i.test(file.name);
     if (acceptsImages && !isImage) {
       throw new Error("This tool accepts JPG and PNG files only.");
     }
-    if (!acceptsImages && !fileAllowed(file, selectedTool.accept)) {
-      throw new Error(`This tool accepts: ${selectedTool.accept.replaceAll(",", ", ")}.`);
+    if (!acceptsImages && !fileAllowed(file, tool.accept)) {
+      throw new Error(`This tool accepts: ${tool.accept.replaceAll(",", ", ")}.`);
     }
-    if (selectedTool.accept.includes("pdf") && !selectedTool.accept.includes("word") && !isPdf) {
+    if (tool.accept.includes("pdf") && !tool.accept.includes("word") && !isPdf) {
       throw new Error("This tool accepts PDF files only.");
     }
   }
@@ -820,7 +856,7 @@ function renderResult(outputs) {
 
     const preview = document.createElement("div");
     preview.className = "output-preview";
-    renderOutputPreview(output, url, preview, index);
+    renderOutputPreview(output, url, preview, index).catch((error) => renderPreviewFallback(output, preview, error));
 
     const link = outputDownloadButton(output, url, "Download file");
     item.append(header, preview, link);
@@ -849,7 +885,24 @@ function outputDownloadButton(output, url, label) {
   link.href = url;
   link.download = output.name;
   link.textContent = label;
+  link.addEventListener("click", (event) => {
+    event.preventDefault();
+    downloadBlob(output);
+  });
   return link;
+}
+
+function downloadBlob(output) {
+  const url = URL.createObjectURL(output.blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = output.name;
+  link.rel = "noopener";
+  link.style.display = "none";
+  document.body.append(link);
+  link.click();
+  link.remove();
+  window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
 }
 
 async function renderOutputPreview(output, url, container, index) {
@@ -868,10 +921,7 @@ async function renderOutputPreview(output, url, container, index) {
     return;
   }
   if (type === "application/pdf" || name.endsWith(".pdf")) {
-    const frame = document.createElement("iframe");
-    frame.title = `Preview of ${output.name}`;
-    frame.src = url;
-    container.append(frame);
+    await renderPdfBlobPreview(output, container);
     return;
   }
   if (type.startsWith("image/") || /\.(jpe?g|png|webp)$/i.test(name)) {
@@ -898,6 +948,42 @@ async function renderOutputPreview(output, url, container, index) {
   const summary = document.createElement("div");
   summary.className = "preview-summary";
   summary.innerHTML = `<strong>${escapeHtml(selectedTool.name)} completed</strong><span>${escapeHtml(outputKind(output))} output ${index + 1} is ready.</span>`;
+  container.append(summary);
+}
+
+async function renderPdfBlobPreview(output, container) {
+  const loading = document.createElement("div");
+  loading.className = "preview-summary";
+  loading.textContent = "Preparing preview...";
+  container.append(loading);
+
+  const pdf = await loadPdfJsSafe(await output.blob.arrayBuffer());
+  const pages = [];
+  const pageCount = Math.min(pdf.numPages, 4);
+  for (let pageNumber = 1; pageNumber <= pageCount; pageNumber += 1) {
+    const page = await pdf.getPage(pageNumber);
+    const viewport = page.getViewport({ scale: 1 });
+    const scale = Math.min(1.25, Math.max(0.55, PDF_PREVIEW_MAX_WIDTH / viewport.width));
+    const canvas = await renderPdfPageToCanvas(pdf, pageNumber, scale);
+    pages.push({ number: pageNumber, imageDataUrl: canvas.toDataURL("image/jpeg", 0.82) });
+  }
+
+  container.innerHTML = "";
+  renderPagePreview(pages, container);
+  if (pdf.numPages > pageCount) {
+    const note = document.createElement("p");
+    note.className = "preview-note";
+    note.textContent = `Showing ${pageCount} of ${pdf.numPages} pages.`;
+    container.append(note);
+  }
+}
+
+function renderPreviewFallback(output, container, error) {
+  console.warn("Preview unavailable.", error);
+  container.innerHTML = "";
+  const summary = document.createElement("div");
+  summary.className = "preview-summary";
+  summary.innerHTML = `<strong>${escapeHtml(output.name)}</strong><span>Preview unavailable on this device. Download is ready.</span>`;
   container.append(summary);
 }
 
@@ -993,13 +1079,13 @@ function outputKind(output) {
   return output.blob.type || "converted file";
 }
 
-function createJobRecord(status) {
+function createJobRecord(status, tool = selectedTool, fileCount = selectedFiles.length) {
   const record = {
     id: createId(),
-    operation: selectedTool.id,
-    toolName: selectedTool.name,
+    operation: tool.id,
+    toolName: tool.name,
     status,
-    fileCount: selectedFiles.length,
+    fileCount,
     outputCount: 0,
     durationMs: null,
     safeErrorCode: null,
@@ -1012,9 +1098,9 @@ function createJobRecord(status) {
   return record;
 }
 
-function safeCreateJobRecord(status) {
+function safeCreateJobRecord(status, tool, fileCount) {
   try {
-    return createJobRecord(status);
+    return createJobRecord(status, tool, fileCount);
   } catch (error) {
     console.warn("Job history unavailable; continuing without metadata.");
     return null;
