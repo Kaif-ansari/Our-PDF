@@ -368,7 +368,7 @@ let jobHistory = loadLocalHistory();
 
 renderCategories();
 renderTools();
-selectTool("merge");
+selectTool(getInitialToolId());
 wireUpload();
 wireTiltCards();
 renderHistory();
@@ -461,8 +461,14 @@ function openWorkspace() {
   document.querySelector("#workspace").scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
+function getInitialToolId() {
+  const params = new URLSearchParams(window.location.search);
+  const requestedTool = params.get("tool");
+  return tools.some((tool) => tool.id === requestedTool) ? requestedTool : "merge";
+}
+
 function wireTiltCards() {
-  const tiltTargets = document.querySelectorAll(".hero-visual, .mock-docs article, .mock-action, .collage article, .tool-card, .seo-link-grid a, .tilt-card");
+  const tiltTargets = document.querySelectorAll(".hero-visual, .mock-docs article, .mock-action, .collage a, .collage article, .tool-card, .seo-link-grid a, .tilt-card");
   for (const target of tiltTargets) {
     target.addEventListener("pointermove", (event) => {
       const rect = target.getBoundingClientRect();

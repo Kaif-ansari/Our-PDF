@@ -395,6 +395,7 @@ h3 {
 }
 
 .mock-docs article,
+.collage a,
 .collage article {
   display: grid;
   align-content: center;
@@ -978,29 +979,34 @@ h3 {
   max-width: 520px;
 }
 
+.collage a,
 .collage article {
   min-height: 150px;
   color: #11141d;
 }
 
+.collage a:nth-child(1),
 .collage article:nth-child(1) {
   background:
     radial-gradient(circle at 82% 16%, rgba(255, 255, 255, 0.46), transparent 28%),
     linear-gradient(135deg, #fff0ee, #ffd7c8);
 }
 
+.collage a:nth-child(2),
 .collage article:nth-child(2) {
   background:
     radial-gradient(circle at 82% 16%, rgba(255, 255, 255, 0.46), transparent 28%),
     linear-gradient(135deg, #e9f6ff, #dfe8ff);
 }
 
+.collage a:nth-child(3),
 .collage article:nth-child(3) {
   background:
     radial-gradient(circle at 82% 16%, rgba(255, 255, 255, 0.42), transparent 28%),
     linear-gradient(135deg, #e9fff8, #dff8d6);
 }
 
+.collage a:nth-child(4),
 .collage article:nth-child(4) {
   background:
     radial-gradient(circle at 82% 16%, rgba(255, 255, 255, 0.42), transparent 28%),

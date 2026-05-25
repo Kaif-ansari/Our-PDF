@@ -89,6 +89,19 @@ const toolPages = [
   },
 ];
 
+const appToolIdsBySlug = {
+  "merge-pdf": "merge",
+  "compress-pdf": "compress",
+  "split-pdf": "split",
+  "pdf-to-jpg": "pdf-to-jpg",
+  "jpg-to-pdf": "jpg-to-pdf",
+  "rotate-pdf": "rotate",
+  "watermark-pdf": "watermark",
+  "sign-pdf": "sign",
+  "redact-pdf": "redact",
+  "extract-pdf-text": "ocr",
+};
+
 await rm(output, { recursive: true, force: true });
 await mkdir(output, { recursive: true });
 
@@ -143,6 +156,7 @@ ${urls
 
 function buildToolPage(tool) {
   const url = `${siteUrl}/tools/${tool.slug}/`;
+  const appToolId = appToolIdsBySlug[tool.slug] ?? "merge";
   const relatedLinks = toolPages
     .filter((item) => item.slug !== tool.slug)
     .slice(0, 6)
@@ -229,7 +243,7 @@ function buildToolPage(tool) {
     <meta name="twitter:title" content="${escapeHtml(tool.title)}" />
     <meta name="twitter:description" content="${escapeHtml(tool.description)}" />
     <meta name="twitter:image" content="${siteUrl}/assets/ourpdf-logo-red.png" />
-    <link rel="stylesheet" href="/styles.css?v=colorful-icons" />
+    <link rel="stylesheet" href="/styles.css?v=tool-param-workspace" />
     <script type="application/ld+json">${jsonLd.replace(/</g, "\\u003c")}</script>
   </head>
   <body>
@@ -260,7 +274,7 @@ function buildToolPage(tool) {
           <h1 id="tool-title">${escapeHtml(tool.name)} online</h1>
           <p>${escapeHtml(tool.description)} Use this page when you need to ${escapeHtml(tool.intent)} with a focused PDF workflow.</p>
           <div class="hero-actions">
-            <a class="button primary" href="/#workspace">Open ${escapeHtml(tool.name)}</a>
+            <a class="button primary" href="/?tool=${encodeURIComponent(appToolId)}&v=tool-param-workspace#workspace">Open ${escapeHtml(tool.name)}</a>
             <a class="button secondary" href="/#tools">Browse all PDF tools</a>
           </div>
         </div>
