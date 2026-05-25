@@ -2,7 +2,9 @@ import { createReadStream, existsSync, statSync } from "node:fs";
 import { createServer } from "node:http";
 import { extname, join, normalize, relative, resolve } from "node:path";
 
-const root = resolve(process.cwd());
+const cwd = resolve(process.cwd());
+const publicRoot = resolve(join(cwd, "public"));
+const root = existsSync(join(publicRoot, "index.html")) ? publicRoot : cwd;
 const port = Number(process.env.PORT ?? 4173);
 const STREAM_CHUNK_BYTES = 64 * 1024;
 
@@ -12,6 +14,9 @@ const contentTypes = {
   ".js": "text/javascript; charset=utf-8",
   ".png": "image/png",
   ".json": "application/json; charset=utf-8",
+  ".webmanifest": "application/manifest+json; charset=utf-8",
+  ".xml": "application/xml; charset=utf-8",
+  ".txt": "text/plain; charset=utf-8",
   ".sql": "text/plain; charset=utf-8",
   ".md": "text/markdown; charset=utf-8",
 };
@@ -53,7 +58,10 @@ createServer((request, response) => {
 
   const url = new URL(request.url ?? "/", `http://${request.headers.host}`);
   const requestedPath = url.pathname === "/" ? "/index.html" : url.pathname;
-  const filePath = resolve(join(root, normalize(decodeURIComponent(requestedPath))));
+  let filePath = resolve(join(root, normalize(decodeURIComponent(requestedPath))));
+  if (existsSync(filePath) && statSync(filePath).isDirectory()) {
+    filePath = resolve(join(filePath, "index.html"));
+  }
   const relativePath = relative(root, filePath);
 
   if (relativePath.startsWith("..") || relativePath === "" || resolve(relativePath) === relativePath || !existsSync(filePath) || !statSync(filePath).isFile()) {

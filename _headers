@@ -9,7 +9,6 @@
   X-Content-Type-Options: nosniff
   X-Frame-Options: DENY
   X-Permitted-Cross-Domain-Policies: none
-  X-Robots-Tag: noindex, nofollow
 
 /index.html
   Cache-Control: public, max-age=0, must-revalidate

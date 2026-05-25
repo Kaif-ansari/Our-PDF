@@ -136,6 +136,34 @@ code {
   max-width: 850px;
 }
 
+.breadcrumbs {
+  padding: 12px 28px 0;
+  background: #fff9f7;
+  color: var(--muted);
+  font-size: 0.84rem;
+  font-weight: 800;
+}
+
+.breadcrumbs ol {
+  display: flex;
+  flex-wrap: wrap;
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0;
+  gap: 8px;
+  list-style: none;
+}
+
+.breadcrumbs li:not(:last-child)::after {
+  margin-left: 8px;
+  color: #8b8d98;
+  content: "/";
+}
+
+.breadcrumbs a:hover {
+  color: var(--accent-dark);
+}
+
 .eyebrow {
   margin: 0 0 8px;
   color: var(--accent-dark);
@@ -154,8 +182,9 @@ p {
 
 h1 {
   margin-bottom: 12px;
-  font-size: clamp(3.25rem, 9vw, 8rem);
-  line-height: 0.9;
+  max-width: 940px;
+  font-size: clamp(2.65rem, 6vw, 5.8rem);
+  line-height: 0.96;
   letter-spacing: 0;
 }
 
@@ -269,7 +298,8 @@ h3 {
 
 .tool-directory,
 .workspace-shell,
-.dashboard-shell {
+.dashboard-shell,
+.seo-section {
   padding: 44px 28px;
 }
 
@@ -283,6 +313,11 @@ h3 {
 .workspace-header {
   max-width: 1180px;
   margin: 0 auto 20px;
+}
+
+.section-heading p {
+  max-width: 860px;
+  color: var(--muted);
 }
 
 .section-heading h2,
@@ -339,7 +374,7 @@ h3 {
   display: grid;
   align-content: space-between;
   gap: 24px;
-  min-height: 156px;
+  min-height: 190px;
   overflow: hidden;
   padding: 20px;
   text-align: left;
@@ -398,6 +433,115 @@ h3 {
   position: relative;
   z-index: 1;
   display: grid;
+}
+
+.tool-description {
+  display: block;
+  margin-top: 10px;
+  color: var(--muted);
+  font-size: 0.84rem;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.seo-section {
+  background: var(--surface);
+}
+
+.seo-section:nth-of-type(even) {
+  background: var(--surface-2);
+}
+
+.seo-link-grid,
+.faq-grid {
+  display: grid;
+  max-width: 1180px;
+  margin: 0 auto;
+  gap: 14px;
+}
+
+.seo-link-grid {
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+}
+
+.seo-link-grid a,
+.faq-grid article {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  box-shadow: var(--shadow-soft);
+}
+
+.seo-link-grid a {
+  display: flex;
+  min-height: 58px;
+  align-items: center;
+  padding: 0 16px;
+  color: var(--accent-dark);
+  font-weight: 900;
+}
+
+.seo-link-grid a:hover {
+  border-color: rgba(163, 31, 31, 0.28);
+  background: #fff9f7;
+}
+
+.faq-grid {
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+.faq-grid article {
+  padding: 18px;
+}
+
+.faq-grid p {
+  margin-bottom: 0;
+  color: var(--muted);
+}
+
+.site-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 26px 28px;
+  border-top: 1px solid var(--line);
+  background: #1f2430;
+  color: white;
+}
+
+.site-footer nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  color: rgba(255, 255, 255, 0.82);
+  font-weight: 800;
+}
+
+.site-footer a:hover {
+  color: white;
+}
+
+.tool-landing {
+  min-height: auto;
+}
+
+.tool-landing .hero-panel {
+  transform: none;
+}
+
+.tool-landing .hero-panel h2 {
+  font-size: 1.2rem;
+}
+
+.keyword-list {
+  display: grid;
+  margin: 0;
+  padding-left: 18px;
+  gap: 10px;
+  color: var(--muted);
+  font-weight: 800;
 }
 
 .feature-logo {
@@ -1078,8 +1222,13 @@ h3 {
   .hero,
   .tool-directory,
   .workspace-shell,
-  .dashboard-shell {
+  .dashboard-shell,
+  .seo-section {
     padding: 24px 14px;
+  }
+
+  .breadcrumbs {
+    padding: 10px 14px 0;
   }
 
   .hero {
@@ -1171,7 +1320,8 @@ h3 {
 
   .processor,
   .result-panel,
-  .dashboard-panel {
+  .dashboard-panel,
+  .faq-grid article {
     padding: 14px;
   }
 

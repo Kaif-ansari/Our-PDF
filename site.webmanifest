@@ -1,0 +1,16 @@
+{
+  "name": "Our PDF",
+  "short_name": "Our PDF",
+  "description": "Free online PDF tools to merge, compress, convert, edit, sign, redact, and extract PDF content.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#a31f1f",
+  "icons": [
+    {
+      "src": "/assets/ourpdf-logo-red.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ]
+}

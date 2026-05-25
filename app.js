@@ -402,6 +402,7 @@ function renderTools() {
       <span class="tool-copy">
         <strong>${tool.name}</strong>
         <small>${tool.category}</small>
+        <span class="tool-description">${tool.description}</span>
       </span>
     `;
     button.addEventListener("click", () => selectTool(tool.id, true));

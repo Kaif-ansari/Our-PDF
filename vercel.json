@@ -60,10 +60,6 @@
         {
           "key": "X-Permitted-Cross-Domain-Policies",
           "value": "none"
-        },
-        {
-          "key": "X-Robots-Tag",
-          "value": "noindex, nofollow"
         }
       ]
     }
