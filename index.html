@@ -66,12 +66,7 @@
             "url": "https://our-pdf-beryl.vercel.app/",
             "name": "Our PDF",
             "publisher": { "@id": "https://our-pdf-beryl.vercel.app/#organization" },
-            "inLanguage": "en",
-            "potentialAction": {
-              "@type": "SearchAction",
-              "target": "https://our-pdf-beryl.vercel.app/#tools",
-              "query-input": "required name=search_term_string"
-            }
+            "inLanguage": "en"
           },
           {
             "@type": "SoftwareApplication",
@@ -89,10 +84,33 @@
               "Split PDF pages",
               "Convert PDF to JPG",
               "Convert JPG to PDF",
+              "Convert PDF to Word",
+              "Convert Word to PDF",
+              "Convert PDF to Excel",
+              "Convert PowerPoint to PDF",
               "Add PDF watermarks",
+              "Add PDF page numbers",
               "Sign PDF documents",
               "Redact PDF files",
+              "Compare PDF files",
               "Extract PDF text"
+            ]
+          },
+          {
+            "@type": "ItemList",
+            "@id": "https://our-pdf-beryl.vercel.app/#pdf-tool-list",
+            "name": "Online PDF tools",
+            "itemListElement": [
+              { "@type": "ListItem", "position": 1, "name": "Merge PDF", "url": "https://our-pdf-beryl.vercel.app/tools/merge-pdf/" },
+              { "@type": "ListItem", "position": 2, "name": "Compress PDF", "url": "https://our-pdf-beryl.vercel.app/tools/compress-pdf/" },
+              { "@type": "ListItem", "position": 3, "name": "Split PDF", "url": "https://our-pdf-beryl.vercel.app/tools/split-pdf/" },
+              { "@type": "ListItem", "position": 4, "name": "PDF to JPG", "url": "https://our-pdf-beryl.vercel.app/tools/pdf-to-jpg/" },
+              { "@type": "ListItem", "position": 5, "name": "JPG to PDF", "url": "https://our-pdf-beryl.vercel.app/tools/jpg-to-pdf/" },
+              { "@type": "ListItem", "position": 6, "name": "PDF to Word", "url": "https://our-pdf-beryl.vercel.app/tools/pdf-to-word/" },
+              { "@type": "ListItem", "position": 7, "name": "Word to PDF", "url": "https://our-pdf-beryl.vercel.app/tools/word-to-pdf/" },
+              { "@type": "ListItem", "position": 8, "name": "Rotate PDF", "url": "https://our-pdf-beryl.vercel.app/tools/rotate-pdf/" },
+              { "@type": "ListItem", "position": 9, "name": "Sign PDF", "url": "https://our-pdf-beryl.vercel.app/tools/sign-pdf/" },
+              { "@type": "ListItem", "position": 10, "name": "Extract PDF Text", "url": "https://our-pdf-beryl.vercel.app/tools/extract-pdf-text/" }
             ]
           },
           {
@@ -293,11 +311,22 @@
           <a href="/tools/merge-pdf/">Merge PDF</a>
           <a href="/tools/compress-pdf/">Compress PDF</a>
           <a href="/tools/split-pdf/">Split PDF</a>
+          <a href="/tools/remove-pages-from-pdf/">Remove PDF Pages</a>
+          <a href="/tools/extract-pdf-pages/">Extract PDF Pages</a>
           <a href="/tools/pdf-to-jpg/">PDF to JPG</a>
           <a href="/tools/jpg-to-pdf/">JPG to PDF</a>
+          <a href="/tools/pdf-to-word/">PDF to Word</a>
+          <a href="/tools/word-to-pdf/">Word to PDF</a>
+          <a href="/tools/pdf-to-excel/">PDF to Excel</a>
+          <a href="/tools/powerpoint-to-pdf/">PowerPoint to PDF</a>
           <a href="/tools/rotate-pdf/">Rotate PDF</a>
           <a href="/tools/watermark-pdf/">Watermark PDF</a>
+          <a href="/tools/add-page-numbers-to-pdf/">Add Page Numbers</a>
+          <a href="/tools/crop-pdf/">Crop PDF</a>
           <a href="/tools/sign-pdf/">Sign PDF</a>
+          <a href="/tools/redact-pdf/">Redact PDF</a>
+          <a href="/tools/compare-pdf/">Compare PDF</a>
+          <a href="/tools/extract-pdf-text/">Extract PDF Text</a>
         </div>
       </section>
 

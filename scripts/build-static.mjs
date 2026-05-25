@@ -32,6 +32,22 @@ const toolPages = [
     keywords: ["split PDF", "extract PDF pages", "separate PDF", "PDF splitter"],
   },
   {
+    slug: "remove-pages-from-pdf",
+    name: "Remove PDF Pages",
+    title: "Remove Pages from PDF Online Free | Our PDF",
+    description: "Remove unwanted pages from a PDF online. Choose page numbers, delete them in your browser, and download a cleaner PDF file.",
+    intent: "delete selected pages from a PDF document",
+    keywords: ["remove PDF pages", "delete pages from PDF", "PDF page remover", "remove pages online"],
+  },
+  {
+    slug: "extract-pdf-pages",
+    name: "Extract PDF Pages",
+    title: "Extract PDF Pages Online Free | Our PDF",
+    description: "Extract pages from a PDF online and save selected page ranges as a new PDF file in your browser.",
+    intent: "save selected PDF pages as a separate document",
+    keywords: ["extract PDF pages", "save PDF pages", "PDF page extractor", "extract pages online"],
+  },
+  {
     slug: "pdf-to-jpg",
     name: "PDF to JPG",
     title: "PDF to JPG Converter Online Free | Our PDF",
@@ -46,6 +62,54 @@ const toolPages = [
     description: "Convert JPG and PNG images to PDF online. Build one PDF from multiple images with a simple browser tool.",
     intent: "create a PDF from JPG or PNG image files",
     keywords: ["JPG to PDF", "image to PDF", "PNG to PDF", "convert images to PDF"],
+  },
+  {
+    slug: "pdf-to-word",
+    name: "PDF to Word",
+    title: "PDF to Word Converter Online Free | Our PDF",
+    description: "Convert PDF pages to a Word-compatible DOCX file online using a private browser-based PDF converter.",
+    intent: "export PDF pages into a Word document",
+    keywords: ["PDF to Word", "PDF to DOCX", "convert PDF to Word", "online PDF converter"],
+  },
+  {
+    slug: "word-to-pdf",
+    name: "Word to PDF",
+    title: "Word to PDF Converter Online Free | Our PDF",
+    description: "Convert Word DOCX files to PDF online and download a browser-generated PDF copy of your document.",
+    intent: "turn a Word document into a PDF",
+    keywords: ["Word to PDF", "DOCX to PDF", "convert Word to PDF", "online PDF converter"],
+  },
+  {
+    slug: "pdf-to-excel",
+    name: "PDF to Excel",
+    title: "PDF to Excel Converter Online Free | Our PDF",
+    description: "Convert extracted PDF text into an Excel-compatible workbook online with a browser-based PDF converter.",
+    intent: "export PDF content into a spreadsheet format",
+    keywords: ["PDF to Excel", "PDF to XLS", "convert PDF to spreadsheet", "PDF table export"],
+  },
+  {
+    slug: "excel-to-pdf",
+    name: "Excel to PDF",
+    title: "Excel to PDF Converter Online Free | Our PDF",
+    description: "Convert Excel workbook content to PDF online and download a browser-generated PDF document.",
+    intent: "turn spreadsheet content into a PDF",
+    keywords: ["Excel to PDF", "XLSX to PDF", "convert Excel to PDF", "spreadsheet to PDF"],
+  },
+  {
+    slug: "pdf-to-powerpoint",
+    name: "PDF to PowerPoint",
+    title: "PDF to PowerPoint Converter Online Free | Our PDF",
+    description: "Convert PDF pages to a PowerPoint-compatible slide deck online from your browser.",
+    intent: "export PDF pages into a presentation file",
+    keywords: ["PDF to PowerPoint", "PDF to PPT", "convert PDF to slides", "PDF presentation converter"],
+  },
+  {
+    slug: "powerpoint-to-pdf",
+    name: "PowerPoint to PDF",
+    title: "PowerPoint to PDF Converter Online Free | Our PDF",
+    description: "Convert PowerPoint slides to PDF online and download a browser-generated PDF document.",
+    intent: "turn presentation content into a PDF",
+    keywords: ["PowerPoint to PDF", "PPT to PDF", "PPTX to PDF", "slides to PDF"],
   },
   {
     slug: "rotate-pdf",
@@ -64,6 +128,22 @@ const toolPages = [
     keywords: ["watermark PDF", "add watermark to PDF", "stamp PDF", "PDF watermark tool"],
   },
   {
+    slug: "add-page-numbers-to-pdf",
+    name: "Add Page Numbers",
+    title: "Add Page Numbers to PDF Online Free | Our PDF",
+    description: "Add page numbers to PDF pages online and download a numbered PDF for review, printing, or sharing.",
+    intent: "number the pages in a PDF document",
+    keywords: ["add page numbers to PDF", "number PDF pages", "PDF page numbering", "insert page numbers PDF"],
+  },
+  {
+    slug: "crop-pdf",
+    name: "Crop PDF",
+    title: "Crop PDF Online Free - Trim PDF Margins | Our PDF",
+    description: "Crop PDF pages online by trimming page margins and downloading a cleaner PDF file from your browser.",
+    intent: "trim PDF page margins",
+    keywords: ["crop PDF", "trim PDF margins", "resize PDF pages", "PDF crop tool"],
+  },
+  {
     slug: "sign-pdf",
     name: "Sign PDF",
     title: "Sign PDF Online Free - Add a Signature | Our PDF",
@@ -80,6 +160,14 @@ const toolPages = [
     keywords: ["redact PDF", "hide PDF text", "remove sensitive PDF content", "PDF redaction"],
   },
   {
+    slug: "compare-pdf",
+    name: "Compare PDF",
+    title: "Compare PDF Files Online Free | Our PDF",
+    description: "Compare two PDF files online and download a text-based difference report from your browser.",
+    intent: "review differences between two PDF documents",
+    keywords: ["compare PDF", "PDF comparison", "compare documents online", "PDF diff"],
+  },
+  {
     slug: "extract-pdf-text",
     name: "Extract PDF Text",
     title: "Extract Text from PDF Online Free | Our PDF",
@@ -93,12 +181,23 @@ const appToolIdsBySlug = {
   "merge-pdf": "merge",
   "compress-pdf": "compress",
   "split-pdf": "split",
+  "remove-pages-from-pdf": "remove-pages",
+  "extract-pdf-pages": "extract-pages",
   "pdf-to-jpg": "pdf-to-jpg",
   "jpg-to-pdf": "jpg-to-pdf",
+  "pdf-to-word": "pdf-to-word",
+  "word-to-pdf": "word-to-pdf",
+  "pdf-to-excel": "pdf-to-excel",
+  "excel-to-pdf": "excel-to-pdf",
+  "pdf-to-powerpoint": "pdf-to-powerpoint",
+  "powerpoint-to-pdf": "powerpoint-to-pdf",
   "rotate-pdf": "rotate",
   "watermark-pdf": "watermark",
+  "add-page-numbers-to-pdf": "page-numbers",
+  "crop-pdf": "crop",
   "sign-pdf": "sign",
   "redact-pdf": "redact",
+  "compare-pdf": "compare",
   "extract-pdf-text": "ocr",
 };
 
@@ -111,6 +210,7 @@ for (const item of ["index.html", "app.js", "styles.css", "assets", "_headers", 
 
 await writeFile(join(output, "robots.txt"), buildRobots(), "utf8");
 await writeFile(join(output, "sitemap.xml"), buildSitemap(), "utf8");
+await writeFile(join(output, "llms.txt"), buildLlmsTxt(), "utf8");
 
 for (const tool of toolPages) {
   const dir = join(output, "tools", tool.slug);
@@ -125,6 +225,7 @@ function buildRobots() {
 Allow: /
 
 Sitemap: ${siteUrl}/sitemap.xml
+Host: our-pdf-beryl.vercel.app
 `;
 }
 
@@ -151,6 +252,34 @@ ${urls
   )
   .join("\n")}
 </urlset>
+`;
+}
+
+function buildLlmsTxt() {
+  const toolLines = toolPages
+    .map((tool) => `- [${tool.name}](${siteUrl}/tools/${tool.slug}/): ${tool.description}`)
+    .join("\n");
+
+  return `# Our PDF
+
+Our PDF is a free browser-based PDF toolkit for common document tasks. It helps users merge PDF files, compress PDF files, split PDF pages, convert PDF to JPG, convert JPG to PDF, rotate pages, add watermarks, sign PDFs, redact PDFs, compare PDFs, and extract PDF text.
+
+## Primary Pages
+
+- [Homepage](${siteUrl}/): Online PDF tools workspace and directory.
+- [Sitemap](${siteUrl}/sitemap.xml): XML sitemap for crawl discovery.
+- [Robots](${siteUrl}/robots.txt): Crawl policy.
+
+## PDF Tool Pages
+
+${toolLines}
+
+## Entity Summary
+
+- Brand: Our PDF
+- Category: Online PDF tools, browser PDF converter, document productivity software
+- Processing model: Browser-based PDF processing for supported tools
+- Audience: Students, freelancers, office workers, small businesses, and anyone editing PDFs online
 `;
 }
 
