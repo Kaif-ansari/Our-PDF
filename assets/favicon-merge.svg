@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 96" role="img" aria-label="Our PDF">
+  <defs>
+    <filter id="logo-shadow" x="-20%" y="-20%" width="150%" height="160%">
+      <feDropShadow dx="5" dy="6" stdDeviation="2.6" flood-color="#18202c" flood-opacity="0.18"/>
+    </filter>
+  </defs>
+  <g filter="url(#logo-shadow)">
+    <rect x="13" y="17" width="50" height="54" rx="10" fill="#fffaf6" stroke="#263342" stroke-width="4"/>
+    <rect x="64" y="17" width="50" height="54" rx="10" fill="#bd202f" stroke="#8f1724" stroke-width="4"/>
+  </g>
+  <path d="M65 44H39" stroke="#263342" stroke-width="10" stroke-linecap="round"/>
+  <path d="M40 44l18-16v32z" fill="#263342"/>
+  <path d="M62 44h28" stroke="#263342" stroke-width="10" stroke-linecap="round"/>
+  <path d="M88 28l18 16-18 16z" fill="#263342"/>
+</svg>

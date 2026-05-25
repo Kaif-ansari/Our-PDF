@@ -11,9 +11,9 @@
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
     <meta name="author" content="Our PDF" />
     <meta name="application-name" content="Our PDF" />
-    <meta name="theme-color" content="#a31f1f" />
+    <meta name="theme-color" content="#fffaf2" />
     <link rel="canonical" href="https://our-pdf-beryl.vercel.app/" />
-    <link rel="icon" type="image/png" href="/assets/ourpdf-logo-red.png?v=2" />
+    <link rel="icon" type="image/svg+xml" href="/assets/favicon-merge.svg?v=1" />
     <link rel="apple-touch-icon" href="/assets/ourpdf-logo-red.png?v=2" />
     <link rel="manifest" href="/site.webmanifest" />
     <link rel="preload" as="image" href="/assets/ourpdf-logo-red.png?v=2" />
@@ -37,7 +37,17 @@
       content="Merge PDF, compress PDF, convert PDF, edit documents, sign files, and extract text with free online PDF tools that run in your browser."
     />
     <meta name="twitter:image" content="https://our-pdf-beryl.vercel.app/assets/ourpdf-logo-red.png" />
-    <link rel="stylesheet" href="/styles.css?v=tool-param-workspace" />
+    <script>
+      (() => {
+        const saved = localStorage.getItem("ourpdf.theme");
+        const theme = saved === "dark" || saved === "light"
+          ? saved
+          : matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+        document.documentElement.dataset.theme = theme;
+        document.querySelector('meta[name="theme-color"]')?.setAttribute("content", theme === "dark" ? "#10131a" : "#fffaf2");
+      })();
+    </script>
+    <link rel="stylesheet" href="/styles.css?v=visual-labels" />
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -157,7 +167,7 @@
     <!-- End Google Tag Manager (noscript) -->
     <header class="topbar">
       <a class="brand" href="/" aria-label="Our PDF home">
-        <img class="brand-logo" src="/assets/ourpdf-logo-red.png?v=2" alt="" width="48" height="38" aria-hidden="true" />
+        <img class="brand-logo" src="/assets/favicon-merge.svg?v=1" alt="" width="48" height="48" aria-hidden="true" />
         <span>Our PDF</span>
       </a>
       <nav class="nav-links" aria-label="Primary navigation">
@@ -166,7 +176,13 @@
         <a href="#popular">Popular</a>
         <a href="#faq">FAQ</a>
       </nav>
-      <a class="primary-link" href="#workspace">Start</a>
+      <div class="topbar-actions">
+        <button class="theme-toggle" type="button" id="theme-toggle" aria-label="Switch to dark theme" aria-pressed="false">
+          <span aria-hidden="true"></span>
+          <strong>Light</strong>
+        </button>
+        <a class="primary-link" href="#workspace">Start</a>
+      </div>
     </header>
 
     <main>
@@ -215,7 +231,7 @@
               </article>
               <article class="visual-tile" aria-label="Convert PDF">
                 <span class="tile-art convert-art" aria-hidden="true">
-                  <img src="/assets/ourpdf-logo-red.png?v=2" alt="" width="48" height="38" />
+                  <img src="/assets/favicon-merge.svg?v=1" alt="" width="54" height="54" />
                   <span></span><span></span>
                 </span>
                 <strong>Convert</strong>
@@ -391,6 +407,6 @@
       <strong>Our PDF</strong>
     </footer>
 
-    <script type="module" src="/app.js?v=tool-param-workspace"></script>
+    <script type="module" src="/app.js?v=theme-adapt"></script>
   </body>
 </html>

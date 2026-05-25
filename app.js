@@ -357,6 +357,7 @@ const metricTotal = document.querySelector("#metric-total");
 const metricCompleted = document.querySelector("#metric-completed");
 const metricFailed = document.querySelector("#metric-failed");
 const metricMode = document.querySelector("#metric-mode");
+const themeToggle = document.querySelector("#theme-toggle");
 
 let selectedCategory = "All";
 let selectedTool = tools[0];
@@ -368,6 +369,7 @@ let jobHistory = loadLocalHistory();
 
 renderCategories();
 renderTools();
+initTheme();
 selectTool(getInitialToolId());
 wireUpload();
 wireTiltCards();
@@ -465,6 +467,29 @@ function getInitialToolId() {
   const params = new URLSearchParams(window.location.search);
   const requestedTool = params.get("tool");
   return tools.some((tool) => tool.id === requestedTool) ? requestedTool : "merge";
+}
+
+function initTheme() {
+  const savedTheme = localStorage.getItem("ourpdf.theme");
+  const preferredTheme = window.matchMedia?.("(prefers-color-scheme: dark)")?.matches ? "dark" : "light";
+  applyTheme(savedTheme === "dark" || savedTheme === "light" ? savedTheme : preferredTheme);
+  themeToggle?.addEventListener("click", () => {
+    const nextTheme = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+    localStorage.setItem("ourpdf.theme", nextTheme);
+    applyTheme(nextTheme);
+  });
+}
+
+function applyTheme(theme) {
+  document.documentElement.dataset.theme = theme;
+  const themeMeta = document.querySelector('meta[name="theme-color"]');
+  if (themeMeta) themeMeta.setAttribute("content", theme === "dark" ? "#10131a" : "#fffaf2");
+  if (!themeToggle) return;
+  const isDark = theme === "dark";
+  themeToggle.setAttribute("aria-pressed", String(isDark));
+  themeToggle.setAttribute("aria-label", isDark ? "Switch to light theme" : "Switch to dark theme");
+  const label = themeToggle.querySelector("strong");
+  if (label) label.textContent = isDark ? "Dark" : "Light";
 }
 
 function wireTiltCards() {

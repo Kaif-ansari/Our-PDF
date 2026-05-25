@@ -229,8 +229,9 @@ function buildToolPage(tool) {
     <title>${escapeHtml(tool.title)}</title>
     <meta name="description" content="${escapeHtml(tool.description)}" />
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="theme-color" content="#fffaf2" />
     <link rel="canonical" href="${url}" />
-    <link rel="icon" type="image/png" href="/assets/ourpdf-logo-red.png?v=2" />
+    <link rel="icon" type="image/svg+xml" href="/assets/favicon-merge.svg?v=1" />
     <link rel="apple-touch-icon" href="/assets/ourpdf-logo-red.png?v=2" />
     <link rel="manifest" href="/site.webmanifest" />
     <meta property="og:type" content="website" />
@@ -243,13 +244,23 @@ function buildToolPage(tool) {
     <meta name="twitter:title" content="${escapeHtml(tool.title)}" />
     <meta name="twitter:description" content="${escapeHtml(tool.description)}" />
     <meta name="twitter:image" content="${siteUrl}/assets/ourpdf-logo-red.png" />
-    <link rel="stylesheet" href="/styles.css?v=tool-param-workspace" />
+    <script>
+      (() => {
+        const saved = localStorage.getItem("ourpdf.theme");
+        const theme = saved === "dark" || saved === "light"
+          ? saved
+          : matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+        document.documentElement.dataset.theme = theme;
+        document.querySelector('meta[name="theme-color"]')?.setAttribute("content", theme === "dark" ? "#10131a" : "#fffaf2");
+      })();
+    </script>
+    <link rel="stylesheet" href="/styles.css?v=visual-labels" />
     <script type="application/ld+json">${jsonLd.replace(/</g, "\\u003c")}</script>
   </head>
   <body>
     <header class="topbar">
       <a class="brand" href="/" aria-label="Our PDF home">
-        <img class="brand-logo" src="/assets/ourpdf-logo-red.png?v=2" alt="" width="48" height="38" aria-hidden="true" />
+        <img class="brand-logo" src="/assets/favicon-merge.svg?v=1" alt="" width="48" height="48" aria-hidden="true" />
         <span>Our PDF</span>
       </a>
       <nav class="nav-links" aria-label="Primary navigation">
@@ -258,7 +269,13 @@ function buildToolPage(tool) {
         <a href="/#faq">FAQ</a>
         <a href="/#workspace">Workspace</a>
       </nav>
-      <a class="primary-link" href="/#workspace">Start</a>
+      <div class="topbar-actions">
+        <button class="theme-toggle" type="button" id="theme-toggle" aria-label="Switch to dark theme" aria-pressed="false">
+          <span aria-hidden="true"></span>
+          <strong>Light</strong>
+        </button>
+        <a class="primary-link" href="/#workspace">Start</a>
+      </div>
     </header>
     <main>
       <nav class="breadcrumbs" aria-label="Breadcrumb">
@@ -320,6 +337,43 @@ function buildToolPage(tool) {
     <footer class="site-footer">
       <strong>Our PDF</strong>
     </footer>
+    <script>
+      (() => {
+        const themeToggle = document.querySelector("#theme-toggle");
+        const applyTheme = (theme) => {
+          document.documentElement.dataset.theme = theme;
+          localStorage.setItem("ourpdf.theme", theme);
+          document.querySelector('meta[name="theme-color"]')?.setAttribute("content", theme === "dark" ? "#10131a" : "#fffaf2");
+          if (!themeToggle) return;
+          const isDark = theme === "dark";
+          themeToggle.setAttribute("aria-pressed", String(isDark));
+          themeToggle.setAttribute("aria-label", isDark ? "Switch to light theme" : "Switch to dark theme");
+          const label = themeToggle.querySelector("strong");
+          if (label) label.textContent = isDark ? "Dark" : "Light";
+        };
+        applyTheme(document.documentElement.dataset.theme || "light");
+        themeToggle?.addEventListener("click", () => {
+          applyTheme(document.documentElement.dataset.theme === "dark" ? "light" : "dark");
+        });
+        for (const target of document.querySelectorAll(".tilt-card, .seo-link-grid a")) {
+          target.addEventListener("pointermove", (event) => {
+            const rect = target.getBoundingClientRect();
+            const x = (event.clientX - rect.left) / rect.width - 0.5;
+            const y = (event.clientY - rect.top) / rect.height - 0.5;
+            target.style.setProperty("--tilt-x", (-y * 12).toFixed(2) + "deg");
+            target.style.setProperty("--tilt-y", (x * -12).toFixed(2) + "deg");
+            target.style.setProperty("--lift-x", (-x * 12).toFixed(1) + "px");
+            target.style.setProperty("--lift-y", (-y * 12).toFixed(1) + "px");
+          });
+          target.addEventListener("pointerleave", () => {
+            target.style.removeProperty("--tilt-x");
+            target.style.removeProperty("--tilt-y");
+            target.style.removeProperty("--lift-x");
+            target.style.removeProperty("--lift-y");
+          });
+        }
+      })();
+    </script>
   </body>
 </html>
 `;
