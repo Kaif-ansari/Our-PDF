@@ -3,7 +3,7 @@ import { join } from "node:path";
 
 const root = process.cwd();
 const output = join(root, "public");
-const siteUrl = "https://our-pdf-beryl.vercel.app";
+const siteUrl = "https://www.cloudpdf.online";
 const builtAt = new Date().toISOString();
 
 const toolPages = [
@@ -225,7 +225,7 @@ function buildRobots() {
 Allow: /
 
 Sitemap: ${siteUrl}/sitemap.xml
-Host: our-pdf-beryl.vercel.app
+Host: www.cloudpdf.online
 `;
 }
 
