@@ -24,6 +24,14 @@ const toolPages = [
     keywords: ["compress PDF", "reduce PDF size", "PDF compressor", "make PDF smaller"],
   },
   {
+    slug: "repair-pdf",
+    name: "Repair PDF",
+    title: "Repair PDF Online Free - Rewrite PDF Structure | Our PDF",
+    description: "Repair PDF files online by reopening and rewriting the document structure in your browser.",
+    intent: "try to rebuild a PDF file structure for a cleaner downloadable copy",
+    keywords: ["repair PDF", "fix PDF", "rewrite PDF", "PDF repair tool"],
+  },
+  {
     slug: "split-pdf",
     name: "Split PDF",
     title: "Split PDF Online Free - Extract PDF Pages | Our PDF",
@@ -175,11 +183,20 @@ const toolPages = [
     intent: "copy selectable PDF text into a downloadable text file",
     keywords: ["extract PDF text", "PDF text extractor", "copy text from PDF", "PDF OCR preview"],
   },
+  {
+    slug: "summarize-pdf",
+    name: "Summarize PDF",
+    title: "Summarize PDF Online Free - Local PDF Summary | Our PDF",
+    description: "Summarize PDF text online with a local browser-based summary of selectable PDF content.",
+    intent: "create a local summary from selectable PDF text",
+    keywords: ["summarize PDF", "PDF summary", "summarize document", "local PDF summary"],
+  },
 ];
 
 const appToolIdsBySlug = {
   "merge-pdf": "merge",
   "compress-pdf": "compress",
+  "repair-pdf": "repair",
   "split-pdf": "split",
   "remove-pages-from-pdf": "remove-pages",
   "extract-pdf-pages": "extract-pages",
@@ -199,6 +216,7 @@ const appToolIdsBySlug = {
   "redact-pdf": "redact",
   "compare-pdf": "compare",
   "extract-pdf-text": "ocr",
+  "summarize-pdf": "summarize",
 };
 
 await rm(output, { recursive: true, force: true });
@@ -286,6 +304,7 @@ ${toolLines}
 function buildToolPage(tool) {
   const url = `${siteUrl}/tools/${tool.slug}/`;
   const appToolId = appToolIdsBySlug[tool.slug] ?? "merge";
+  const encodedAppToolId = encodeURIComponent(appToolId);
   const relatedLinks = toolPages
     .filter((item) => item.slug !== tool.slug)
     .slice(0, 6)
@@ -439,7 +458,7 @@ function buildToolPage(tool) {
           <h1 id="tool-title">${escapeHtml(tool.name)} online</h1>
           <p>${escapeHtml(tool.description)} Use this page when you need to ${escapeHtml(tool.intent)} with a focused PDF workflow.</p>
           <div class="hero-actions">
-            <a class="button primary" href="/?tool=${encodeURIComponent(appToolId)}&v=tool-param-workspace#workspace">Open ${escapeHtml(tool.name)}</a>
+            <a class="button primary" href="/#workspace" data-initial-tool="${encodedAppToolId}">Open ${escapeHtml(tool.name)}</a>
             <a class="button secondary" href="/#tools">Browse all PDF tools</a>
           </div>
         </div>
@@ -500,6 +519,11 @@ function buildToolPage(tool) {
           if (label) label.textContent = isDark ? "Dark" : "Light";
         };
         applyTheme(document.documentElement.dataset.theme || "light");
+        for (const link of document.querySelectorAll("[data-initial-tool]")) {
+          link.addEventListener("click", () => {
+            localStorage.setItem("ourpdf.initialTool", link.dataset.initialTool || "merge");
+          });
+        }
         themeToggle?.addEventListener("click", () => {
           applyTheme(document.documentElement.dataset.theme === "dark" ? "light" : "dark");
         });

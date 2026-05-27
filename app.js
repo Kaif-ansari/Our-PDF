@@ -335,6 +335,8 @@ const tools = [
   },
 ];
 
+const INITIAL_TOOL_STORAGE_KEY = "ourpdf.initialTool";
+
 const categoryTabs = document.querySelector("#category-tabs");
 const toolGrid = document.querySelector("#tool-grid");
 const activeCategory = document.querySelector("#active-category");
@@ -470,7 +472,13 @@ function openWorkspace() {
 function getInitialToolId() {
   const params = new URLSearchParams(window.location.search);
   const requestedTool = params.get("tool");
-  return tools.some((tool) => tool.id === requestedTool) ? requestedTool : "merge";
+  if (tools.some((tool) => tool.id === requestedTool)) return requestedTool;
+
+  const storedTool = localStorage.getItem(INITIAL_TOOL_STORAGE_KEY);
+  localStorage.removeItem(INITIAL_TOOL_STORAGE_KEY);
+  if (tools.some((tool) => tool.id === storedTool)) return storedTool;
+
+  return "merge";
 }
 
 function initTheme() {
