@@ -381,9 +381,10 @@ function buildToolPage(tool) {
           : matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
         document.documentElement.dataset.theme = theme;
         document.querySelector('meta[name="theme-color"]')?.setAttribute("content", theme === "dark" ? "#10131a" : "#fffaf2");
-      })();
-    </script>
+    })();
+  </script>
     <link rel="stylesheet" href="/styles.css?v=black-dropzone" />
+    <script defer src="/_vercel/speed-insights/script.js" data-sdkn="@vercel/speed-insights" data-sdkv="2.0.0"></script>
     <script type="application/ld+json">${jsonLd.replace(/</g, "\\u003c")}</script>
   </head>
   <body>

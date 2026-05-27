@@ -8,5 +8,8 @@
     "start": "node scripts/static-server.mjs",
     "build": "node scripts/build-static.mjs",
     "security:audit": "npm audit --audit-level=moderate"
+  },
+  "dependencies": {
+    "@vercel/speed-insights": "^2.0.0"
   }
 }
