@@ -472,7 +472,10 @@ function openWorkspace() {
 function getInitialToolId() {
   const params = new URLSearchParams(window.location.search);
   const requestedTool = params.get("tool");
-  if (tools.some((tool) => tool.id === requestedTool)) return requestedTool;
+  if (tools.some((tool) => tool.id === requestedTool)) {
+    history.replaceState(null, "", `${window.location.pathname}${window.location.hash || "#workspace"}`);
+    return requestedTool;
+  }
 
   const storedTool = localStorage.getItem(INITIAL_TOOL_STORAGE_KEY);
   localStorage.removeItem(INITIAL_TOOL_STORAGE_KEY);
