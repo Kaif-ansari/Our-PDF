@@ -1,9 +1,11 @@
-import { PDFDocument, StandardFonts, rgb, degrees } from "https://cdn.skypack.dev/pdf-lib@1.17.1";
-import JSZip from "https://cdn.skypack.dev/jszip@3.10.1";
-import * as pdfjsLib from "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.min.mjs";
+import { PDFDocument, StandardFonts, rgb, degrees } from "/vendor/pdf-lib.esm.min.js";
+import "/vendor/jszip.min.js";
+import * as pdfjsLib from "/vendor/pdf.min.mjs";
+
+const JSZip = globalThis.JSZip;
 
 pdfjsLib.GlobalWorkerOptions.workerSrc =
-  "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.worker.min.mjs";
+  "/vendor/pdf.worker.min.mjs";
 
 const MAX_UPLOAD_BYTES = 10 * 1024 * 1024;
 const MAX_PDF_PAGES = 300;
@@ -1453,7 +1455,7 @@ async function pdfToPowerPoint(files) {
     .map(
       (page) => `
         <section style="width:960px;height:540px;page-break-after:always;padding:24px;font-family:Arial,sans-serif;">
-          <h1 style="font-size:24px;margin:0 0 16px;">Page ${page.number}</h1>
+          <h3 style="font-size:24px;margin:0 0 16px;">Page ${page.number}</h3>
           <img src="${page.imageDataUrl}" alt="Page ${page.number}" style="max-width:912px;max-height:420px;display:block;margin-bottom:12px;" />
           <p style="font-size:12px;white-space:pre-wrap;">${escapeHtml(page.text.slice(0, 900))}</p>
         </section>
@@ -1920,7 +1922,7 @@ function officeHtmlDocument(title, body) {
         <style>
           body { font-family: Arial, sans-serif; color: #111827; }
           pre { white-space: pre-wrap; font-family: Arial, sans-serif; line-height: 1.45; }
-          h1, h2 { page-break-after: avoid; }
+          h3, h2 { page-break-after: avoid; }
         </style>
       </head>
       <body>${body}</body>

@@ -350,9 +350,15 @@ const longTailPages = [
 await rm(output, { recursive: true, force: true });
 await mkdir(output, { recursive: true });
 
-for (const item of ["index.html", "app.js", "styles.css", "assets", "_headers", "_redirects", "site.webmanifest"]) {
+for (const item of ["index.html", "app.js", "theme.js", "styles.css", "assets", "_headers", "_redirects", "site.webmanifest"]) {
   await cp(join(root, item), join(output, item), { recursive: true });
 }
+
+await mkdir(join(output, "vendor"), { recursive: true });
+await cp(join(root, "node_modules", "pdf-lib", "dist", "pdf-lib.esm.min.js"), join(output, "vendor", "pdf-lib.esm.min.js"));
+await cp(join(root, "node_modules", "jszip", "dist", "jszip.min.js"), join(output, "vendor", "jszip.min.js"));
+await cp(join(root, "node_modules", "pdfjs-dist", "build", "pdf.min.mjs"), join(output, "vendor", "pdf.min.mjs"));
+await cp(join(root, "node_modules", "pdfjs-dist", "build", "pdf.worker.min.mjs"), join(output, "vendor", "pdf.worker.min.mjs"));
 
 await writeFile(join(output, "robots.txt"), buildRobots(), "utf8");
 await writeFile(join(output, "sitemap.xml"), buildSitemap(), "utf8");
@@ -381,6 +387,42 @@ console.log("Static site written to public/");
 function buildRobots() {
   return `User-agent: *
 Allow: /
+
+User-agent: GPTBot
+Disallow: /
+
+User-agent: Google-Extended
+Disallow: /
+
+User-agent: ClaudeBot
+Disallow: /
+
+User-agent: Claude-User
+Disallow: /
+
+User-agent: Claude-SearchBot
+Disallow: /
+
+User-agent: PerplexityBot
+Disallow: /
+
+User-agent: Perplexity-User
+Disallow: /
+
+User-agent: Meta-ExternalAgent
+Disallow: /
+
+User-agent: Amazonbot
+Disallow: /
+
+User-agent: Applebot-Extended
+Disallow: /
+
+User-agent: Bytespider
+Disallow: /
+
+User-agent: DeepSeekBot
+Disallow: /
 
 Sitemap: ${siteUrl}/sitemap.xml
 Host: www.cloudpdf.online
@@ -522,7 +564,7 @@ function buildToolPage(tool) {
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>${escapeHtml(tool.title)}</title>
     <meta name="description" content="${escapeHtml(tool.description)}" />
-    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1, noai, noimageai" />
     <meta name="theme-color" content="#fffaf2" />
     <link rel="canonical" href="${url}" />
     <link rel="icon" type="image/png" href="/assets/cloudpdf-favicon.png?v=1" />
@@ -538,39 +580,12 @@ function buildToolPage(tool) {
     <meta name="twitter:title" content="${escapeHtml(tool.title)}" />
     <meta name="twitter:description" content="${escapeHtml(tool.description)}" />
     <meta name="twitter:image" content="${siteUrl}/assets/cloudpdf-logo.png" />
-    <script>
-      (() => {
-        const saved = localStorage.getItem("cloudpdf.theme");
-        const theme = saved === "dark" || saved === "light"
-          ? saved
-          : matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-        document.documentElement.dataset.theme = theme;
-        document.querySelector('meta[name="theme-color"]')?.setAttribute("content", theme === "dark" ? "#10131a" : "#fffaf2");
-    })();
-  </script>
+    <script defer src="/theme.js?v=security-v1"></script>
     <link rel="stylesheet" href="/styles.css?v=footer-v1" />
     <script defer src="/_vercel/speed-insights/script.js" data-sdkn="@vercel/speed-insights" data-sdkv="2.0.0"></script>
     <script type="application/ld+json">${jsonLd.replace(/</g, "\\u003c")}</script>
-    <!-- Google Tag Manager -->
-    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-    })(window,document,'script','dataLayer','GTM-T7KM2D5G');</script>
-    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-    })(window,document,'script','dataLayer','GTM-MXLF769M');</script>
-    <!-- End Google Tag Manager -->
   </head>
   <body>
-    <!-- Google Tag Manager (noscript) -->
-    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-T7KM2D5G"
-    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MXLF769M"
-    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-    <!-- End Google Tag Manager (noscript) -->
     <header class="topbar">
       <a class="brand" href="/" aria-label="CloudPDF home">
         <img class="brand-logo" src="/assets/cloudpdf-logo.png?v=1" alt="" width="56" height="36" aria-hidden="true" />
@@ -601,7 +616,7 @@ function buildToolPage(tool) {
       <section class="hero tool-landing" aria-labelledby="tool-title">
         <div class="hero-copy">
           <p class="eyebrow">Free online PDF tool</p>
-          <h1 id="tool-title">${escapeHtml(tool.name)} online</h1>
+          <h3 id="tool-title">${escapeHtml(tool.name)} online</h3>
           <p>${escapeHtml(tool.description)} Use this page when you need to ${escapeHtml(tool.intent)} with a focused PDF workflow.</p>
           <div class="hero-actions">
             <a class="button primary" href="/#workspace" data-initial-tool="${encodedAppToolId}">Open ${escapeHtml(tool.name)}</a>
@@ -630,10 +645,10 @@ function buildToolPage(tool) {
           <h2 id="benefits-title">Fast, secure, free, and browser-based.</h2>
         </div>
         <div class="faq-grid">
-          <article><h3>Fast</h3><p>Focused options help you finish the PDF task quickly and avoid unnecessary setup.</p></article>
-          <article><h3>Secure</h3><p>The workspace is designed for browser-session processing and clear file handling.</p></article>
-          <article><h3>Free</h3><p>You can start core PDF actions without a mandatory signup step.</p></article>
-          <article><h3>Browser-based</h3><p>Use the tool from a modern desktop or mobile browser without installing a heavy editor.</p></article>
+          <article><h5>Fast</h5><p>Focused options help you finish the PDF task quickly and avoid unnecessary setup.</p></article>
+          <article><h5>Secure</h5><p>The workspace is designed for browser-session processing and clear file handling.</p></article>
+          <article><h5>Free</h5><p>You can start core PDF actions without a mandatory signup step.</p></article>
+          <article><h5>Browser-based</h5><p>Use the tool from a modern desktop or mobile browser without installing a heavy editor.</p></article>
         </div>
       </section>
       <section class="seo-section" aria-labelledby="how-title">
@@ -672,7 +687,7 @@ function buildToolPage(tool) {
           <h2 id="tool-faq-title">${escapeHtml(tool.name)} questions.</h2>
         </div>
         <div class="faq-grid">
-          ${faqs.map((faq) => `<article><h3>${escapeHtml(faq.question)}</h3><p>${escapeHtml(faq.answer)}</p></article>`).join("")}
+          ${faqs.map((faq) => `<article><h5>${escapeHtml(faq.question)}</h5><p>${escapeHtml(faq.answer)}</p></article>`).join("")}
         </div>
       </section>
       <section class="seo-section" aria-labelledby="related-title">
@@ -796,7 +811,7 @@ function buildLongTailPage(page) {
           <p class="eyebrow">Use cases</p>
           <h2 id="use-cases-title">When this workflow helps.</h2>
         </div>
-        <div class="faq-grid">${page.useCases.map((item) => `<article><h3>${escapeHtml(item)}</h3><p>Use ${escapeHtml(page.toolName)} when this document needs a cleaner, smaller, or more submission-ready PDF workflow.</p></article>`).join("")}</div>
+        <div class="faq-grid">${page.useCases.map((item) => `<article><h5>${escapeHtml(item)}</h5><p>Use ${escapeHtml(page.toolName)} when this document needs a cleaner, smaller, or more submission-ready PDF workflow.</p></article>`).join("")}</div>
       </section>
       <section class="seo-section" aria-labelledby="tool-link-title">
         <div class="section-heading">
@@ -826,7 +841,7 @@ function buildSimplePage({ url, title, description, eyebrow, heading, body, json
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>${escapeHtml(title)}</title>
     <meta name="description" content="${escapeHtml(description)}" />
-    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1, noai, noimageai" />
     <meta name="theme-color" content="#fffaf2" />
     <link rel="canonical" href="${url}" />
     <link rel="icon" type="image/png" href="/assets/cloudpdf-favicon.png?v=1" />
@@ -838,6 +853,7 @@ function buildSimplePage({ url, title, description, eyebrow, heading, body, json
     <meta property="og:description" content="${escapeHtml(description)}" />
     <meta property="og:url" content="${url}" />
     <meta property="og:image" content="${siteUrl}/assets/cloudpdf-logo.png" />
+    <script defer src="/theme.js?v=security-v1"></script>
     <script type="application/ld+json">${jsonLd.replace(/</g, "\\u003c")}</script>
     <link rel="stylesheet" href="/styles.css?v=footer-v1" />
   </head>
@@ -861,7 +877,7 @@ function buildSimplePage({ url, title, description, eyebrow, heading, body, json
       <section class="hero tool-landing" aria-labelledby="page-title">
         <div class="hero-copy">
           <p class="eyebrow">${escapeHtml(eyebrow)}</p>
-          <h1 id="page-title">${escapeHtml(heading)}</h1>
+          <h3 id="page-title">${escapeHtml(heading)}</h3>
           ${body.map((paragraph) => `<p>${escapeHtml(paragraph)}</p>`).join("")}
           <div class="hero-actions">
             <a class="button primary" href="/#tools">Explore PDF tools</a>

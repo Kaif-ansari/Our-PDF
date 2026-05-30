@@ -8,7 +8,7 @@
       name="description"
       content="Use CloudPDF free online PDF tools to merge PDF files, compress PDF, split PDF, convert PDF to JPG, edit pages, add watermarks, sign documents, and extract text privately in your browser."
     />
-    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1, noai, noimageai" />
     <meta name="author" content="CloudPDF" />
     <meta name="application-name" content="CloudPDF" />
     <meta name="theme-color" content="#fffaf2" />
@@ -17,9 +17,7 @@
     <link rel="apple-touch-icon" href="/assets/cloudpdf-favicon.png?v=1" />
     <link rel="manifest" href="/site.webmanifest" />
     <link rel="preload" as="image" href="/assets/cloudpdf-logo.png?v=1" />
-    <link rel="preconnect" href="https://cdn.skypack.dev" crossorigin />
-    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
-    <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin />
+    <script defer src="/theme.js?v=security-v1"></script>
     <script defer src="/_vercel/speed-insights/script.js" data-sdkn="@vercel/speed-insights" data-sdkv="2.0.0"></script>
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="CloudPDF" />
@@ -38,16 +36,6 @@
       content="Merge PDF, compress PDF, convert PDF, edit documents, sign files, and extract text with free online PDF tools that run in your browser."
     />
     <meta name="twitter:image" content="https://www.cloudpdf.online/assets/cloudpdf-logo.png" />
-    <script>
-      (() => {
-        const saved = localStorage.getItem("cloudpdf.theme");
-        const theme = saved === "dark" || saved === "light"
-          ? saved
-          : matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-        document.documentElement.dataset.theme = theme;
-        document.querySelector('meta[name="theme-color"]')?.setAttribute("content", theme === "dark" ? "#10131a" : "#fffaf2");
-      })();
-    </script>
     <link rel="stylesheet" href="/styles.css?v=footer-v1" />
     <script type="application/ld+json">
       {
@@ -163,26 +151,8 @@
         ]
       }
     </script>
-    <!-- Google Tag Manager -->
-    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-    })(window,document,'script','dataLayer','GTM-T7KM2D5G');</script>
-    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-    })(window,document,'script','dataLayer','GTM-MXLF769M');</script>
-    <!-- End Google Tag Manager -->
   </head>
   <body>
-    <!-- Google Tag Manager (noscript) -->
-    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-T7KM2D5G"
-    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MXLF769M"
-    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-    <!-- End Google Tag Manager (noscript) -->
     <header class="topbar">
       <a class="brand" href="/" aria-label="CloudPDF home">
         <img class="brand-logo" src="/assets/cloudpdf-logo.png?v=1" alt="" width="56" height="36" aria-hidden="true" />
@@ -213,7 +183,7 @@
       <section class="hero" aria-labelledby="hero-title">
         <div class="hero-copy">
           <p class="eyebrow">Private PDF studio</p>
-          <h1 id="hero-title">PDF tools that feel instant.</h1>
+          <h3 id="hero-title">PDF tools that feel instant.</h3>
           <p class="hero-short">Merge. Compress. Convert. Sign. Done.</p>
           <p class="seo-copy">
             CloudPDF is a fast browser-based PDF toolkit for everyday document work. Use it to
@@ -373,7 +343,7 @@
 
           <aside class="result-panel" aria-label="Results">
             <section>
-              <h3>Result</h3>
+              <h5>Result</h5>
               <div id="result-list" class="result-list">
                 <p>No processed files yet.</p>
               </div>
@@ -389,13 +359,13 @@
         </div>
         <div class="dashboard-grid">
           <section class="dashboard-panel">
-            <h3>Job History</h3>
+            <h5>Job History</h5>
             <div id="history-list" class="history-list">
               <p>No jobs yet.</p>
             </div>
           </section>
           <section class="dashboard-panel">
-            <h3>Platform</h3>
+            <h5>Platform</h5>
             <div class="metric-grid">
               <div><strong id="metric-total">0</strong><span>Total jobs</span></div>
               <div><strong id="metric-completed">0</strong><span>Completed</span></div>
@@ -413,19 +383,19 @@
         </div>
         <div class="faq-grid">
           <article>
-            <h3>What is the best free online PDF tool for everyday document tasks?</h3>
+            <h5>What is the best free online PDF tool for everyday document tasks?</h5>
             <p>CloudPDF combines popular PDF actions in one browser workspace: merge PDF, compress PDF, split PDF, convert PDF, sign PDF, redact PDF, and extract PDF text.</p>
           </article>
           <article>
-            <h3>Can I merge PDF files and reorder them?</h3>
+            <h5>Can I merge PDF files and reorder them?</h5>
             <p>Yes. The Merge PDF tool uses numbered slots so you can place files in the exact order you want before downloading the combined PDF.</p>
           </article>
           <article>
-            <h3>Which PDF converter tools are included?</h3>
+            <h5>Which PDF converter tools are included?</h5>
             <p>The converter set includes JPG to PDF, PDF to JPG, PDF to Word-compatible DOCX, PDF to PowerPoint-compatible slides, PDF to Excel-compatible tables, and Office-to-PDF helpers.</p>
           </article>
           <article>
-            <h3>How does CloudPDF help with private PDF workflows?</h3>
+            <h5>How does CloudPDF help with private PDF workflows?</h5>
             <p>The app is designed as a browser-first PDF editor. Files are processed in the current browser session instead of being stored in a user account or uploaded to a document storage backend.</p>
           </article>
         </div>
