@@ -1286,27 +1286,100 @@ h3 {
 }
 
 .site-footer {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  padding: 26px 28px;
+  display: grid;
+  gap: 22px;
+  padding: 42px 28px 24px;
   border-top: 1px solid var(--line);
-  background: var(--surface);
+  background:
+    linear-gradient(180deg, var(--surface), var(--surface-2)),
+    var(--surface);
   color: var(--ink);
 }
 
-.site-footer nav {
+.footer-main {
+  display: grid;
+  grid-template-columns: minmax(280px, 1.5fr) repeat(3, minmax(150px, 0.55fr));
+  max-width: 1180px;
+  width: 100%;
+  margin: 0 auto;
+  gap: 28px;
+  align-items: start;
+}
+
+.footer-brand {
+  display: grid;
+  gap: 12px;
+  max-width: 520px;
+}
+
+.footer-brand strong {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 950;
+}
+
+.footer-brand p {
+  max-width: 480px;
+  margin: 0;
+  color: var(--muted);
+  font-family: var(--font-reading);
+}
+
+.footer-trust {
   display: flex;
   flex-wrap: wrap;
-  gap: 14px;
+  gap: 8px;
+}
+
+.footer-trust span {
+  padding: 7px 10px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--glass);
+  color: var(--ink);
+  font-family: var(--font-ui);
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
+.footer-column {
+  display: grid;
+  gap: 9px;
   color: var(--muted);
+  font-family: var(--font-ui);
   font-weight: 800;
 }
 
-.site-footer a:hover {
+.footer-column h2 {
+  margin: 0 0 4px;
   color: var(--ink);
+  font-size: 0.82rem;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.footer-column a {
+  width: fit-content;
+  color: var(--muted);
+}
+
+.site-footer a:hover {
+  color: var(--accent-dark);
+}
+
+.footer-bottom {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  max-width: 1180px;
+  width: 100%;
+  margin: 0 auto;
+  gap: 10px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 800;
 }
 
 .tool-landing {
@@ -2478,6 +2551,14 @@ h3 {
     grid-template-columns: 1fr;
   }
 
+  .footer-main {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .footer-brand {
+    grid-column: 1 / -1;
+  }
+
   .options-panel {
     grid-template-columns: 1fr;
   }
@@ -2557,6 +2638,14 @@ h3 {
   .dashboard-panel,
   .faq-grid article {
     padding: 14px;
+  }
+
+  .footer-main {
+    grid-template-columns: 1fr;
+  }
+
+  .footer-bottom {
+    display: grid;
   }
 
   .page-preview-grid,

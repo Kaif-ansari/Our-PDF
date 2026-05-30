@@ -1,6 +1,6 @@
 {
-  "name": "Our PDF",
-  "short_name": "Our PDF",
+  "name": "CloudPDF",
+  "short_name": "CloudPDF",
   "description": "Free online PDF tools to merge, compress, convert, edit, sign, redact, and extract PDF content.",
   "start_url": "/",
   "display": "standalone",
@@ -8,9 +8,10 @@
   "theme_color": "#10131a",
   "icons": [
     {
-      "src": "/assets/ourpdf-current-favicon.png",
+      "src": "/assets/cloudpdf-favicon.png",
       "sizes": "512x512",
       "type": "image/png"
     }
   ]
 }
+

@@ -1,6 +1,6 @@
 # Browser-Only PDF App Architecture
 
-Our PDF is a static, browser-only PDF toolkit. The production security posture is intentionally simple: users select files locally, browser libraries process those files in the user agent, and generated results are downloaded from in-memory object URLs.
+CloudPDF is a static, browser-only PDF toolkit. The production security posture is intentionally simple: users select files locally, browser libraries process those files in the user agent, and generated results are downloaded from in-memory object URLs.
 
 There is no account system, subscription system, upload API, database, object storage bucket, queue, server-side PDF worker, or document-retention service in this build.
 
@@ -86,3 +86,4 @@ Production traffic is divided into small static file requests and served from th
 - `/assets/*` can be cached immutably for one year.
 
 This keeps high traffic away from any application server. The local development server also streams files in 64 KB chunks so large static responses do not need to be buffered in memory.
+

@@ -289,7 +289,7 @@ const tools = [
     description: "Place a typed signature on the first page.",
     accept: ".pdf,application/pdf",
     multiple: false,
-    options: [{ name: "signature", label: "Signature", type: "text", value: "Signed by Our PDF" }],
+    options: [{ name: "signature", label: "Signature", type: "text", value: "Signed by CloudPDF" }],
     run: signPdf,
   },
   {
@@ -335,7 +335,7 @@ const tools = [
   },
 ];
 
-const INITIAL_TOOL_STORAGE_KEY = "ourpdf.initialTool";
+const INITIAL_TOOL_STORAGE_KEY = "cloudpdf.initialTool";
 
 const categoryTabs = document.querySelector("#category-tabs");
 const toolGrid = document.querySelector("#tool-grid");
@@ -485,12 +485,12 @@ function getInitialToolId() {
 }
 
 function initTheme() {
-  const savedTheme = localStorage.getItem("ourpdf.theme");
+  const savedTheme = localStorage.getItem("cloudpdf.theme");
   const preferredTheme = window.matchMedia?.("(prefers-color-scheme: dark)")?.matches ? "dark" : "light";
   applyTheme(savedTheme === "dark" || savedTheme === "light" ? savedTheme : preferredTheme);
   themeToggle?.addEventListener("click", () => {
     const nextTheme = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
-    localStorage.setItem("ourpdf.theme", nextTheme);
+    localStorage.setItem("cloudpdf.theme", nextTheme);
     applyTheme(nextTheme);
   });
 }
@@ -1163,7 +1163,7 @@ function renderHistory() {
 
 function loadLocalHistory() {
   try {
-    const parsed = JSON.parse(localStorage.getItem("ourpdf.jobs") || "[]");
+    const parsed = JSON.parse(localStorage.getItem("cloudpdf.jobs") || "[]");
     return Array.isArray(parsed) ? parsed : [];
   } catch {
     return [];
@@ -1172,7 +1172,7 @@ function loadLocalHistory() {
 
 function persistLocalHistory() {
   try {
-    localStorage.setItem("ourpdf.jobs", JSON.stringify(jobHistory));
+    localStorage.setItem("cloudpdf.jobs", JSON.stringify(jobHistory));
   } catch (error) {
     console.warn("Local job history could not be saved.");
   }
@@ -1398,7 +1398,7 @@ async function compressPdf(files) {
   source.setTitle("");
   source.setSubject("");
   source.setKeywords([]);
-  source.setProducer("Our PDF");
+  source.setProducer("CloudPDF");
   const bytes = await source.save({ useObjectStreams: true, addDefaultPage: false });
   return [pdfOutput(bytes, "compressed.pdf")];
 }
@@ -1832,8 +1832,8 @@ function docxCoreProperties(sourceName) {
   xmlns:dcmitype="http://purl.org/dc/dcmitype/"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <dc:title>${escapeHtml(sourceName)}</dc:title>
-  <dc:creator>Our PDF</dc:creator>
-  <cp:lastModifiedBy>Our PDF</cp:lastModifiedBy>
+  <dc:creator>CloudPDF</dc:creator>
+  <cp:lastModifiedBy>CloudPDF</cp:lastModifiedBy>
   <dcterms:created xsi:type="dcterms:W3CDTF">${now}</dcterms:created>
   <dcterms:modified xsi:type="dcterms:W3CDTF">${now}</dcterms:modified>
 </cp:coreProperties>`;
@@ -1843,7 +1843,7 @@ function docxAppProperties(pageCount) {
   return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties"
   xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes">
-  <Application>Our PDF</Application>
+  <Application>CloudPDF</Application>
   <Pages>${pageCount}</Pages>
 </Properties>`;
 }
@@ -2044,7 +2044,7 @@ async function textToPdfWithOriginal(file, text, outputName, title) {
   if (typeof pdf.attach === "function") {
     await pdf.attach(await file.arrayBuffer(), file.name, {
       mimeType: file.type || "application/octet-stream",
-      description: "Original source file attached by Our PDF to preserve source information.",
+      description: "Original source file attached by CloudPDF to preserve source information.",
       creationDate: new Date(),
       modificationDate: new Date(),
     });
@@ -2076,7 +2076,7 @@ async function imagesToPdfWithOriginal(file, images, outputName, title) {
   if (typeof pdf.attach === "function") {
     await pdf.attach(await file.arrayBuffer(), file.name, {
       mimeType: file.type || "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-      description: "Original source file attached by Our PDF to preserve source information.",
+      description: "Original source file attached by CloudPDF to preserve source information.",
       creationDate: new Date(),
       modificationDate: new Date(),
     });
@@ -2235,3 +2235,4 @@ function truncateText(value, maxLength) {
 function replaceExtension(fileName, extension) {
   return fileName.replace(/\.[^.]+$/, "") + extension;
 }
+

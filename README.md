@@ -1,6 +1,6 @@
-# Our PDF
+# CloudPDF
 
-Our PDF is an original iLovePDF-style PDF toolkit that runs as a browser-only local workspace. There is no account registration, premium subscription, upload API, database, or server-side document storage.
+CloudPDF is an original iLovePDF-style PDF toolkit that runs as a browser-only local workspace. There is no account registration, premium subscription, upload API, database, or server-side document storage.
 
 ## Local Website
 
@@ -108,3 +108,4 @@ This browser-only build intentionally does not unlock encrypted PDFs, perform sc
 - `app.js` contains tool definitions and browser PDF processing.
 - `styles.css` contains the responsive app UI.
 - `scripts/static-server.mjs` serves the static app locally.
+

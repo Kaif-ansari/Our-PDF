@@ -1,4 +1,4 @@
-# Our PDF SEO Implementation and Ranking Strategy
+# CloudPDF SEO Implementation and Ranking Strategy
 
 ## Technical SEO Audit
 
@@ -11,7 +11,7 @@ Fixed:
 - Added programmatic static pages under `/tools/{slug}/` for high-intent PDF keywords.
 
 Remaining high-impact SEO work:
-- Connect the site to Google Search Console and submit `https://our-pdf-beryl.vercel.app/sitemap.xml`.
+- Connect the site to Google Search Console and submit `https://cloudpdf-beryl.vercel.app/sitemap.xml`.
 - Replace the Vercel preview-style hostname with a branded production domain, then update `siteUrl` in `scripts/build-static.mjs` and canonical tags.
 - Add real privacy, terms, contact, and about pages to improve trust signals for YMYL-adjacent document utilities.
 - Add stable social profiles to the Organization `sameAs` list.
@@ -161,3 +161,4 @@ Recommendations:
 6. Request indexing for the homepage and top tool pages.
 7. Run PageSpeed Insights on mobile and desktop.
 8. Fix any remaining LCP, CLS, INP, and accessibility regressions.
+

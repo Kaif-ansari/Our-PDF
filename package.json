@@ -1,5 +1,5 @@
 {
-  "name": "our-pdf",
+  "name": "cloudpdf",
   "version": "1.0.0",
   "private": true,
   "type": "module",
@@ -13,3 +13,4 @@
     "@vercel/speed-insights": "^2.0.0"
   }
 }
+
