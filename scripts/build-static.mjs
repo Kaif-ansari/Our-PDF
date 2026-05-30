@@ -228,9 +228,10 @@ const trustPages = [
     eyebrow: "Trust center",
     body: [
       "CloudPDF is designed around browser-based document work. Supported tools process files in the current browser session, and the app does not require an account before you merge, compress, split, convert, sign, redact, or extract text from PDF files.",
-      "Files selected in the workspace are used for the action you choose. They are not stored in a user account by this static site, and clearing the browser session or refreshing the page removes the active file selection.",
-      "The site may use analytics, performance, and security services to understand aggregate usage, monitor reliability, and improve Core Web Vitals. These services should be configured to avoid collecting document contents.",
-      "Do not use online tools for files that you are not authorized to process. For sensitive workflows, review the output locally before sharing it."
+      "Files selected in the workspace are used only for the action you choose. They are not stored in a CloudPDF user account by this static site, and clearing the browser session, refreshing the page, or closing the tab removes the active file selection.",
+      "Generated files are created for download in your browser. You should review every output before sharing it, especially after compression, conversion, redaction, repair, or text extraction, because document structure and visual layout can vary across PDF readers.",
+      "CloudPDF may use privacy-conscious analytics, performance monitoring, and security tooling to understand aggregate usage, diagnose reliability issues, and improve Core Web Vitals. These services should be configured to avoid collecting document contents.",
+      "Do not upload or process files you are not authorized to use. For highly sensitive, regulated, legal, medical, financial, or business-critical documents, evaluate whether a local offline workflow is more appropriate."
     ],
   },
   {
@@ -241,9 +242,10 @@ const trustPages = [
     eyebrow: "Legal",
     body: [
       "CloudPDF provides free online PDF tools for common document workflows. You are responsible for the files you choose, the rights you have to process them, and how you use downloaded results.",
-      "Do not use the service to process unlawful, harmful, or unauthorized content. Do not attempt to abuse, overload, reverse engineer, or interfere with the site or its supporting infrastructure.",
-      "The tools are provided as-is. Document conversion, compression, redaction, and repair features should be reviewed before you rely on the result for legal, financial, medical, or business-critical use.",
-      "We may update features, limits, policies, and these terms as the product changes."
+      "You agree not to use CloudPDF to process unlawful, harmful, infringing, deceptive, or unauthorized content. You must also avoid activity that abuses, overloads, reverse engineers, bypasses, scans, or interferes with the site or its supporting infrastructure.",
+      "The tools are provided as-is for convenience. Document conversion, compression, redaction, comparison, signing, and repair features should be reviewed carefully before you rely on the output for legal, financial, medical, compliance, or business-critical use.",
+      "CloudPDF may change tool availability, limits, supported file types, security controls, policies, and these terms as the product evolves. Continued use of the website means you accept the current version of these terms.",
+      "If a generated file does not match your requirements, stop using that output and recreate it from the original source document using the appropriate tool settings."
     ],
   },
   {
@@ -254,9 +256,10 @@ const trustPages = [
     eyebrow: "Support",
     body: [
       "For support, feedback, privacy questions, partnerships, or feature requests, contact the CloudPDF team through the official channel linked from the production site.",
-      "When reporting an issue, include the tool name, browser, operating system, file type, and the exact step where the problem happened. Do not send confidential documents unless a secure support process has been established.",
-      "Useful requests include new PDF conversion formats, accessibility feedback, directory partnerships, educational resources, and documentation improvements.",
-      "For urgent privacy or security concerns, use a clear subject line and include enough detail for the team to reproduce the issue without requiring your original document."
+      "When reporting an issue, include the tool name, browser, operating system, file type, file size range, and the exact step where the problem happened. Do not send confidential documents unless a secure support process has been established.",
+      "For privacy or security concerns, use a clear subject line and include enough detail for the team to reproduce the issue without requiring your original document. Screenshots with sensitive content hidden are usually safer than sending source files.",
+      "Useful requests include new PDF conversion formats, accessibility improvements, workflow suggestions, educational resources, directory partnerships, and documentation corrections.",
+      "For business or partnership questions, describe the audience, expected workflow, geographic market, and any compliance requirements so the request can be routed properly."
     ],
   },
   {
@@ -267,9 +270,10 @@ const trustPages = [
     eyebrow: "Company",
     body: [
       "CloudPDF is a browser-based PDF toolkit for students, freelancers, office teams, and small businesses that need fast document actions without a complicated account flow.",
-      "The product focuses on focused tools: merge PDF files, compress PDF documents, split pages, convert documents, add watermarks, number pages, sign PDFs, redact files, compare documents, and extract text.",
-      "The SEO goal is to make each workflow easy to discover through useful tool pages, long-tail guides, structured data, fast pages, and clear privacy messaging.",
-      "CloudPDF favors practical document workflows over heavy dashboards: choose a tool, drop a file, adjust options, and download the result."
+      "The product focuses on practical tools: merge PDF files, compress PDF documents, split pages, convert documents, add watermarks, number pages, sign PDFs, redact files, compare documents, and extract selectable text.",
+      "CloudPDF favors direct workflows over heavy dashboards. Choose a tool, drop a file, adjust only the settings that matter, and download the result with a clear understanding of what changed.",
+      "The website is organized around useful tool pages, long-tail workflow guides, structured data, fast loading, accessible interface patterns, and clear privacy messaging.",
+      "The long-term goal is a dependable document workspace that feels simple for everyday users while still respecting security, privacy, performance, and search discoverability."
     ],
   },
 ];
@@ -907,21 +911,21 @@ function buildFooter() {
         </section>
         <nav class="footer-column" aria-label="Product">
           <h2>Product</h2>
-          <a href="/#tools">All PDF tools</a>
-          <a href="/tools/compress-pdf/">Compress PDF</a>
-          <a href="/tools/merge-pdf/">Merge PDF</a>
-          <a href="/tools/pdf-to-word/">PDF to Word</a>
+          <a href="/#tools"><span>All PDF tools</span><small>Browse every available workspace.</small></a>
+          <a href="/tools/compress-pdf/"><span>Compress PDF</span><small>Reduce file size for sharing and uploads.</small></a>
+          <a href="/tools/merge-pdf/"><span>Merge PDF</span><small>Combine documents in the order you choose.</small></a>
+          <a href="/tools/pdf-to-word/"><span>PDF to Word</span><small>Create a Word-compatible document.</small></a>
         </nav>
         <nav class="footer-column" aria-label="Company">
           <h2>Company</h2>
-          <a href="/about/">About</a>
-          <a href="/contact/">Contact</a>
-          <a href="/#faq">FAQ</a>
+          <a href="/about/"><span>About</span><small>Learn how CloudPDF is built and maintained.</small></a>
+          <a href="/contact/"><span>Contact</span><small>Send support, privacy, and partnership questions.</small></a>
+          <a href="/#faq"><span>FAQ</span><small>Answers for common document workflows.</small></a>
         </nav>
         <nav class="footer-column" aria-label="Legal">
           <h2>Legal</h2>
-          <a href="/privacy-policy/">Privacy Policy</a>
-          <a href="/terms/">Terms of Use</a>
+          <a href="/privacy-policy/"><span>Privacy Policy</span><small>How files, analytics, and browser sessions work.</small></a>
+          <a href="/terms/"><span>Terms of Use</span><small>Usage rules, responsibilities, and limitations.</small></a>
         </nav>
       </div>
       <div class="footer-bottom">
