@@ -379,7 +379,6 @@ renderTools();
 initTheme();
 selectTool(getInitialToolId());
 wireUpload();
-wireTiltCards();
 renderHistory();
 
 function renderCategories() {
@@ -487,9 +486,7 @@ function getInitialToolId() {
 }
 
 function initTheme() {
-  const savedTheme = localStorage.getItem("cloudpdf.theme");
-  const preferredTheme = window.matchMedia?.("(prefers-color-scheme: dark)")?.matches ? "dark" : "light";
-  applyTheme(savedTheme === "dark" || savedTheme === "light" ? savedTheme : preferredTheme);
+  applyTheme("light");
   themeToggle?.addEventListener("click", () => {
     const nextTheme = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
     localStorage.setItem("cloudpdf.theme", nextTheme);
@@ -507,27 +504,6 @@ function applyTheme(theme) {
   themeToggle.setAttribute("aria-label", isDark ? "Switch to light theme" : "Switch to dark theme");
   const label = themeToggle.querySelector("strong");
   if (label) label.textContent = isDark ? "Dark" : "Light";
-}
-
-function wireTiltCards() {
-  const tiltTargets = document.querySelectorAll(".hero-visual, .mock-docs article, .mock-action, .collage a, .collage article, .tool-card, .seo-link-grid a, .tilt-card");
-  for (const target of tiltTargets) {
-    target.addEventListener("pointermove", (event) => {
-      const rect = target.getBoundingClientRect();
-      const x = (event.clientX - rect.left) / rect.width - 0.5;
-      const y = (event.clientY - rect.top) / rect.height - 0.5;
-      target.style.setProperty("--tilt-x", `${(-y * 12).toFixed(2)}deg`);
-      target.style.setProperty("--tilt-y", `${(x * -12).toFixed(2)}deg`);
-      target.style.setProperty("--lift-x", `${(-x * 12).toFixed(1)}px`);
-      target.style.setProperty("--lift-y", `${(-y * 12).toFixed(1)}px`);
-    });
-    target.addEventListener("pointerleave", () => {
-      target.style.removeProperty("--tilt-x");
-      target.style.removeProperty("--tilt-y");
-      target.style.removeProperty("--lift-x");
-      target.style.removeProperty("--lift-y");
-    });
-  }
 }
 
 function renderOptions() {
