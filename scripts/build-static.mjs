@@ -5,6 +5,7 @@ const root = process.cwd();
 const output = join(root, "public");
 const siteUrl = "https://www.cloudpdf.online";
 const builtAt = new Date().toISOString();
+const gtmContainerId = "GTM-T7KM2D5G";
 
 const toolPages = [
   {
@@ -349,6 +350,306 @@ const longTailPages = [
     intent: "combine image documents into one application-ready PDF",
     useCases: ["Certificates", "ID scans", "Portfolio images"],
   },
+  {
+    slug: "convert-pdf-to-word-without-losing-formatting",
+    title: "Convert PDF to Word Without Losing Formatting | CloudPDF",
+    description: "Convert PDF to Word online and preserve readable page layout with a browser-based DOCX export workflow.",
+    heading: "Convert PDF to Word without losing formatting",
+    toolSlug: "pdf-to-word",
+    toolName: "PDF to Word",
+    intent: "turn PDF pages into a Word-compatible file while keeping the page structure easy to review",
+    useCases: ["Resume edits", "Assignment drafts", "Client document updates"],
+  },
+  {
+    slug: "pdf-to-word-converter-free-without-email",
+    title: "PDF to Word Converter Free Without Email | CloudPDF",
+    description: "Use a free PDF to Word converter without an email gate. Export a Word-compatible file from your browser.",
+    heading: "PDF to Word converter free without email",
+    toolSlug: "pdf-to-word",
+    toolName: "PDF to Word",
+    intent: "convert a PDF to Word without creating an account or entering an email address first",
+    useCases: ["Quick document edits", "School notes", "Office paperwork"],
+  },
+  {
+    slug: "compress-pdf-file-size-below-1mb-online",
+    title: "Compress PDF File Size Below 1MB Online | CloudPDF",
+    description: "Reduce a PDF file below 1MB for upload forms, email attachments, and mobile sharing.",
+    heading: "Compress PDF file size below 1MB online",
+    toolSlug: "compress-pdf",
+    toolName: "Compress PDF",
+    intent: "make a PDF small enough for common 1MB upload limits",
+    useCases: ["Job portals", "Government forms", "Email attachments"],
+  },
+  {
+    slug: "merge-pdf-files-online-without-size-limit",
+    title: "Merge PDF Files Online Without Size Limit | CloudPDF",
+    description: "Merge PDF files online with a clean browser workflow for combining documents in the order you choose.",
+    heading: "Merge PDF files online without size limit",
+    toolSlug: "merge-pdf",
+    toolName: "Merge PDF",
+    intent: "combine several PDF files into one organized document without a complicated account flow",
+    useCases: ["Client reports", "Application packets", "Class notes"],
+  },
+  {
+    slug: "merge-pdf-online-free-no-limit",
+    title: "Merge PDF Online Free No Limit | CloudPDF",
+    description: "Combine PDF files online for free and arrange pages before downloading one merged document.",
+    heading: "Merge PDF online free no limit",
+    toolSlug: "merge-pdf",
+    toolName: "Merge PDF",
+    intent: "join PDF files quickly and download one combined file",
+    useCases: ["Invoices", "Receipts", "Forms and attachments"],
+  },
+  {
+    slug: "split-pdf-into-individual-pages-free-online",
+    title: "Split PDF Into Individual Pages Free Online | CloudPDF",
+    description: "Split a PDF into individual pages or page ranges and download smaller PDF files from your browser.",
+    heading: "Split PDF into individual pages free online",
+    toolSlug: "split-pdf",
+    toolName: "Split PDF",
+    intent: "separate one PDF into single pages or custom page ranges",
+    useCases: ["Extracting forms", "Sharing one chapter", "Separating scanned documents"],
+  },
+  {
+    slug: "split-pdf-into-separate-pages",
+    title: "Split PDF Into Separate Pages | CloudPDF",
+    description: "Create separate PDF pages from one file with a focused online PDF splitter workflow.",
+    heading: "Split PDF into separate pages",
+    toolSlug: "split-pdf",
+    toolName: "Split PDF",
+    intent: "turn one multi-page PDF into separate PDF outputs",
+    useCases: ["One page submissions", "Document review", "Page-by-page exports"],
+  },
+  {
+    slug: "remove-specific-pages-from-pdf-online-free",
+    title: "Remove Specific Pages From PDF Online Free | CloudPDF",
+    description: "Delete selected PDF pages online and download a cleaner file without the pages you do not need.",
+    heading: "Remove specific pages from PDF online free",
+    toolSlug: "remove-pages-from-pdf",
+    toolName: "Remove PDF Pages",
+    intent: "remove unwanted pages from a PDF before sharing or submitting it",
+    useCases: ["Removing blank scans", "Deleting duplicate pages", "Cleaning up forms"],
+  },
+  {
+    slug: "rearrange-pages-in-pdf-online-free",
+    title: "Rearrange Pages in PDF Online Free | CloudPDF",
+    description: "Organize PDF pages online by extracting, removing, rotating, and merging pages into the order you need.",
+    heading: "Rearrange pages in PDF online free",
+    toolSlug: "merge-pdf",
+    toolName: "Merge PDF",
+    intent: "rebuild a PDF page order using the organize PDF tools",
+    useCases: ["Scanned forms", "Report packets", "Combined class material"],
+  },
+  {
+    slug: "rotate-pdf-pages-permanently-online",
+    title: "Rotate PDF Pages Permanently Online | CloudPDF",
+    description: "Rotate sideways PDF pages online and download a corrected copy for printing, sharing, or upload.",
+    heading: "Rotate PDF pages permanently online",
+    toolSlug: "rotate-pdf",
+    toolName: "Rotate PDF",
+    intent: "fix PDF page orientation and save a corrected file",
+    useCases: ["Sideways scans", "Phone-scanned forms", "Print-ready documents"],
+  },
+  {
+    slug: "crop-pdf-to-remove-white-border-online",
+    title: "Crop PDF to Remove White Border Online | CloudPDF",
+    description: "Crop PDF margins online to remove extra white border around scanned pages or exported documents.",
+    heading: "Crop PDF to remove white border online",
+    toolSlug: "crop-pdf",
+    toolName: "Crop PDF",
+    intent: "trim PDF page margins for a cleaner result",
+    useCases: ["Scanned paperwork", "Presentation exports", "Printable PDFs"],
+  },
+  {
+    slug: "add-watermark-to-pdf-free-without-adobe-acrobat",
+    title: "Add Watermark to PDF Free Without Adobe Acrobat | CloudPDF",
+    description: "Add a text watermark to PDF pages online without using Adobe Acrobat or installing desktop software.",
+    heading: "Add watermark to PDF free without Adobe Acrobat",
+    toolSlug: "watermark-pdf",
+    toolName: "Watermark PDF",
+    intent: "stamp a PDF with visible reusable watermark text",
+    useCases: ["Draft files", "Confidential documents", "Client proofs"],
+  },
+  {
+    slug: "add-text-to-pdf-online-free-no-signup",
+    title: "Add Text to PDF Online Free No Signup | CloudPDF",
+    description: "Add signature text, page numbers, or watermark text to a PDF online without signing up first.",
+    heading: "Add text to PDF online free no signup",
+    toolSlug: "sign-pdf",
+    toolName: "Sign PDF",
+    intent: "place simple text-based marks on a PDF before downloading the result",
+    useCases: ["Typed signatures", "Page labels", "Document watermarks"],
+  },
+  {
+    slug: "jpg-to-pdf-multiple-images-at-once",
+    title: "JPG to PDF Multiple Images at Once | CloudPDF",
+    description: "Convert multiple JPG or PNG images into one PDF file with a batch-friendly image to PDF workflow.",
+    heading: "JPG to PDF multiple images at once",
+    toolSlug: "jpg-to-pdf",
+    toolName: "JPG to PDF",
+    intent: "combine several image files into one PDF document",
+    useCases: ["Photo IDs", "Receipts", "Assignment photos"],
+  },
+  {
+    slug: "pdf-to-jpg-high-quality-online-free",
+    title: "PDF to JPG High Quality Online Free | CloudPDF",
+    description: "Convert PDF pages to high-quality JPG images online and download rendered page images from your browser.",
+    heading: "PDF to JPG high quality online free",
+    toolSlug: "pdf-to-jpg",
+    toolName: "PDF to JPG",
+    intent: "export PDF pages as clear JPG images",
+    useCases: ["Preview images", "Social sharing", "Image archives"],
+  },
+  {
+    slug: "convert-png-to-pdf-online-without-watermark",
+    title: "Convert PNG to PDF Online Without Watermark | CloudPDF",
+    description: "Convert PNG and JPG images to PDF online with a simple browser workflow and no mandatory watermark step.",
+    heading: "Convert PNG to PDF online without watermark",
+    toolSlug: "jpg-to-pdf",
+    toolName: "JPG to PDF",
+    intent: "create a PDF from PNG or JPG images without adding a visible watermark",
+    useCases: ["Scanned notes", "Screenshots", "Mobile photos"],
+  },
+  {
+    slug: "scan-document-to-pdf-on-android-free",
+    title: "Scan Document to PDF on Android Free | CloudPDF",
+    description: "Turn phone-scanned JPG or PNG document photos into a single PDF from an Android browser.",
+    heading: "Scan document to PDF on Android free",
+    toolSlug: "jpg-to-pdf",
+    toolName: "JPG to PDF",
+    intent: "convert mobile document photos into one PDF file",
+    useCases: ["ID scans", "Receipts", "School forms"],
+  },
+  {
+    slug: "pdf-to-excel-converter-keep-formatting",
+    title: "PDF to Excel Converter Keep Formatting | CloudPDF",
+    description: "Convert PDF text into an Excel-compatible workbook and review extracted table-style content online.",
+    heading: "PDF to Excel converter keep formatting",
+    toolSlug: "pdf-to-excel",
+    toolName: "PDF to Excel",
+    intent: "export PDF content into a spreadsheet-friendly file",
+    useCases: ["Finance reports", "Lists and tables", "Invoice review"],
+  },
+  {
+    slug: "powerpoint-to-pdf-without-losing-animations",
+    title: "PowerPoint to PDF Without Losing Animations | CloudPDF",
+    description: "Convert PowerPoint files to PDF and learn what to check when animations become static PDF pages.",
+    heading: "PowerPoint to PDF without losing animations",
+    toolSlug: "powerpoint-to-pdf",
+    toolName: "PowerPoint to PDF",
+    intent: "turn a PowerPoint deck into a shareable PDF copy",
+    useCases: ["Class slides", "Client decks", "Presentation handouts"],
+  },
+  {
+    slug: "unlock-pdf-without-password-online-free",
+    title: "Unlock PDF Without Password Online Free | CloudPDF",
+    description: "Understand safe PDF access limits and use CloudPDF security tools for legitimate document workflows.",
+    heading: "Unlock PDF without password online free",
+    toolSlug: "repair-pdf",
+    toolName: "Repair PDF",
+    intent: "work with legitimate PDF access issues without bypassing someone else's permissions",
+    useCases: ["Corrupted files", "Own documents", "Readable backup copies"],
+  },
+  {
+    slug: "how-to-password-protect-a-pdf-for-free",
+    title: "How to Password Protect a PDF for Free | CloudPDF",
+    description: "Learn practical ways to prepare a PDF for safer sharing and when to use password protection.",
+    heading: "How to password protect a PDF for free",
+    toolSlug: "redact-pdf",
+    toolName: "Redact PDF",
+    intent: "prepare sensitive documents for safer sharing",
+    useCases: ["Private forms", "Client files", "Shared reports"],
+  },
+  {
+    slug: "digitally-sign-pdf-free-without-adobe",
+    title: "Digitally Sign PDF Free Without Adobe | CloudPDF",
+    description: "Add a simple typed signature to a PDF online and learn when a formal digital certificate is required.",
+    heading: "Digitally sign PDF free without Adobe",
+    toolSlug: "sign-pdf",
+    toolName: "Sign PDF",
+    intent: "add a visible signature mark to a PDF before downloading it",
+    useCases: ["Approval forms", "Lightweight agreements", "Internal documents"],
+  },
+  {
+    slug: "redact-text-in-pdf-online-free",
+    title: "Redact Text in PDF Online Free | CloudPDF",
+    description: "Redact PDF pages online by adding visible redaction bands before you share sensitive documents.",
+    heading: "Redact text in PDF online free",
+    toolSlug: "redact-pdf",
+    toolName: "Redact PDF",
+    intent: "cover sensitive information before sharing a PDF",
+    useCases: ["IDs", "Financial details", "Private forms"],
+  },
+  {
+    slug: "how-to-make-pdf-read-only-free",
+    title: "How to Make PDF Read Only Free | CloudPDF",
+    description: "Learn how to prepare a PDF for read-only sharing and reduce editable or sensitive content before sending.",
+    heading: "How to make PDF read only free",
+    toolSlug: "redact-pdf",
+    toolName: "Redact PDF",
+    intent: "prepare a PDF for safer viewing and sharing",
+    useCases: ["Client previews", "Shared forms", "Final reports"],
+  },
+  {
+    slug: "ocr-pdf-make-searchable-text-free",
+    title: "OCR PDF Make Searchable Text Free | CloudPDF",
+    description: "Extract selectable PDF text online and learn how searchable text workflows differ from image-only scans.",
+    heading: "OCR PDF make searchable text free",
+    toolSlug: "extract-pdf-text",
+    toolName: "Extract PDF Text",
+    intent: "extract readable text from PDF pages for notes, summaries, and review",
+    useCases: ["Research notes", "Scanned reports with selectable text", "Document review"],
+  },
+  {
+    slug: "summarize-pdf-with-ai-free-online-no-signup",
+    title: "Summarize PDF With AI Free Online No Signup | CloudPDF",
+    description: "Summarize selectable PDF text online with a local summary workflow and no mandatory signup step.",
+    heading: "Summarize PDF with AI free online no signup",
+    toolSlug: "summarize-pdf",
+    toolName: "Summarize PDF",
+    intent: "create a quick summary from selectable PDF content",
+    useCases: ["Study notes", "Business reports", "Research PDFs"],
+  },
+  {
+    slug: "summarize-pdf-for-free-online-instantly",
+    title: "Summarize PDF for Free Online Instantly | CloudPDF",
+    description: "Create a fast local summary from selectable PDF text and review the main points before sharing.",
+    heading: "Summarize PDF for free online instantly",
+    toolSlug: "summarize-pdf",
+    toolName: "Summarize PDF",
+    intent: "quickly understand the main points in a selectable PDF",
+    useCases: ["Long articles", "Reports", "Study material"],
+  },
+  {
+    slug: "chat-with-pdf-ai-free-no-login",
+    title: "Chat With PDF AI Free No Login | CloudPDF",
+    description: "Use text extraction and summaries to review PDF content without a mandatory login flow.",
+    heading: "Chat with PDF AI free no login",
+    toolSlug: "summarize-pdf",
+    toolName: "Summarize PDF",
+    intent: "review PDF content with AI-style summary workflows",
+    useCases: ["Question prep", "Document review", "Study sessions"],
+  },
+  {
+    slug: "translate-pdf-from-english-to-hindi-free",
+    title: "Translate PDF From English to Hindi Free | CloudPDF",
+    description: "Prepare PDF text for translation by extracting selectable content before using your translation workflow.",
+    heading: "Translate PDF from English to Hindi free",
+    toolSlug: "extract-pdf-text",
+    toolName: "Extract PDF Text",
+    intent: "extract PDF text so it can be translated in a separate translation workflow",
+    useCases: ["Study material", "Forms", "Business documents"],
+  },
+  {
+    slug: "translate-pdf-to-spanish-online-free",
+    title: "Translate PDF to Spanish Online Free | CloudPDF",
+    description: "Extract selectable PDF text as a first step before translating document content to Spanish.",
+    heading: "Translate PDF to Spanish online free",
+    toolSlug: "extract-pdf-text",
+    toolName: "Extract PDF Text",
+    intent: "prepare PDF text for translation into Spanish",
+    useCases: ["Class documents", "Travel forms", "Reference material"],
+  },
 ];
 
 await rm(output, { recursive: true, force: true });
@@ -505,6 +806,23 @@ ${longTailPages.map((page) => `- [${page.heading}](${siteUrl}/${page.slug}/): ${
 `;
 }
 
+function buildGoogleTagManagerHead() {
+  return `<!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','${gtmContainerId}');</script>
+    <!-- End Google Tag Manager -->`;
+}
+
+function buildGoogleTagManagerBody() {
+  return `<!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=${gtmContainerId}"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->`;
+}
+
 function buildToolPage(tool) {
   const url = `${siteUrl}/tools/${tool.slug}/`;
   const appToolId = appToolIdsBySlug[tool.slug] ?? "merge";
@@ -514,6 +832,11 @@ function buildToolPage(tool) {
     .filter((item) => item.slug !== tool.slug)
     .slice(0, 6)
     .map((item) => `<a href="/tools/${item.slug}/">${escapeHtml(item.name)}</a>`)
+    .join("");
+  const relatedGuides = longTailPages
+    .filter((page) => page.toolSlug === tool.slug)
+    .slice(0, 8)
+    .map((page) => `<a href="/${page.slug}/">${escapeHtml(page.heading)}</a>`)
     .join("");
 
   const keywordList = tool.keywords
@@ -570,6 +893,7 @@ function buildToolPage(tool) {
     <meta name="description" content="${escapeHtml(tool.description)}" />
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1, noai, noimageai" />
     <meta name="theme-color" content="#fffaf2" />
+    ${buildGoogleTagManagerHead()}
     <link rel="canonical" href="${url}" />
     <link rel="icon" type="image/png" href="/assets/cloudpdf-favicon.png?v=1" />
     <link rel="apple-touch-icon" href="/assets/cloudpdf-favicon.png?v=1" />
@@ -590,6 +914,7 @@ function buildToolPage(tool) {
     <script type="application/ld+json">${jsonLd.replace(/</g, "\\u003c")}</script>
   </head>
   <body>
+    ${buildGoogleTagManagerBody()}
     <header class="topbar">
       <a class="brand" href="/" aria-label="CloudPDF home">
         <img class="brand-logo" src="/assets/cloudpdf-logo.png?v=1" alt="" width="56" height="36" aria-hidden="true" />
@@ -701,6 +1026,17 @@ function buildToolPage(tool) {
         </div>
         <div class="seo-link-grid">${relatedLinks}</div>
       </section>
+      ${
+        relatedGuides
+          ? `<section class="seo-section" aria-labelledby="related-guides-title">
+        <div class="section-heading">
+          <p class="eyebrow">Keyword guides</p>
+          <h2 id="related-guides-title">Focused ${escapeHtml(tool.name)} workflows.</h2>
+        </div>
+        <div class="seo-link-grid">${relatedGuides}</div>
+      </section>`
+          : ""
+      }
     </main>
     ${buildFooter()}
     <script>
@@ -779,6 +1115,26 @@ function buildTrustPage(page) {
 function buildLongTailPage(page) {
   const url = `${siteUrl}/${page.slug}/`;
   const toolUrl = `${siteUrl}/tools/${page.toolSlug}/`;
+  const relatedPages = longTailPages
+    .filter((item) => item.slug !== page.slug && item.toolSlug === page.toolSlug)
+    .slice(0, 6);
+  const relatedPageLinks = relatedPages
+    .map((item) => `<a href="/${item.slug}/">${escapeHtml(item.heading)}</a>`)
+    .join("");
+  const faqs = [
+    {
+      question: `What is the fastest way to ${page.heading.toLowerCase()}?`,
+      answer: `Open ${page.toolName}, choose your file, use the available settings, and download the result after checking the output.`,
+    },
+    {
+      question: `Is ${page.heading.toLowerCase()} free on CloudPDF?`,
+      answer: `CloudPDF provides this workflow through the free ${page.toolName} page without a mandatory signup step.`,
+    },
+    {
+      question: "What should I check before submitting the file?",
+      answer: "Review page order, formatting, file size, readability, and any sensitive information before sharing or uploading the final document.",
+    },
+  ];
   const jsonLd = JSON.stringify(
     {
       "@context": "https://schema.org",
@@ -799,6 +1155,15 @@ function buildLongTailPage(page) {
             { "@type": "ListItem", position: 2, name: page.toolName, item: toolUrl },
             { "@type": "ListItem", position: 3, name: page.heading, item: url },
           ],
+        },
+        {
+          "@type": "FAQPage",
+          "@id": `${url}#faq`,
+          mainEntity: faqs.map((faq) => ({
+            "@type": "Question",
+            name: faq.question,
+            acceptedAnswer: { "@type": "Answer", text: faq.answer },
+          })),
         },
       ],
     },
@@ -823,7 +1188,25 @@ function buildLongTailPage(page) {
           <h2 id="tool-link-title">Open the related PDF tool.</h2>
           <p><a class="button primary" href="/tools/${escapeHtml(page.toolSlug)}/">Open ${escapeHtml(page.toolName)}</a></p>
         </div>
-      </section>`;
+      </section>
+      <section class="seo-section" aria-labelledby="faq-title">
+        <div class="section-heading">
+          <p class="eyebrow">FAQ</p>
+          <h2 id="faq-title">${escapeHtml(page.heading)} questions.</h2>
+        </div>
+        <div class="faq-grid">${faqs.map((faq) => `<article><h5>${escapeHtml(faq.question)}</h5><p>${escapeHtml(faq.answer)}</p></article>`).join("")}</div>
+      </section>
+      ${
+        relatedPageLinks
+          ? `<section class="seo-section" aria-labelledby="related-keyword-title">
+        <div class="section-heading">
+          <p class="eyebrow">Related keyword pages</p>
+          <h2 id="related-keyword-title">More ${escapeHtml(page.toolName)} workflows.</h2>
+        </div>
+        <div class="seo-link-grid">${relatedPageLinks}</div>
+      </section>`
+          : ""
+      }`;
 
   return buildSimplePage({
     url,
@@ -847,6 +1230,7 @@ function buildSimplePage({ url, title, description, eyebrow, heading, body, json
     <meta name="description" content="${escapeHtml(description)}" />
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1, noai, noimageai" />
     <meta name="theme-color" content="#fffaf2" />
+    ${buildGoogleTagManagerHead()}
     <link rel="canonical" href="${url}" />
     <link rel="icon" type="image/png" href="/assets/cloudpdf-favicon.png?v=1" />
     <link rel="apple-touch-icon" href="/assets/cloudpdf-favicon.png?v=1" />
@@ -862,6 +1246,7 @@ function buildSimplePage({ url, title, description, eyebrow, heading, body, json
     <link rel="stylesheet" href="/styles.css?v=footer-v1" />
   </head>
   <body>
+    ${buildGoogleTagManagerBody()}
     <header class="topbar">
       <a class="brand" href="/" aria-label="CloudPDF home">
         <img class="brand-logo" src="/assets/cloudpdf-logo.png?v=1" alt="" width="56" height="36" aria-hidden="true" />

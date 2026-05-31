@@ -43,6 +43,31 @@ Long-tail keywords:
 - extract selectable text from PDF
 - browser based PDF editor
 
+New high-intent keyword pages implemented:
+- convert PDF to Word without losing formatting
+- PDF to Word converter free without email
+- compress PDF file size below 1MB online
+- merge PDF files online without size limit
+- merge PDF online free no limit
+- split PDF into individual pages free online
+- split PDF into separate pages
+- remove specific pages from PDF online free
+- rearrange pages in PDF online free
+- rotate PDF pages permanently online
+- crop PDF to remove white border online
+- add watermark to PDF free without Adobe Acrobat
+- add text to PDF online free no signup
+- JPG to PDF multiple images at once
+- PDF to JPG high quality online free
+- convert PNG to PDF online without watermark
+- scan document to PDF on Android free
+- PDF to Excel converter keep formatting
+- PowerPoint to PDF without losing animations
+- redact text in PDF online free
+- summarize PDF with AI free online no signup
+- OCR PDF make searchable text free
+- translate PDF from English to Hindi free
+
 Semantic entities to reinforce:
 - PDF document
 - PDF file size
@@ -69,6 +94,13 @@ Current generated landing pages:
 - `/tools/sign-pdf/`
 - `/tools/redact-pdf/`
 - `/tools/extract-pdf-text/`
+
+Implemented SEO structure:
+- One indexable URL for every supported core tool.
+- Long-tail workflow pages for lower-difficulty transactional searches.
+- Homepage keyword hub linking to priority long-tail pages.
+- Tool pages link to related long-tail guides for topical clusters.
+- Long-tail pages include FAQ schema, breadcrumb schema, use cases, and a clear call-to-action to the matching tool.
 
 Next templates to add:
 - `{Tool} for students`
@@ -97,6 +129,11 @@ Blog topics:
 - Best PDF tools for students
 - Best PDF tools for small business invoices
 - Why browser-based PDF tools are useful for private workflows
+- Convert PDF to Word without losing formatting: what to check
+- How to scan documents to PDF on Android
+- How to redact PDF text before sharing documents
+- How to make a PDF easier to upload under 1MB
+- How to summarize a PDF for study notes
 
 Content format:
 - Start with a direct answer in the first 60 words.
