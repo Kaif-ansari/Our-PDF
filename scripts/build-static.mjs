@@ -597,9 +597,9 @@ function buildToolPage(tool) {
       </a>
       <nav class="nav-links" aria-label="Primary navigation">
         <a href="/#tools">Tools</a>
-        <a href="/#workspace">Workspace</a>
+        <a href="/#pdf-converter">Converters</a>
         <a href="/#faq">FAQ</a>
-        <a href="/about/">About</a>
+        <a href="/#workspace">Workspace</a>
       </nav>
       <div class="topbar-actions">
         <button class="theme-toggle" type="button" id="theme-toggle" aria-label="Switch to dark theme" aria-pressed="false">
@@ -869,7 +869,7 @@ function buildSimplePage({ url, title, description, eyebrow, heading, body, json
       </a>
       <nav class="nav-links" aria-label="Primary navigation">
         <a href="/#tools">Tools</a>
-        <a href="/#workspace">Workspace</a>
+        <a href="/#pdf-converter">Converters</a>
         <a href="/about/">About</a>
         <a href="/contact/">Contact</a>
       </nav>
