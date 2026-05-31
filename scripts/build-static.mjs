@@ -974,10 +974,10 @@ function buildToolPage(tool) {
           <h2 id="benefits-title">Fast, secure, free, and browser-based.</h2>
         </div>
         <div class="faq-grid">
-          <article><h5>Fast</h5><p>Focused options help you finish the PDF task quickly and avoid unnecessary setup.</p></article>
-          <article><h5>Secure</h5><p>The workspace is designed for browser-session processing and clear file handling.</p></article>
-          <article><h5>Free</h5><p>You can start core PDF actions without a mandatory signup step.</p></article>
-          <article><h5>Browser-based</h5><p>Use the tool from a modern desktop or mobile browser without installing a heavy editor.</p></article>
+          <article><h4>Fast</h4><p>Focused options help you finish the PDF task quickly and avoid unnecessary setup.</p></article>
+          <article><h4>Secure</h4><p>The workspace is designed for browser-session processing and clear file handling.</p></article>
+          <article><h4>Free</h4><p>You can start core PDF actions without a mandatory signup step.</p></article>
+          <article><h4>Browser-based</h4><p>Use the tool from a modern desktop or mobile browser without installing a heavy editor.</p></article>
         </div>
       </section>
       <section class="seo-section" aria-labelledby="how-title">
@@ -1016,7 +1016,7 @@ function buildToolPage(tool) {
           <h2 id="tool-faq-title">${escapeHtml(tool.name)} questions.</h2>
         </div>
         <div class="faq-grid">
-          ${faqs.map((faq) => `<article><h5>${escapeHtml(faq.question)}</h5><p>${escapeHtml(faq.answer)}</p></article>`).join("")}
+          ${faqs.map((faq) => `<article><h4>${escapeHtml(faq.question)}</h4><p>${escapeHtml(faq.answer)}</p></article>`).join("")}
         </div>
       </section>
       <section class="seo-section" aria-labelledby="related-title">
@@ -1180,7 +1180,7 @@ function buildLongTailPage(page) {
           <p class="eyebrow">Use cases</p>
           <h2 id="use-cases-title">When this workflow helps.</h2>
         </div>
-        <div class="faq-grid">${page.useCases.map((item) => `<article><h5>${escapeHtml(item)}</h5><p>Use ${escapeHtml(page.toolName)} when this document needs a cleaner, smaller, or more submission-ready PDF workflow.</p></article>`).join("")}</div>
+        <div class="faq-grid">${page.useCases.map((item) => `<article><h4>${escapeHtml(item)}</h4><p>Use ${escapeHtml(page.toolName)} when this document needs a cleaner, smaller, or more submission-ready PDF workflow.</p></article>`).join("")}</div>
       </section>
       <section class="seo-section" aria-labelledby="tool-link-title">
         <div class="section-heading">
@@ -1194,7 +1194,7 @@ function buildLongTailPage(page) {
           <p class="eyebrow">FAQ</p>
           <h2 id="faq-title">${escapeHtml(page.heading)} questions.</h2>
         </div>
-        <div class="faq-grid">${faqs.map((faq) => `<article><h5>${escapeHtml(faq.question)}</h5><p>${escapeHtml(faq.answer)}</p></article>`).join("")}</div>
+        <div class="faq-grid">${faqs.map((faq) => `<article><h4>${escapeHtml(faq.question)}</h4><p>${escapeHtml(faq.answer)}</p></article>`).join("")}</div>
       </section>
       ${
         relatedPageLinks
