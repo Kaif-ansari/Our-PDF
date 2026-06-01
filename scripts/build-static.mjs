@@ -6,6 +6,7 @@ const output = join(root, "public");
 const siteUrl = "https://www.cloudpdf.online";
 const builtAt = new Date().toISOString();
 const gtmContainerId = "GTM-T7KM2D5G";
+const adsensePublisherId = "ca-pub-8501020285416333";
 
 const toolPages = [
   {
@@ -668,6 +669,7 @@ await cp(join(root, "node_modules", "pdfjs-dist", "build", "pdf.worker.min.mjs")
 await writeFile(join(output, "robots.txt"), buildRobots(), "utf8");
 await writeFile(join(output, "sitemap.xml"), buildSitemap(), "utf8");
 await writeFile(join(output, "llms.txt"), buildLlmsTxt(), "utf8");
+await writeFile(join(output, "ads.txt"), buildAdsTxt(), "utf8");
 
 for (const tool of toolPages) {
   const dir = join(output, "tools", tool.slug);
@@ -823,6 +825,16 @@ function buildGoogleTagManagerBody() {
     <!-- End Google Tag Manager (noscript) -->`;
 }
 
+function buildAdsenseHead() {
+  return `<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsensePublisherId}"
+      crossorigin="anonymous"></script>`;
+}
+
+function buildAdsTxt() {
+  return `google.com, ${adsensePublisherId.replace("ca-pub-", "pub-")}, DIRECT, f08c47fec0942fa0
+`;
+}
+
 function buildToolPage(tool) {
   const url = `${siteUrl}/tools/${tool.slug}/`;
   const appToolId = appToolIdsBySlug[tool.slug] ?? "merge";
@@ -894,6 +906,7 @@ function buildToolPage(tool) {
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1, noai, noimageai" />
     <meta name="theme-color" content="#fffaf2" />
     ${buildGoogleTagManagerHead()}
+    ${buildAdsenseHead()}
     <link rel="canonical" href="${url}" />
     <link rel="icon" type="image/png" href="/assets/cloudpdf-favicon.png?v=1" />
     <link rel="apple-touch-icon" href="/assets/cloudpdf-favicon.png?v=1" />
@@ -1231,6 +1244,7 @@ function buildSimplePage({ url, title, description, eyebrow, heading, body, json
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1, noai, noimageai" />
     <meta name="theme-color" content="#fffaf2" />
     ${buildGoogleTagManagerHead()}
+    ${buildAdsenseHead()}
     <link rel="canonical" href="${url}" />
     <link rel="icon" type="image/png" href="/assets/cloudpdf-favicon.png?v=1" />
     <link rel="apple-touch-icon" href="/assets/cloudpdf-favicon.png?v=1" />
