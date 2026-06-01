@@ -310,6 +310,7 @@ p {
   margin-top: 0;
 }
 
+h2#hero-title,
 h3#hero-title,
 h3#tool-title,
 h3#page-title {
@@ -330,6 +331,7 @@ h3#page-title {
     10px 16px 34px rgba(20, 24, 34, 0.16);
 }
 
+:root[data-theme="dark"] h2#hero-title,
 :root[data-theme="dark"] h3#hero-title,
 :root[data-theme="dark"] h3#tool-title,
 :root[data-theme="dark"] h3#page-title {
@@ -340,6 +342,44 @@ h3#page-title {
     3px 3px 0 #232c3d,
     4px 4px 0 #1d2533,
     10px 16px 34px rgba(0, 0, 0, 0.34);
+}
+
+.hero-eyebrow {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.hero-eyebrow span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: rgba(255, 79, 94, 0.12);
+  color: #bd1238;
+  font-family: var(--font-ui);
+  font-size: 0.78rem;
+  font-weight: 950;
+}
+
+.hero-eyebrow span:nth-child(2) {
+  background: rgba(53, 167, 255, 0.14);
+  color: #1f6fb2;
+}
+
+.hero-eyebrow span:nth-child(3) {
+  background: rgba(49, 196, 141, 0.14);
+  color: #1f7b5c;
+}
+
+h2#hero-title span:first-child {
+  color: #bd1238;
+}
+
+h2#hero-title span:last-child {
+  color: #1f7b5c;
 }
 
 h2 {
@@ -2758,6 +2798,7 @@ h4 {
     min-width: 0;
   }
 
+  h2#hero-title,
   h3#hero-title,
   h3#tool-title,
   h3#page-title {
