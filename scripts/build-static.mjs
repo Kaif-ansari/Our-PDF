@@ -695,42 +695,6 @@ function buildRobots() {
   return `User-agent: *
 Allow: /
 
-User-agent: GPTBot
-Disallow: /
-
-User-agent: Google-Extended
-Disallow: /
-
-User-agent: ClaudeBot
-Disallow: /
-
-User-agent: Claude-User
-Disallow: /
-
-User-agent: Claude-SearchBot
-Disallow: /
-
-User-agent: PerplexityBot
-Disallow: /
-
-User-agent: Perplexity-User
-Disallow: /
-
-User-agent: Meta-ExternalAgent
-Disallow: /
-
-User-agent: Amazonbot
-Disallow: /
-
-User-agent: Applebot-Extended
-Disallow: /
-
-User-agent: Bytespider
-Disallow: /
-
-User-agent: DeepSeekBot
-Disallow: /
-
 Sitemap: ${siteUrl}/sitemap.xml
 Host: www.cloudpdf.online
 `;
@@ -903,7 +867,7 @@ function buildToolPage(tool) {
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>${escapeHtml(tool.title)}</title>
     <meta name="description" content="${escapeHtml(tool.description)}" />
-    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1, noai, noimageai" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
     <meta name="theme-color" content="#fffaf2" />
     ${buildGoogleTagManagerHead()}
     ${buildAdsenseHead()}
@@ -1241,7 +1205,7 @@ function buildSimplePage({ url, title, description, eyebrow, heading, body, json
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>${escapeHtml(title)}</title>
     <meta name="description" content="${escapeHtml(description)}" />
-    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1, noai, noimageai" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
     <meta name="theme-color" content="#fffaf2" />
     ${buildGoogleTagManagerHead()}
     ${buildAdsenseHead()}
