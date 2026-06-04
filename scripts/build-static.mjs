@@ -802,6 +802,7 @@ function buildAdsTxt() {
 
 function buildToolWorkspacePage(tool) {
   const url = `${siteUrl}/tools/${tool.slug}/`;
+  const appToolId = appToolIdsBySlug[tool.slug] ?? "merge";
   const categoryBySlug = {
     "merge-pdf": "Organize PDF",
     "split-pdf": "Organize PDF",
@@ -848,6 +849,7 @@ function buildToolWorkspacePage(tool) {
     .replace(/<p class="eyebrow" id="active-category">[\s\S]*?<\/p>/, `<p class="eyebrow" id="active-category">${escapeHtml(categoryBySlug[tool.slug] ?? "PDF Tool")}</p>`)
     .replace(/<h2 id="workspace-title">[\s\S]*?<\/h2>/, `<h2 id="workspace-title">${escapeHtml(tool.name)}</h2>`)
     .replace(/<p id="workspace-description">[\s\S]*?<\/p>/, `<p id="workspace-description">${escapeHtml(tool.description)}</p>`)
+    .replace("<body>", `<body data-tool-id="${escapeHtml(appToolId)}">`)
     .replaceAll('href="#tools"', 'href="/#tools"')
     .replaceAll('href="#popular"', 'href="/#popular"')
     .replaceAll('href="#faq"', 'href="/#faq"')

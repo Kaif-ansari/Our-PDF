@@ -520,6 +520,13 @@ function openWorkspace() {
 }
 
 function getInitialToolId() {
+  const pageToolId = document.body?.dataset.toolId;
+  if (tools.some((tool) => tool.id === pageToolId)) {
+    shouldOpenInitialWorkspace = true;
+    history.replaceState(null, "", window.location.pathname);
+    return pageToolId;
+  }
+
   const params = new URLSearchParams(window.location.search);
   const requestedTool = params.get("tool");
   if (tools.some((tool) => tool.id === requestedTool)) {
