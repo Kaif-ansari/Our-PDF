@@ -1169,7 +1169,391 @@ function buildTrustPage(page) {
   });
 }
 
+function buildMergePdfOnlineFreeNoLimitPage(page) {
+  const url = `${siteUrl}/${page.slug}/`;
+  const toolUrl = `${siteUrl}/tools/merge-pdf/`;
+  const metaTitle = "Merge PDF Online Free - No Limit | CloudPDF";
+  const metaDescription = "Merge PDF online free with CloudPDF. Combine PDF files fast, reorder documents, and download one clean PDF in your browser.";
+  const faqs = [
+    {
+      question: "How do I merge PDF files for free?",
+      answer: "Open the CloudPDF Merge PDF tool, upload your PDF files, arrange the order, click Merge, and download the combined document.",
+    },
+    {
+      question: "Is there a file size limit?",
+      answer: "CloudPDF is designed for everyday PDF merging in the browser. Very large files can depend on your device memory, browser, and network conditions.",
+    },
+    {
+      question: "Can I merge PDFs on mobile?",
+      answer: "Yes. The online PDF merger works in modern mobile browsers, so you can combine PDF files from a phone or tablet.",
+    },
+    {
+      question: "Do I need to create an account?",
+      answer: "No account is required for the basic merge workflow. You can open the tool and start combining files directly.",
+    },
+    {
+      question: "Is my data secure?",
+      answer: "The workflow is built for private, browser-based processing where possible. Always use the HTTPS website and avoid uploading documents you are not allowed to process online.",
+    },
+    {
+      question: "Does merging affect quality?",
+      answer: "Merging normally keeps the original PDF pages intact. Review the downloaded file to confirm page order, readability, and formatting.",
+    },
+    {
+      question: "Can I reorder pages?",
+      answer: "You can arrange files before merging. For page-level rearranging, use split, remove pages, or organize tools before creating the final PDF.",
+    },
+    {
+      question: "How long are files stored?",
+      answer: "CloudPDF focuses on a browser workspace rather than long-term document storage. Close the session and clear downloads when handling sensitive files.",
+    },
+    {
+      question: "Can I merge password-protected PDFs?",
+      answer: "Password-protected PDFs may need to be unlocked first. If a file cannot be read by the browser, remove the protection with permission from the document owner.",
+    },
+    {
+      question: "Is the tool completely free?",
+      answer: "The Merge PDF Online Free workflow is available without a mandatory signup step for normal document merging tasks.",
+    },
+  ];
+  const jsonLd = JSON.stringify(
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebPage",
+          "@id": `${url}#webpage`,
+          name: "Merge PDF Online Free - No Limit",
+          url,
+          description: metaDescription,
+          isPartOf: { "@id": `${siteUrl}/#website` },
+        },
+        {
+          "@type": "Article",
+          "@id": `${url}#article`,
+          headline: "Merge PDF Online Free - No Limit: The Fastest Way to Combine PDF Files",
+          description: metaDescription,
+          author: { "@type": "Organization", name: "CloudPDF" },
+          publisher: { "@id": `${siteUrl}/#organization` },
+          mainEntityOfPage: { "@id": `${url}#webpage` },
+          image: `${siteUrl}/assets/cloudpdf-logo.png`,
+        },
+        {
+          "@type": "BreadcrumbList",
+          "@id": `${url}#breadcrumbs`,
+          itemListElement: [
+            { "@type": "ListItem", position: 1, name: "Home", item: `${siteUrl}/` },
+            { "@type": "ListItem", position: 2, name: "Merge PDF", item: toolUrl },
+            { "@type": "ListItem", position: 3, name: "Merge PDF Online Free", item: url },
+          ],
+        },
+        {
+          "@type": "FAQPage",
+          "@id": `${url}#faq`,
+          mainEntity: faqs.map((faq) => ({
+            "@type": "Question",
+            name: faq.question,
+            acceptedAnswer: { "@type": "Answer", text: faq.answer },
+          })),
+        },
+      ],
+    },
+    null,
+    2
+  );
+
+  const faqMarkup = faqs
+    .map(
+      (faq) => `<article class="faq-item">
+            <h3>${escapeHtml(faq.question)}</h3>
+            <p>${escapeHtml(faq.answer)}</p>
+          </article>`
+    )
+    .join("");
+
+  return `<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>${metaTitle}</title>
+    <meta name="description" content="${metaDescription}" />
+    <meta name="keywords" content="Merge PDF Online Free, combine PDF files, PDF merger online, merge PDFs free, online PDF merger, PDF combine tool, merge PDF without software" />
+    <link rel="canonical" href="${url}" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="${metaTitle}" />
+    <meta property="og:description" content="${metaDescription}" />
+    <meta property="og:url" content="${url}" />
+    <meta property="og:site_name" content="CloudPDF" />
+    <meta property="og:image" content="${siteUrl}/assets/cloudpdf-logo.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="${metaTitle}" />
+    <meta name="twitter:description" content="${metaDescription}" />
+    <meta name="twitter:image" content="${siteUrl}/assets/cloudpdf-logo.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg" />
+    <link rel="stylesheet" href="/styles.css?v=tool-workspace-v4" />
+    ${buildGoogleTagHead()}
+    ${buildAdsenseHead()}
+    ${buildGoogleSearchConsoleHead()}
+    <script type="application/ld+json">${jsonLd}</script>
+  </head>
+  <body>
+    <main class="simple-page">
+      <section class="hero simple-hero">
+        <a class="breadcrumb" href="/">CloudPDF</a>
+        <p class="eyebrow">PDF combine tool</p>
+        <h1 id="page-title">Merge PDF Online Free – No Limit: The Fastest Way to Combine PDF Files</h1>
+        <p class="hero-copy">Combine PDF files into one organized document with a fast online PDF merger built for students, teams, freelancers, and everyday document work.</p>
+        <div class="hero-actions">
+          <a class="primary-action" href="/tools/merge-pdf/">Merge PDF Online Free</a>
+          <a class="secondary-action" href="/#tools">View all PDF tools</a>
+        </div>
+      </section>
+
+      <article class="seo-section" aria-labelledby="intro-title">
+        <div class="section-heading">
+          <p class="eyebrow">Guide</p>
+          <h2 id="intro-title">A simple way to combine PDF files.</h2>
+          <p>PDF merging means taking two or more PDF files and joining them into a single document. Instead of sending separate attachments, renaming files again and again, or asking someone to open documents in the correct order, you create one clean PDF that is easier to share, review, print, archive, and upload. That is why a Merge PDF Online Free tool is useful for daily work.</p>
+          <p>Students use PDF merging to combine notes, assignments, references, and scanned pages. Business professionals combine proposals, invoices, reports, and supporting documents. HR teams merge resumes, ID proofs, offer letters, and onboarding forms. Legal professionals often need one organized file for contracts, exhibits, affidavits, or case material. Freelancers use an online PDF merger to deliver polished client work without expensive desktop software.</p>
+          <p>The best part is convenience. With a PDF merger online, you can upload files, arrange their order, merge PDFs free, and download the final document from your browser. It keeps the task focused: no software installation, no complicated editor, and no unnecessary steps between you and the finished file.</p>
+        </div>
+        <div class="mini-card">
+          <h3>Featured image suggestion</h3>
+          <p>User combining multiple PDF files into a single document on a laptop.</p>
+          <p><strong>Alt text:</strong> Merge PDF online free tool interface.</p>
+        </div>
+      </article>
+
+      <section class="seo-section" aria-labelledby="what-title">
+        <div class="section-heading">
+          <p class="eyebrow">Definition</p>
+          <h2 id="what-title">What Is a PDF Merger?</h2>
+          <p>A PDF merger is a tool that combines separate PDF documents into one file. It keeps the pages from each source file and places them together in the order you choose. A good PDF combine tool makes this easy: select files, reorder them if needed, merge, and download the result.</p>
+          <h3>How PDF merging works</h3>
+          <p>When you merge PDF without software, the tool reads the structure of each selected PDF, copies the pages, and builds a new combined document. The text, images, page size, and formatting are generally preserved because merging does not require rewriting the document content. It simply organizes pages from multiple files into one output PDF.</p>
+          <h3>Why PDF remains the preferred document format</h3>
+          <p>PDF is still the standard format for official documents because it looks consistent across devices. A PDF can preserve fonts, layouts, images, tables, forms, and signatures better than many editable formats. It is also accepted by schools, banks, job portals, government sites, legal teams, and business platforms. When you combine PDF files, you keep the reliability of PDF while making the document easier to manage.</p>
+        </div>
+      </section>
+
+      <section class="seo-section" aria-labelledby="why-merge-title">
+        <div class="section-heading">
+          <p class="eyebrow">Reasons</p>
+          <h2 id="why-merge-title">Why Merge PDF Files?</h2>
+          <p>People merge PDF files because separate documents are easy to lose, send in the wrong order, or misunderstand. One combined file gives the recipient a clear path from the first page to the last page.</p>
+          <ul class="check-list">
+            <li><strong>Organize documents:</strong> Keep related pages, attachments, and records in one place.</li>
+            <li><strong>Simplify sharing:</strong> Send one PDF instead of several attachments.</li>
+            <li><strong>Reduce confusion:</strong> Control the reading order and avoid missing files.</li>
+            <li><strong>Create professional reports:</strong> Combine cover pages, analysis, charts, and appendices.</li>
+            <li><strong>Combine contracts and invoices:</strong> Deliver agreements, payment records, and supporting files together.</li>
+          </ul>
+          <p><strong>Suggested image:</strong> Business documents merging into one PDF.</p>
+          <p><strong>Alt text:</strong> Multiple PDF documents merged into a single file.</p>
+        </div>
+      </section>
+
+      <section class="seo-section" aria-labelledby="benefits-title">
+        <div class="section-heading">
+          <p class="eyebrow">Benefits</p>
+          <h2 id="benefits-title">Benefits of Using an Online PDF Merger</h2>
+          <p>An online PDF merger is built for speed. You do not need to install a heavy desktop app, learn a full editing suite, or wait until you are back at a work computer. Open the browser, select the files, and create the final PDF.</p>
+          <ul class="check-list">
+            <li><strong>No software installation:</strong> Merge PDF without software directly in your browser.</li>
+            <li><strong>Works on all devices:</strong> Use CloudPDF on laptops, desktops, tablets, and mobile browsers.</li>
+            <li><strong>Fast processing:</strong> Combine routine PDF files quickly and download the output.</li>
+            <li><strong>Secure file handling:</strong> Use a focused workspace and review sensitive documents before processing.</li>
+            <li><strong>Free to use:</strong> Start the Merge PDF Online Free workflow without buying a desktop license.</li>
+            <li><strong>No registration required:</strong> Basic merging does not need an account barrier.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="seo-section" aria-labelledby="how-title">
+        <div class="section-heading">
+          <p class="eyebrow">Steps</p>
+          <h2 id="how-title">How to Merge PDF Files Online</h2>
+          <h3>Step 1: Upload PDF Files</h3>
+          <p>Open the Merge PDF tool and choose the PDF files you want to combine. Use clear filenames when possible, especially if the documents are part of a report, assignment, or client package.</p>
+          <h3>Step 2: Arrange File Order</h3>
+          <p>Place the PDFs in the order you want them to appear. For example, a business report might start with a cover page, then the main report, then charts, invoices, and supporting documents.</p>
+          <h3>Step 3: Click Merge</h3>
+          <p>Start the merge process. The PDF combine tool creates one document from your selected files. Keep the browser tab open until processing is complete.</p>
+          <h3>Step 4: Download Combined PDF</h3>
+          <p>Download the merged file and open it once before sharing. Check page order, page count, readability, and file name. A final review prevents simple mistakes from reaching a teacher, client, HR manager, or court filing team.</p>
+          <p><strong>Suggested screenshot/image:</strong> PDF upload and merge process.</p>
+          <p><strong>Alt text:</strong> How to merge PDF files online.</p>
+        </div>
+      </section>
+
+      <section class="seo-section" aria-labelledby="features-title">
+        <div class="section-heading">
+          <p class="eyebrow">Features</p>
+          <h2 id="features-title">Key Features of Our PDF Merge Tool</h2>
+          <p>CloudPDF is made for people who need practical PDF tools without turning a small task into a project. The merge workspace is direct, browser-based, and easy to understand.</p>
+          <ul class="check-list">
+            <li><strong>Unlimited merging workflow:</strong> Combine documents without a complicated account flow.</li>
+            <li><strong>No unnecessary file-count barrier:</strong> Add the PDFs you need for a normal merge task, subject to browser and device limits.</li>
+            <li><strong>High-quality output:</strong> Keep original pages readable and organized.</li>
+            <li><strong>Secure processing habits:</strong> Work from the official HTTPS website and download the file when finished.</li>
+            <li><strong>Mobile-friendly:</strong> Merge PDFs free from a phone when you are away from your desk.</li>
+            <li><strong>Browser-based tool:</strong> No installer, no updates, and no complex setup.</li>
+            <li><strong>Fast download:</strong> Save the combined PDF and continue with your submission or sharing workflow.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="seo-section" aria-labelledby="use-cases-title">
+        <div class="section-heading">
+          <p class="eyebrow">Use cases</p>
+          <h2 id="use-cases-title">Use Cases for PDF Merging</h2>
+          <h3>For Students</h3>
+          <p>Students can combine lecture notes, scanned homework, research sources, project pages, and assignment sheets into one submission. A single PDF is easier for teachers to open and grade.</p>
+          <h3>For Businesses</h3>
+          <p>Business teams can merge proposals, product sheets, financial summaries, performance reports, invoices, and meeting notes. This creates a professional package for clients and internal teams.</p>
+          <h3>For HR Departments</h3>
+          <p>HR teams often collect resumes, ID documents, contracts, policy acknowledgments, and onboarding forms. One organized PDF can make employee records easier to review.</p>
+          <h3>For Legal Teams</h3>
+          <p>Legal professionals may need to combine contracts, exhibits, correspondence, signed pages, and supporting records. Merging helps keep related material together in a clear sequence.</p>
+          <h3>For Freelancers</h3>
+          <p>Freelancers can combine estimates, work samples, signed agreements, invoices, receipts, and final deliverables. A polished single PDF can make client communication feel more professional.</p>
+        </div>
+      </section>
+
+      <section class="seo-section" aria-labelledby="safe-title">
+        <div class="section-heading">
+          <p class="eyebrow">Safety</p>
+          <h2 id="safe-title">Is It Safe to Merge PDFs Online?</h2>
+          <p>Safety depends on the website, the document, and your own handling habits. Use the official CloudPDF HTTPS URL, keep your browser updated, and avoid processing documents you are not authorized to upload or edit. For highly confidential legal, medical, financial, or government records, follow your organization&apos;s policy before using any online PDF merger.</p>
+          <p>CloudPDF is designed around a focused browser workspace instead of long-term cloud storage. That helps reduce friction and keeps the process simple. Still, users should download the result, review it locally, and clear sensitive files from shared computers after the task is complete.</p>
+          <ul class="check-list">
+            <li><strong>Data encryption:</strong> Use the HTTPS version of the website for encrypted browser communication.</li>
+            <li><strong>Automatic cleanup mindset:</strong> Do not leave sensitive downloads on shared devices.</li>
+            <li><strong>Privacy protection:</strong> Rename files carefully and remove unnecessary personal information before sharing.</li>
+            <li><strong>Secure servers and browsers:</strong> Use trusted networks and updated browsers for document work.</li>
+          </ul>
+          <p><strong>Suggested image:</strong> Secure cloud and encrypted PDF files.</p>
+          <p><strong>Alt text:</strong> Secure PDF processing and encryption.</p>
+        </div>
+      </section>
+
+      <section class="seo-section" aria-labelledby="comparison-title">
+        <div class="section-heading">
+          <p class="eyebrow">Comparison</p>
+          <h2 id="comparison-title">Online PDF Merger vs Desktop Software</h2>
+          <table class="preview-table">
+            <thead>
+              <tr>
+                <th>Factor</th>
+                <th>Online PDF Merger</th>
+                <th>Desktop Software</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Cost</td>
+                <td>Often free for common merge tasks</td>
+                <td>May require a paid license</td>
+              </tr>
+              <tr>
+                <td>Installation</td>
+                <td>No installation needed</td>
+                <td>Requires download and setup</td>
+              </tr>
+              <tr>
+                <td>Speed</td>
+                <td>Fast for everyday files</td>
+                <td>Fast after setup, but heavier to start</td>
+              </tr>
+              <tr>
+                <td>Accessibility</td>
+                <td>Available from any modern browser</td>
+                <td>Limited to installed devices</td>
+              </tr>
+              <tr>
+                <td>Ease of use</td>
+                <td>Simple upload, reorder, merge, download flow</td>
+                <td>More features, but often more complexity</td>
+              </tr>
+              <tr>
+                <td>Device compatibility</td>
+                <td>Works on desktop and mobile browsers</td>
+                <td>Depends on operating system support</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="seo-section" aria-labelledby="tips-title">
+        <div class="section-heading">
+          <p class="eyebrow">Best practices</p>
+          <h2 id="tips-title">Tips for Better PDF Management</h2>
+          <ol class="step-list">
+            <li>Rename files before merging so the order is easy to understand.</li>
+            <li>Place cover pages, summaries, or signed forms at the beginning when needed.</li>
+            <li>Remove duplicate pages before creating the final PDF.</li>
+            <li>Compress the final file if an upload portal has a size limit.</li>
+            <li>Open the merged PDF and check every important section before sending.</li>
+            <li>Use clear final filenames such as client-report-final.pdf or assignment-complete.pdf.</li>
+            <li>Keep an original copy of each source PDF in case you need to rebuild the file.</li>
+            <li>Use bookmarks or page numbers for long reports when possible.</li>
+            <li>Avoid merging unrelated confidential files into the same document.</li>
+            <li>Store the final PDF in the correct folder immediately after download.</li>
+          </ol>
+        </div>
+      </section>
+
+      <section class="seo-section" aria-labelledby="faq-title">
+        <div class="section-heading">
+          <p class="eyebrow">FAQ</p>
+          <h2 id="faq-title">Frequently Asked Questions</h2>
+        </div>
+        <div class="faq-grid">
+          ${faqMarkup}
+        </div>
+      </section>
+
+      <section class="seo-section" aria-labelledby="seo-notes-title">
+        <div class="section-heading">
+          <p class="eyebrow">SEO notes</p>
+          <h2 id="seo-notes-title">Recommended Search Metadata and Images</h2>
+          <ul class="check-list">
+            <li><strong>Meta title:</strong> ${metaTitle}</li>
+            <li><strong>Meta description:</strong> ${metaDescription}</li>
+            <li><strong>URL slug:</strong> /merge-pdf-online-free-no-limit/</li>
+            <li><strong>Primary keyword:</strong> Merge PDF Online Free</li>
+            <li><strong>Secondary keywords:</strong> Combine PDF files, PDF merger online, Merge PDFs free, Online PDF merger, PDF combine tool, Merge PDF without software.</li>
+            <li><strong>Image placement:</strong> Use the laptop merge interface image near the introduction, the business document merge image in the "Why Merge PDF Files?" section, the upload process screenshot in the step-by-step section, and the secure cloud image in the safety section.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="seo-section" aria-labelledby="conclusion-title">
+        <div class="section-heading">
+          <p class="eyebrow">Conclusion</p>
+          <h2 id="conclusion-title">Merge PDFs faster with CloudPDF.</h2>
+          <p>A Merge PDF Online Free tool is one of the most useful document shortcuts for modern work. It helps you combine PDF files into a single, organized document that is easier to send, upload, review, and store. Whether you are a student preparing an assignment, a business professional sending a report, an HR team organizing employee records, a legal professional preparing document sets, or a freelancer delivering client files, one clean PDF can save time and reduce mistakes.</p>
+          <p>CloudPDF keeps the process simple: upload your PDFs, arrange the order, merge, and download the finished document. You can merge PDF without software, avoid a complicated account flow, and work from a browser on desktop or mobile. For best results, review your final file before sharing and follow sensible privacy practices when handling sensitive documents. Ready to create one polished PDF? Open the online PDF merger and combine your files now.</p>
+          <div class="hero-actions">
+            <a class="primary-action" href="/tools/merge-pdf/">Merge PDFs free</a>
+            <a class="secondary-action" href="/tools/compress-pdf/">Compress PDF after merging</a>
+          </div>
+        </div>
+      </section>
+    </main>
+    ${buildFooter()}
+  </body>
+</html>
+`;
+}
+
 function buildLongTailPage(page) {
+  if (page.slug === "merge-pdf-online-free-no-limit") {
+    return buildMergePdfOnlineFreeNoLimitPage(page);
+  }
+
   const url = `${siteUrl}/${page.slug}/`;
   const toolUrl = `${siteUrl}/tools/${page.toolSlug}/`;
   const relatedPages = longTailPages

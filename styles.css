@@ -313,6 +313,7 @@ p {
 h2#hero-title,
 h3#hero-title,
 h3#tool-title,
+h1#page-title,
 h3#page-title {
   margin-bottom: 12px;
   max-width: 760px;
@@ -334,6 +335,7 @@ h3#page-title {
 :root[data-theme="dark"] h2#hero-title,
 :root[data-theme="dark"] h3#hero-title,
 :root[data-theme="dark"] h3#tool-title,
+:root[data-theme="dark"] h1#page-title,
 :root[data-theme="dark"] h3#page-title {
   color: #f5f7fb;
   text-shadow:
