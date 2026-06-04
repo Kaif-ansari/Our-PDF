@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="620" viewBox="0 0 920 620" role="img" aria-labelledby="title desc">
+  <title id="title">PDF to Word conversion steps</title>
+  <desc id="desc">Three connected steps showing upload, convert, and download for PDF to Word.</desc>
+  <rect width="920" height="620" rx="34" fill="#f6f0ff"/>
+  <rect x="70" y="156" width="220" height="270" rx="26" fill="#ffffff" stroke="#d9c9ff" stroke-width="3"/>
+  <rect x="350" y="156" width="220" height="270" rx="26" fill="#ffffff" stroke="#ffd2c8" stroke-width="3"/>
+  <rect x="630" y="156" width="220" height="270" rx="26" fill="#ffffff" stroke="#cbe4ff" stroke-width="3"/>
+  <circle cx="180" cy="226" r="36" fill="#8a55ff"/>
+  <path d="M180 252v-52m0 0-22 22m22-22 22 22" stroke="#ffffff" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="460" cy="226" r="36" fill="#ff4f5e"/>
+  <path d="M438 226h44m-22-22 22 22-22 22" stroke="#ffffff" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="740" cy="226" r="36" fill="#2f76ee"/>
+  <path d="M740 200v52m0 0-22-22m22 22 22-22" stroke="#ffffff" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="124" y="330" fill="#202635" font-family="Arial, sans-serif" font-size="26" font-weight="700">Upload</text>
+  <text x="400" y="330" fill="#202635" font-family="Arial, sans-serif" font-size="26" font-weight="700">Convert</text>
+  <text x="682" y="330" fill="#202635" font-family="Arial, sans-serif" font-size="26" font-weight="700">Download</text>
+  <rect x="116" y="360" width="128" height="12" rx="6" fill="#d8c9ff"/>
+  <rect x="396" y="360" width="128" height="12" rx="6" fill="#ffd2c8"/>
+  <rect x="676" y="360" width="128" height="12" rx="6" fill="#cbe4ff"/>
+  <path d="M302 290h36" stroke="#8792a8" stroke-width="8" stroke-linecap="round"/>
+  <path d="M582 290h36" stroke="#8792a8" stroke-width="8" stroke-linecap="round"/>
+</svg>

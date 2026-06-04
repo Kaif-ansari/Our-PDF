@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="620" viewBox="0 0 920 620" role="img" aria-labelledby="title desc">
+  <title id="title">Converted document quality checklist</title>
+  <desc id="desc">Checklist for reviewing converted Word files including formatting, tables, images, and final page.</desc>
+  <rect width="920" height="620" rx="34" fill="#f4fff8"/>
+  <rect x="148" y="86" width="624" height="448" rx="28" fill="#ffffff" stroke="#cfe8dd" stroke-width="3"/>
+  <text x="210" y="158" fill="#202635" font-family="Arial, sans-serif" font-size="32" font-weight="700">Quality check</text>
+  <g font-family="Arial, sans-serif" font-size="24" font-weight="700" fill="#202635">
+    <circle cx="222" cy="230" r="18" fill="#31c48d"/>
+    <path d="M212 230l8 8 14-18" fill="none" stroke="#ffffff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="260" y="238">Headings and spacing</text>
+    <circle cx="222" cy="298" r="18" fill="#31c48d"/>
+    <path d="M212 298l8 8 14-18" fill="none" stroke="#ffffff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="260" y="306">Images and tables</text>
+    <circle cx="222" cy="366" r="18" fill="#31c48d"/>
+    <path d="M212 366l8 8 14-18" fill="none" stroke="#ffffff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="260" y="374">First and last page</text>
+    <circle cx="222" cy="434" r="18" fill="#31c48d"/>
+    <path d="M212 434l8 8 14-18" fill="none" stroke="#ffffff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="260" y="442">Private information</text>
+  </g>
+</svg>

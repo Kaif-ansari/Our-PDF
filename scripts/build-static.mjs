@@ -1556,6 +1556,7 @@ function buildLongTailPage(page) {
 
   const url = `${siteUrl}/${page.slug}/`;
   const toolUrl = `${siteUrl}/tools/${page.toolSlug}/`;
+  const visuals = getLongTailVisuals(page);
   const relatedPages = longTailPages
     .filter((item) => item.slug !== page.slug && item.toolSlug === page.toolSlug)
     .slice(0, 6);
@@ -1626,15 +1627,21 @@ function buildLongTailPage(page) {
     `This guide walks through the practical version of that workflow: what to prepare, when ${page.toolName} is the right starting point, and what to review before you send, upload, or archive the finished document.`,
     `The examples below are written for real situations like ${page.useCases.join(", ").toLowerCase()}, where a small formatting mistake or oversized file can slow everything down.`,
   ];
-  const extra = `<section class="seo-section" aria-labelledby="why-title">
+  const extra = `<section class="seo-section blog-section" aria-labelledby="why-title">
+        <div class="blog-split">
         <div class="section-heading">
           <p class="eyebrow">Why it matters</p>
           <h2 id="why-title">A small PDF task can still waste time.</h2>
           <p>Most PDF jobs are simple until the destination has a rule: a size limit, a required format, one file instead of many, readable text, or pages in the correct order. A focused browser workflow keeps the job small. Open the right tool, work from the original file, download the output, and inspect it before using it anywhere important.</p>
           <p>For ${escapeHtml(page.heading)}, the main goal is to ${escapeHtml(page.intent)} without adding extra steps. CloudPDF keeps the related tool close so you can read the guidance, then start the actual file work on the matching workspace page.</p>
         </div>
+        ${buildBlogFigure(visuals.why)}
+        </div>
       </section>
-      <section class="seo-section" aria-labelledby="steps-title">
+      <section class="seo-section blog-section" aria-labelledby="steps-title">
+        <div class="blog-split blog-split-reverse">
+        ${buildBlogFigure(visuals.steps)}
+        <div>
         <div class="section-heading">
           <p class="eyebrow">Step by step</p>
           <h2 id="steps-title">How to handle this workflow cleanly.</h2>
@@ -1644,14 +1651,21 @@ function buildLongTailPage(page) {
           <article><h4>2. Open ${escapeHtml(page.toolName)}</h4><p>The related tool is built for this job, so you do not have to search through a large editor. Choose the file, review the available settings, and process it in the browser workspace.</p></article>
           <article><h4>3. Check the output before sharing</h4><p>Open the downloaded file and look at page order, formatting, file size, readability, and any private information. This last check is the difference between a quick fix and a second round of rework.</p></article>
         </div>
+        </div>
+        </div>
       </section>
-      <section class="seo-section" aria-labelledby="use-cases-title">
+      <section class="seo-section blog-section" aria-labelledby="use-cases-title">
+        <div class="blog-split">
+        <div>
         <div class="section-heading">
           <p class="eyebrow">Use cases</p>
           <h2 id="use-cases-title">When this guide is useful.</h2>
           <p>These are common moments where a focused ${escapeHtml(page.toolName)} workflow is faster than opening a full desktop editor or starting the document from scratch.</p>
         </div>
         <div class="faq-grid">${page.useCases.map((item) => `<article><h4>${escapeHtml(item)}</h4><p>This workflow helps when you need a file that is easier to review, submit, share, or keep organized without changing the original more than necessary.</p></article>`).join("")}</div>
+        </div>
+        ${buildBlogFigure(visuals.useCases)}
+        </div>
       </section>
       <section class="seo-section" aria-labelledby="tool-link-title">
         <div class="section-heading">
@@ -1661,11 +1675,14 @@ function buildLongTailPage(page) {
           <p><a class="button primary" href="/tools/${escapeHtml(page.toolSlug)}/">Open ${escapeHtml(page.toolName)}</a></p>
         </div>
       </section>
-      <section class="seo-section" aria-labelledby="quality-title">
+      <section class="seo-section blog-section" aria-labelledby="quality-title">
+        <div class="blog-split blog-split-reverse">
+        ${buildBlogFigure(visuals.quality)}
         <div class="section-heading">
           <p class="eyebrow">Before you finish</p>
           <h2 id="quality-title">A quick quality check saves headaches.</h2>
           <p>Before submitting the final file, scan the first page, the last page, and any page with a table, signature, image, or form field. If the destination has a size limit or format requirement, confirm that too. For sensitive files, make sure the output does not reveal information you meant to remove.</p>
+        </div>
         </div>
       </section>
       <section class="seo-section" aria-labelledby="faq-title">
@@ -1696,10 +1713,79 @@ function buildLongTailPage(page) {
     body,
     jsonLd,
     extra,
+    heroImage: visuals.hero,
+    primaryAction: { href: `/tools/${page.toolSlug}/`, label: `Open ${page.toolName}` },
   });
 }
 
-function buildSimplePage({ url, title, description, eyebrow, heading, body, jsonLd, extra = "" }) {
+function getLongTailVisuals(page) {
+  if (page.slug === "convert-pdf-to-word-without-losing-formatting") {
+    return {
+      hero: {
+        src: "/assets/blog-pdf-word-hero.svg",
+        alt: "PDF to Word conversion layout preview on laptop and mobile screens",
+        caption: "Convert PDF pages into a Word-compatible document while checking layout on every device.",
+      },
+      why: {
+        src: "/assets/blog-pdf-word-layout.svg",
+        alt: "PDF page layout converting into editable Word document blocks",
+        caption: "Formatting checks help preserve headings, columns, images, and readable spacing.",
+      },
+      steps: {
+        src: "/assets/blog-pdf-word-steps.svg",
+        alt: "Three step PDF to Word workflow showing upload convert and download",
+        caption: "Upload the source PDF, convert it, then review the Word-compatible download.",
+      },
+      useCases: {
+        src: "/assets/blog-pdf-word-devices.svg",
+        alt: "PDF to Word workflow shown on desktop tablet and phone",
+        caption: "The guide is aligned for desktop reading and stacks cleanly on phones.",
+      },
+      quality: {
+        src: "/assets/blog-pdf-word-quality.svg",
+        alt: "Document quality checklist for converted Word file",
+        caption: "Check key pages before sending the converted document.",
+      },
+    };
+  }
+
+  return {
+    hero: {
+      src: "/assets/cloudpdf-logo.png?v=1",
+      alt: `${page.toolName} guide visual`,
+      caption: `${page.toolName} workflow guide for faster PDF tasks.`,
+    },
+    why: {
+      src: "/assets/cloudpdf-logo.png?v=1",
+      alt: `${page.toolName} document workflow visual`,
+      caption: "Keep the document workflow focused and easy to review.",
+    },
+    steps: {
+      src: "/assets/cloudpdf-logo.png?v=1",
+      alt: `${page.toolName} step by step workflow visual`,
+      caption: "Use a simple upload, process, and download workflow.",
+    },
+    useCases: {
+      src: "/assets/cloudpdf-logo.png?v=1",
+      alt: `${page.toolName} use cases visual`,
+      caption: "Useful for school, business, freelance, and everyday document work.",
+    },
+    quality: {
+      src: "/assets/cloudpdf-logo.png?v=1",
+      alt: `${page.toolName} quality check visual`,
+      caption: "Review the output before sharing or uploading it.",
+    },
+  };
+}
+
+function buildBlogFigure(visual) {
+  return `<figure class="blog-image">
+          <img src="${escapeHtml(visual.src)}" alt="${escapeHtml(visual.alt)}" loading="lazy" width="920" height="620" />
+          <figcaption>${escapeHtml(visual.caption)}</figcaption>
+        </figure>`;
+}
+
+function buildSimplePage({ url, title, description, eyebrow, heading, body, jsonLd, extra = "", heroImage = null, primaryAction = null }) {
   return `<!doctype html>
 <html lang="en">
   <head>
@@ -1746,13 +1832,14 @@ function buildSimplePage({ url, title, description, eyebrow, heading, body, json
       <section class="hero tool-landing" aria-labelledby="page-title">
         <div class="hero-copy">
           <p class="eyebrow">${escapeHtml(eyebrow)}</p>
-          <h3 id="page-title">${escapeHtml(heading)}</h3>
+          <h1 id="page-title">${escapeHtml(heading)}</h1>
           ${body.map((paragraph) => `<p>${escapeHtml(paragraph)}</p>`).join("")}
           <div class="hero-actions">
-            <a class="button primary" href="/#tools">Explore PDF tools</a>
+            <a class="button primary" href="${escapeHtml(primaryAction?.href ?? "/#tools")}">${escapeHtml(primaryAction?.label ?? "Explore PDF tools")}</a>
             <a class="button secondary" href="/">Home</a>
           </div>
         </div>
+        ${heroImage ? buildBlogFigure(heroImage).replace('class="blog-image"', 'class="blog-image blog-hero-image"') : ""}
       </section>
       ${extra}
     </main>

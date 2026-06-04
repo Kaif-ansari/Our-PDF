@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="620" viewBox="0 0 920 620" role="img" aria-labelledby="title desc">
+  <title id="title">PDF to Word conversion preview</title>
+  <desc id="desc">Laptop and mobile screens showing a PDF document converted into a Word-compatible layout.</desc>
+  <rect width="920" height="620" rx="34" fill="#f7fbff"/>
+  <rect x="56" y="62" width="808" height="492" rx="28" fill="#ffffff" stroke="#d9e3f2" stroke-width="3"/>
+  <rect x="110" y="122" width="432" height="288" rx="18" fill="#fff5f4" stroke="#ffd4cf" stroke-width="3"/>
+  <rect x="148" y="162" width="126" height="36" rx="8" fill="#ff4f5e"/>
+  <text x="166" y="187" fill="#ffffff" font-family="Arial, sans-serif" font-size="20" font-weight="700">PDF</text>
+  <rect x="148" y="226" width="340" height="14" rx="7" fill="#ffc0b9"/>
+  <rect x="148" y="258" width="292" height="14" rx="7" fill="#ffd7d2"/>
+  <rect x="148" y="290" width="316" height="14" rx="7" fill="#ffd7d2"/>
+  <rect x="148" y="322" width="210" height="14" rx="7" fill="#ffd7d2"/>
+  <path d="M566 262h82l-22-22 16-16 52 52-52 52-16-16 22-22h-82z" fill="#2f76ee"/>
+  <rect x="664" y="122" width="146" height="288" rx="18" fill="#edf5ff" stroke="#c9dcff" stroke-width="3"/>
+  <rect x="694" y="158" width="58" height="42" rx="12" fill="#2f76ee"/>
+  <text x="711" y="187" fill="#ffffff" font-family="Arial, sans-serif" font-size="22" font-weight="700">W</text>
+  <rect x="694" y="228" width="86" height="12" rx="6" fill="#95b8ff"/>
+  <rect x="694" y="258" width="74" height="12" rx="6" fill="#bed2ff"/>
+  <rect x="694" y="288" width="88" height="12" rx="6" fill="#bed2ff"/>
+  <rect x="694" y="318" width="54" height="12" rx="6" fill="#bed2ff"/>
+  <rect x="250" y="456" width="420" height="54" rx="18" fill="#14213d"/>
+  <text x="312" y="491" fill="#ffffff" font-family="Arial, sans-serif" font-size="24" font-weight="700">Convert PDF to Word</text>
+</svg>
