@@ -363,6 +363,7 @@ const toolPageSlugs = {
   ocr: "extract-pdf-text",
   summarize: "summarize-pdf",
 };
+const toolIdsByPageSlug = Object.fromEntries(Object.entries(toolPageSlugs).map(([toolId, slug]) => [slug, toolId]));
 
 const categoryTabs = document.querySelector("#category-tabs");
 const toolGrid = document.querySelector("#tool-grid");
@@ -398,14 +399,19 @@ let outputUrls = [];
 let jobHistory = loadLocalHistory();
 let processingRunId = 0;
 let isProcessing = false;
+let shouldOpenInitialWorkspace = false;
 
 renderCategories();
 renderTools();
 initTheme();
 selectTool(getInitialToolId());
+if (shouldOpenInitialWorkspace) {
+  openWorkspace();
+}
 wireUpload();
 wireTiltCards();
 renderHistory();
+enhanceToolLinks();
 
 function renderCategories() {
   categoryTabs.innerHTML = "";
@@ -443,6 +449,17 @@ function renderTools() {
       </span>
     `;
     toolGrid.append(link);
+  }
+  enhanceToolLinks(toolGrid);
+}
+
+function enhanceToolLinks(root = document) {
+  for (const link of root.querySelectorAll('a[href^="/tools/"]')) {
+    const url = new URL(link.getAttribute("href"), window.location.origin);
+    if (!/^\/tools\/[^/]+\/?$/.test(url.pathname)) continue;
+    link.href = `${url.pathname.endsWith("/") ? url.pathname : `${url.pathname}/`}`;
+    link.target = "_blank";
+    link.rel = "noopener";
   }
 }
 
@@ -494,7 +511,11 @@ function renderProgress(active) {
 }
 
 function openWorkspace() {
-  history.replaceState(null, "", "#workspace");
+  if (window.location.pathname.startsWith("/tools/")) {
+    history.replaceState(null, "", window.location.pathname);
+  } else {
+    history.replaceState(null, "", "#workspace");
+  }
   document.querySelector("#workspace").scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
@@ -502,8 +523,17 @@ function getInitialToolId() {
   const params = new URLSearchParams(window.location.search);
   const requestedTool = params.get("tool");
   if (tools.some((tool) => tool.id === requestedTool)) {
+    shouldOpenInitialWorkspace = true;
     history.replaceState(null, "", `${window.location.pathname}${window.location.hash || "#workspace"}`);
     return requestedTool;
+  }
+
+  const [, toolSlug] = window.location.pathname.match(/^\/tools\/([^/]+)\/?$/) ?? [];
+  const toolIdFromPath = toolIdsByPageSlug[toolSlug];
+  if (tools.some((tool) => tool.id === toolIdFromPath)) {
+    shouldOpenInitialWorkspace = true;
+    history.replaceState(null, "", window.location.pathname);
+    return toolIdFromPath;
   }
 
   const storedTool = localStorage.getItem(INITIAL_TOOL_STORAGE_KEY);

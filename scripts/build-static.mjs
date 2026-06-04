@@ -1,4 +1,4 @@
-import { cp, mkdir, rm, writeFile } from "node:fs/promises";
+import { cp, mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 
 const root = process.cwd();
@@ -656,6 +656,7 @@ const longTailPages = [
 
 await rm(output, { recursive: true, force: true });
 await mkdir(output, { recursive: true });
+const homepageTemplate = await readFile(join(root, "index.html"), "utf8");
 
 for (const item of ["index.html", "app.js", "theme.js", "styles.css", "assets", "_headers", "_redirects", "site.webmanifest"]) {
   await cp(join(root, item), join(output, item), { recursive: true });
@@ -799,7 +800,84 @@ function buildAdsTxt() {
 `;
 }
 
+function buildToolWorkspacePage(tool) {
+  const url = `${siteUrl}/tools/${tool.slug}/`;
+  const categoryBySlug = {
+    "merge-pdf": "Organize PDF",
+    "split-pdf": "Organize PDF",
+    "remove-pages-from-pdf": "Organize PDF",
+    "extract-pdf-pages": "Organize PDF",
+    "compress-pdf": "Optimize PDF",
+    "repair-pdf": "Optimize PDF",
+    "jpg-to-pdf": "Convert PDF",
+    "pdf-to-word": "Convert PDF",
+    "pdf-to-powerpoint": "Convert PDF",
+    "pdf-to-excel": "Convert PDF",
+    "pdf-to-jpg": "Convert PDF",
+    "word-to-pdf": "Convert PDF",
+    "powerpoint-to-pdf": "Convert PDF",
+    "excel-to-pdf": "Convert PDF",
+    "rotate-pdf": "Edit PDF",
+    "watermark-pdf": "Edit PDF",
+    "add-page-numbers-to-pdf": "Edit PDF",
+    "crop-pdf": "Edit PDF",
+    "sign-pdf": "PDF Security",
+    "redact-pdf": "PDF Security",
+    "compare-pdf": "PDF Security",
+    "extract-pdf-text": "PDF Intelligence",
+    "summarize-pdf": "PDF Intelligence",
+  };
+  const page = homepageTemplate
+    .replace(/<title>[\s\S]*?<\/title>/, `<title>${escapeHtml(tool.title)}</title>`)
+    .replace(
+      /<meta\s+name="description"\s+content="[\s\S]*?"\s*\/>/,
+      `<meta name="description" content="${escapeHtml(tool.description)}" />`
+    )
+    .replace(/<link rel="canonical" href="[\s\S]*?" \/>/, `<link rel="canonical" href="${url}" />`)
+    .replace(/<meta property="og:title" content="[\s\S]*?" \/>/, `<meta property="og:title" content="${escapeHtml(tool.title)}" />`)
+    .replace(
+      /<meta\s+property="og:description"\s+content="[\s\S]*?"\s*\/>/,
+      `<meta property="og:description" content="${escapeHtml(tool.description)}" />`
+    )
+    .replace(/<meta property="og:url" content="[\s\S]*?" \/>/, `<meta property="og:url" content="${url}" />`)
+    .replace(/<meta name="twitter:title" content="[\s\S]*?" \/>/, `<meta name="twitter:title" content="${escapeHtml(tool.title)}" />`)
+    .replace(
+      /<meta\s+name="twitter:description"\s+content="[\s\S]*?"\s*\/>/,
+      `<meta name="twitter:description" content="${escapeHtml(tool.description)}" />`
+    )
+    .replace(/<p class="eyebrow" id="active-category">[\s\S]*?<\/p>/, `<p class="eyebrow" id="active-category">${escapeHtml(categoryBySlug[tool.slug] ?? "PDF Tool")}</p>`)
+    .replace(/<h2 id="workspace-title">[\s\S]*?<\/h2>/, `<h2 id="workspace-title">${escapeHtml(tool.name)}</h2>`)
+    .replace(/<p id="workspace-description">[\s\S]*?<\/p>/, `<p id="workspace-description">${escapeHtml(tool.description)}</p>`)
+    .replaceAll('href="#tools"', 'href="/#tools"')
+    .replaceAll('href="#popular"', 'href="/#popular"')
+    .replaceAll('href="#faq"', 'href="/#faq"')
+    .replaceAll('href="#workspace"', 'href="#workspace"');
+  const mainOpen = page.indexOf("<main>");
+  const mainContentStart = mainOpen + "<main>".length;
+  const mainClose = page.indexOf("</main>");
+  const breadcrumbsStart = page.indexOf('<nav class="breadcrumbs"', mainContentStart);
+  const breadcrumbsEnd = page.indexOf("</nav>", breadcrumbsStart) + "</nav>".length;
+  const workspaceStart = page.indexOf('<section id="workspace"', mainContentStart);
+  const dashboardStart = page.indexOf('<section id="dashboard"', workspaceStart);
+  const breadcrumbs = page.slice(breadcrumbsStart, breadcrumbsEnd);
+  const workspace = page.slice(workspaceStart, dashboardStart);
+  const afterWorkspace = page.slice(dashboardStart, mainClose);
+  const hiddenToolDirectory = `<section class="tool-directory" hidden aria-hidden="true">
+        <div class="category-tabs" id="category-tabs" aria-label="Tool categories"></div>
+        <div class="tool-grid" id="tool-grid"></div>
+      </section>`;
+
+  return `${page.slice(0, mainContentStart)}
+      ${breadcrumbs}
+      ${hiddenToolDirectory}
+      ${workspace}
+      ${afterWorkspace}
+    ${page.slice(mainClose)}`;
+}
+
 function buildToolPage(tool) {
+  return buildToolWorkspacePage(tool);
+
   const url = `${siteUrl}/tools/${tool.slug}/`;
   const appToolId = appToolIdsBySlug[tool.slug] ?? "merge";
   const encodedAppToolId = encodeURIComponent(appToolId);
