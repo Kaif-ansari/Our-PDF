@@ -664,9 +664,12 @@ for (const item of ["index.html", "app.js", "theme.js", "styles.css", "assets", 
 
 await mkdir(join(output, "vendor"), { recursive: true });
 await cp(join(root, "node_modules", "pdf-lib", "dist", "pdf-lib.esm.min.js"), join(output, "vendor", "pdf-lib.esm.min.js"));
+await cp(join(root, "node_modules", "pdf-lib", "dist", "pdf-lib.esm.min.js.map"), join(output, "vendor", "pdf-lib.esm.min.js.map"));
 await cp(join(root, "node_modules", "jszip", "dist", "jszip.min.js"), join(output, "vendor", "jszip.min.js"));
 await cp(join(root, "node_modules", "pdfjs-dist", "build", "pdf.min.mjs"), join(output, "vendor", "pdf.min.mjs"));
+await cp(join(root, "node_modules", "pdfjs-dist", "build", "pdf.mjs.map"), join(output, "vendor", "pdf.mjs.map"));
 await cp(join(root, "node_modules", "pdfjs-dist", "build", "pdf.worker.min.mjs"), join(output, "vendor", "pdf.worker.min.mjs"));
+await cp(join(root, "node_modules", "pdfjs-dist", "build", "pdf.worker.mjs.map"), join(output, "vendor", "pdf.worker.mjs.map"));
 
 await writeFile(join(output, "robots.txt"), buildRobots(), "utf8");
 await writeFile(join(output, "sitemap.xml"), buildSitemap(), "utf8");
@@ -966,8 +969,8 @@ function buildToolPage(tool) {
     <meta name="twitter:title" content="${escapeHtml(tool.title)}" />
     <meta name="twitter:description" content="${escapeHtml(tool.description)}" />
     <meta name="twitter:image" content="${siteUrl}/assets/cloudpdf-logo.png" />
-    <script defer src="/theme.js?v=security-v1"></script>
-    <link rel="stylesheet" href="/styles.css?v=footer-v1" />
+    <script defer src="/theme.js?v=security-v2"></script>
+    <link rel="stylesheet" href="/styles.css?v=responsive-v2" />
     <script defer src="/_vercel/speed-insights/script.js" data-sdkn="@vercel/speed-insights" data-sdkv="2.0.0"></script>
     <script type="application/ld+json">${jsonLd.replace(/</g, "\\u003c")}</script>
   </head>
@@ -1291,7 +1294,7 @@ function buildMergePdfOnlineFreeNoLimitPage(page) {
     <meta name="twitter:description" content="${metaDescription}" />
     <meta name="twitter:image" content="${siteUrl}/assets/cloudpdf-logo.png" />
     <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg" />
-    <link rel="stylesheet" href="/styles.css?v=tool-workspace-v4" />
+    <link rel="stylesheet" href="/styles.css?v=responsive-v2" />
     ${buildGoogleTagHead()}
     ${buildAdsenseHead()}
     ${buildGoogleSearchConsoleHead()}
@@ -1808,9 +1811,9 @@ function buildSimplePage({ url, title, description, eyebrow, heading, body, json
     <meta property="og:description" content="${escapeHtml(description)}" />
     <meta property="og:url" content="${url}" />
     <meta property="og:image" content="${siteUrl}/assets/cloudpdf-logo.png" />
-    <script defer src="/theme.js?v=security-v1"></script>
+    <script defer src="/theme.js?v=security-v2"></script>
     <script type="application/ld+json">${jsonLd.replace(/</g, "\\u003c")}</script>
-    <link rel="stylesheet" href="/styles.css?v=footer-v1" />
+    <link rel="stylesheet" href="/styles.css?v=responsive-v2" />
   </head>
   <body>
     <header class="topbar">

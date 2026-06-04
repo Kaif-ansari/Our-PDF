@@ -12,6 +12,8 @@ const contentTypes = {
   ".html": "text/html; charset=utf-8",
   ".css": "text/css; charset=utf-8",
   ".js": "text/javascript; charset=utf-8",
+  ".mjs": "text/javascript; charset=utf-8",
+  ".map": "application/json; charset=utf-8",
   ".png": "image/png",
   ".svg": "image/svg+xml; charset=utf-8",
   ".json": "application/json; charset=utf-8",
@@ -24,9 +26,7 @@ const contentTypes = {
 
 const securityHeaders = {
   "Content-Security-Policy":
-    "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://tagmanager.google.com https://www.google-analytics.com https://pagead2.googlesyndication.com https://partner.googleadservices.com https://tpc.googlesyndication.com; worker-src 'self' blob:; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://www.googletagmanager.com https://www.google-analytics.com https://stats.g.doubleclick.net https://ssl.gstatic.com https://www.gstatic.com https://pagead2.googlesyndication.com https://googleads.g.doubleclick.net https://tpc.googlesyndication.com; font-src 'self'; connect-src 'self' https://vitals.vercel-insights.com https://www.googletagmanager.com https://www.google-analytics.com https://region1.google-analytics.com https://analytics.google.com https://stats.g.doubleclick.net https://pagead2.googlesyndication.com https://googleads.g.doubleclick.net; frame-src 'self' blob: https://www.googletagmanager.com https://googleads.g.doubleclick.net https://tpc.googlesyndication.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'",
-  "Content-Security-Policy-Report-Only":
-    "default-src 'self'; script-src 'self'; require-trusted-types-for 'script'; report-uri /csp-report",
+    "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://tagmanager.google.com https://www.google-analytics.com https://pagead2.googlesyndication.com https://partner.googleadservices.com https://tpc.googlesyndication.com; worker-src 'self' blob:; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://www.googletagmanager.com https://www.google-analytics.com https://stats.g.doubleclick.net https://ssl.gstatic.com https://www.gstatic.com https://pagead2.googlesyndication.com https://googleads.g.doubleclick.net https://tpc.googlesyndication.com; font-src 'self'; connect-src 'self' https://vitals.vercel-insights.com https://www.googletagmanager.com https://www.google-analytics.com https://region1.google-analytics.com https://analytics.google.com https://stats.g.doubleclick.net https://pagead2.googlesyndication.com https://googleads.g.doubleclick.net https://ep1.adtrafficquality.google; frame-src 'self' blob: https://www.googletagmanager.com https://googleads.g.doubleclick.net https://tpc.googlesyndication.com https://pagead2.googlesyndication.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'",
   "Cross-Origin-Opener-Policy": "same-origin",
   "Cross-Origin-Resource-Policy": "same-origin",
   "Permissions-Policy": "camera=(), microphone=(), geolocation=(), payment=(), usb=(), serial=(), clipboard-read=(), clipboard-write=(self)",
@@ -41,7 +41,15 @@ function getCacheControl(pathname) {
     return "public, max-age=0, must-revalidate";
   }
 
+  if (["/sitemap.xml", "/robots.txt", "/ads.txt", "/llms.txt"].includes(pathname)) {
+    return "public, max-age=0, must-revalidate";
+  }
+
   if (pathname.startsWith("/assets/")) {
+    return "public, max-age=31536000, immutable";
+  }
+
+  if (pathname.startsWith("/vendor/") || pathname === "/app.js" || pathname === "/styles.css" || pathname === "/theme.js") {
     return "public, max-age=31536000, immutable";
   }
 
@@ -60,6 +68,15 @@ createServer((request, response) => {
   }
 
   const url = new URL(request.url ?? "/", `http://${request.headers.host}`);
+  if (/^\/.+\/sitemap\.xml\/?$/.test(url.pathname)) {
+    response.writeHead(301, {
+      location: "/sitemap.xml",
+      ...securityHeaders,
+    });
+    response.end();
+    return;
+  }
+
   const requestedPath = url.pathname === "/" ? "/index.html" : url.pathname;
   let filePath = resolve(join(root, normalize(decodeURIComponent(requestedPath))));
   if (existsSync(filePath) && statSync(filePath).isDirectory()) {

@@ -398,6 +398,15 @@ h4 {
   font-size: 1rem;
 }
 
+.result-panel h3,
+.dashboard-panel h3,
+.faq-grid article h3 {
+  margin-bottom: 12px;
+  font-family: var(--font-ui);
+  font-size: 1rem;
+  line-height: 1.25;
+}
+
 .hero-copy p {
   max-width: 720px;
   color: var(--muted);
@@ -517,6 +526,9 @@ h4 {
 .hero-visual {
   margin: 0;
   overflow: hidden;
+  width: 100%;
+  max-width: 620px;
+  justify-self: center;
   background: transparent;
   transform:
     rotateY(calc(-10deg + var(--tilt-y, 0deg)))
@@ -549,6 +561,7 @@ h4 {
 .mock-window {
   display: grid;
   gap: 18px;
+  aspect-ratio: 1 / 0.82;
   min-height: 420px;
   padding: 22px;
   border: 1px solid var(--line);
@@ -2302,7 +2315,7 @@ h4 {
 
 .workspace-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(300px, 340px);
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 340px);
   gap: 18px;
   max-width: 1180px;
   margin: 0 auto;
@@ -2311,6 +2324,7 @@ h4 {
 .processor,
 .result-panel {
   min-width: 0;
+  max-width: 100%;
   padding: 20px;
   box-shadow: var(--shadow-soft);
 }
@@ -2397,6 +2411,16 @@ h4 {
   border-radius: 8px;
   background: var(--surface);
   box-shadow: 0 6px 16px rgba(18, 28, 45, 0.05);
+}
+
+.file-item > *,
+.result-item > *,
+.history-item > *,
+.output-header,
+.result-list,
+.workspace-downloads,
+.preview-table {
+  min-width: 0;
 }
 
 .file-item strong,
@@ -2755,6 +2779,23 @@ h4 {
   text-decoration: none;
 }
 
+@media (max-width: 1180px) {
+  .topbar {
+    padding-inline: 18px;
+    gap: 12px;
+  }
+
+  .hero {
+    grid-template-columns: minmax(0, 1fr) minmax(280px, 0.74fr);
+    min-height: auto;
+    padding-top: 38px;
+  }
+
+  .mock-window {
+    min-height: 360px;
+  }
+}
+
 @media (max-width: 1080px) {
   .workspace-grid {
     grid-template-columns: 1fr;
@@ -2801,6 +2842,7 @@ h4 {
   .hero {
     grid-template-columns: 1fr;
     min-height: auto;
+    gap: 18px;
   }
 
   .tool-landing h1#page-title {
@@ -2868,6 +2910,13 @@ h4 {
 
   .hero-visual {
     transform: none;
+    max-width: 520px;
+  }
+
+  .mock-window {
+    min-height: 300px;
+    padding: 16px;
+    border-radius: 20px;
   }
 
   .dashboard-grid {
@@ -2945,6 +2994,14 @@ h4 {
     gap: 8px;
   }
 
+  .topbar-actions {
+    margin-left: auto;
+  }
+
+  .theme-toggle strong {
+    display: none;
+  }
+
   .brand-logo {
     width: 50px;
     height: 32px;
@@ -2964,6 +3021,33 @@ h4 {
   .dashboard-panel,
   .faq-grid article {
     padding: 14px;
+  }
+
+  .mock-docs article,
+  .collage a,
+  .collage article {
+    min-height: 96px;
+    border-radius: 16px;
+  }
+
+  .mock-action {
+    min-height: 64px;
+    border-radius: 16px;
+  }
+
+  .tile-art {
+    width: 78px;
+    height: 60px;
+    transform: scale(0.86);
+  }
+
+  .file-actions {
+    justify-content: stretch;
+  }
+
+  .file-actions .button,
+  .file-actions select {
+    width: 100%;
   }
 
   .footer-main {

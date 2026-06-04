@@ -1,11 +1,43 @@
-import { PDFDocument, StandardFonts, rgb, degrees } from "/vendor/pdf-lib.esm.min.js";
-import "/vendor/jszip.min.js";
-import * as pdfjsLib from "/vendor/pdf.min.mjs";
+let PDFDocument;
+let StandardFonts;
+let rgb;
+let degrees;
+let pdfjsLib;
+let JSZip;
+let pdfLibPromise;
+let pdfJsPromise;
+let jsZipPromise;
 
-const JSZip = globalThis.JSZip;
+async function ensurePdfLib() {
+  if (!pdfLibPromise) {
+    pdfLibPromise = import("/vendor/pdf-lib.esm.min.js").then((module) => {
+      ({ PDFDocument, StandardFonts, rgb, degrees } = module);
+      return module;
+    });
+  }
+  return pdfLibPromise;
+}
 
-pdfjsLib.GlobalWorkerOptions.workerSrc =
-  "/vendor/pdf.worker.min.mjs";
+async function ensurePdfJs() {
+  if (!pdfJsPromise) {
+    pdfJsPromise = import("/vendor/pdf.min.mjs").then((module) => {
+      pdfjsLib = module;
+      pdfjsLib.GlobalWorkerOptions.workerSrc = "/vendor/pdf.worker.min.mjs";
+      return module;
+    });
+  }
+  return pdfJsPromise;
+}
+
+async function ensureJsZip() {
+  if (!jsZipPromise) {
+    jsZipPromise = import("/vendor/jszip.min.js").then(() => {
+      JSZip = globalThis.JSZip;
+      return JSZip;
+    });
+  }
+  return jsZipPromise;
+}
 
 const MAX_UPLOAD_BYTES = 10 * 1024 * 1024;
 const MAX_PDF_PAGES = 300;
@@ -1290,6 +1322,8 @@ async function validateFileSecurity(file, accept) {
 }
 
 async function validatePdfFile(file, header) {
+  await ensurePdfLib();
+
   if (!isPdfName(file.name)) {
     throw new Error("Only files with a safe .pdf filename are accepted.");
   }
@@ -1329,6 +1363,7 @@ async function validatePdfFile(file, header) {
 }
 
 async function loadSafePdf(file) {
+  await ensurePdfLib();
   return PDFDocument.load(await file.arrayBuffer(), { ignoreEncryption: false, updateMetadata: false });
 }
 
@@ -1353,6 +1388,8 @@ function validateImageFile(file, header) {
 }
 
 async function validateOfficeOpenXmlFile(file, header) {
+  await ensureJsZip();
+
   const lowerName = file.name.toLowerCase();
   const validExtension = lowerName.endsWith(".docx") || lowerName.endsWith(".pptx") || lowerName.endsWith(".xlsx");
 
@@ -1478,6 +1515,8 @@ async function repairPdf(files) {
 }
 
 async function imagesToPdf(files, options) {
+  await ensurePdfLib();
+
   const pdf = await PDFDocument.create();
   for (const file of files) {
     const bytes = await file.arrayBuffer();
@@ -1493,6 +1532,8 @@ async function imagesToPdf(files, options) {
 }
 
 async function pdfToJpg(files, options) {
+  await ensureJsZip();
+
   const bytes = await files[0].arrayBuffer();
   const pdf = await loadPdfJsSafe(bytes);
   const zip = new JSZip();
@@ -1648,6 +1689,8 @@ async function redactPdf(files, options) {
 }
 
 async function comparePdf(files) {
+  await ensurePdfLib();
+
   const lines = [];
   for (const file of files) {
     const bytes = await file.arrayBuffer();
@@ -1715,6 +1758,8 @@ async function excelToPdf(files) {
 }
 
 async function copyPages(source, indices, name) {
+  await ensurePdfLib();
+
   const doc = await PDFDocument.create();
   const pages = await doc.copyPages(source, indices);
   pages.forEach((page) => doc.addPage(page));
@@ -1750,6 +1795,8 @@ function officePagePreview(pages) {
 }
 
 async function buildLayoutDocx(sourceName, pages) {
+  await ensureJsZip();
+
   const zip = new JSZip();
   zip.file("[Content_Types].xml", docxContentTypes(pages));
   zip.folder("_rels").file(".rels", docxRootRelationships());
@@ -1942,6 +1989,8 @@ async function renderPdfPageToCanvas(pdf, pageNumber, scale) {
 }
 
 async function loadPdfJsSafe(bytes) {
+  await ensurePdfJs();
+
   const task = pdfjsLib.getDocument({
     data: bytes,
     disableAutoFetch: true,
@@ -1999,6 +2048,8 @@ async function extractDocxText(file) {
 }
 
 async function extractDocxContent(file) {
+  await ensureJsZip();
+
   if (!file.name.toLowerCase().endsWith(".docx")) {
     throw new Error("Browser conversion supports DOCX files only.");
   }
@@ -2011,6 +2062,8 @@ async function extractDocxContent(file) {
 }
 
 async function extractPptxText(file) {
+  await ensureJsZip();
+
   if (!file.name.toLowerCase().endsWith(".pptx")) {
     throw new Error("Browser conversion supports PPTX files only.");
   }
@@ -2027,6 +2080,8 @@ async function extractPptxText(file) {
 }
 
 async function extractXlsxText(file) {
+  await ensureJsZip();
+
   if (!file.name.toLowerCase().endsWith(".xlsx")) {
     throw new Error("Browser conversion supports XLSX files only.");
   }
@@ -2090,6 +2145,8 @@ function firstMeaningfulText(groups) {
 }
 
 async function textToPdfWithOriginal(file, text, outputName, title) {
+  await ensurePdfLib();
+
   const pdf = await PDFDocument.create();
   const font = await pdf.embedFont(StandardFonts.Helvetica);
   const bold = await pdf.embedFont(StandardFonts.HelveticaBold);
@@ -2119,6 +2176,8 @@ async function textToPdfWithOriginal(file, text, outputName, title) {
 }
 
 async function imagesToPdfWithOriginal(file, images, outputName, title) {
+  await ensurePdfLib();
+
   const pdf = await PDFDocument.create();
   const font = await pdf.embedFont(StandardFonts.HelveticaBold);
 
