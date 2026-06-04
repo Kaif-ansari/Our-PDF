@@ -1205,6 +1205,15 @@ function buildLongTailPage(page) {
           isPartOf: { "@id": `${siteUrl}/#website` },
         },
         {
+          "@type": "Article",
+          "@id": `${url}#article`,
+          headline: page.heading,
+          description: page.description,
+          author: { "@type": "Organization", name: "CloudPDF" },
+          publisher: { "@id": `${siteUrl}/#organization` },
+          mainEntityOfPage: { "@id": `${url}#webpage` },
+        },
+        {
           "@type": "BreadcrumbList",
           "@id": `${url}#breadcrumbs`,
           itemListElement: [
@@ -1227,23 +1236,52 @@ function buildLongTailPage(page) {
     null,
     2
   );
+  const lowerHeading = page.heading.toLowerCase();
   const body = [
-    `${page.heading} is a specific PDF workflow for people who need to ${page.intent}. Start with the related ${page.toolName} tool, choose your file, use the available settings, and download the result.`,
-    `This page is built for a narrow search intent, so it focuses on the real use case instead of duplicating the main tool page. Good fits include ${page.useCases.join(", ").toLowerCase()}.`,
-    "After downloading, open the output file and confirm the text, images, page order, and file size match the destination requirement before you submit or share it.",
+    `If you are trying to ${lowerHeading}, you are usually not looking for another complicated PDF editor. You just need a clean way to handle the file, check the result, and move on.`,
+    `This guide walks through the practical version of that workflow: what to prepare, when ${page.toolName} is the right starting point, and what to review before you send, upload, or archive the finished document.`,
+    `The examples below are written for real situations like ${page.useCases.join(", ").toLowerCase()}, where a small formatting mistake or oversized file can slow everything down.`,
   ];
-  const extra = `<section class="seo-section" aria-labelledby="use-cases-title">
+  const extra = `<section class="seo-section" aria-labelledby="why-title">
+        <div class="section-heading">
+          <p class="eyebrow">Why it matters</p>
+          <h2 id="why-title">A small PDF task can still waste time.</h2>
+          <p>Most PDF jobs are simple until the destination has a rule: a size limit, a required format, one file instead of many, readable text, or pages in the correct order. A focused browser workflow keeps the job small. Open the right tool, work from the original file, download the output, and inspect it before using it anywhere important.</p>
+          <p>For ${escapeHtml(page.heading)}, the main goal is to ${escapeHtml(page.intent)} without adding extra steps. CloudPDF keeps the related tool close so you can read the guidance, then start the actual file work on the matching workspace page.</p>
+        </div>
+      </section>
+      <section class="seo-section" aria-labelledby="steps-title">
+        <div class="section-heading">
+          <p class="eyebrow">Step by step</p>
+          <h2 id="steps-title">How to handle this workflow cleanly.</h2>
+        </div>
+        <div class="faq-grid">
+          <article><h4>1. Start with the best source file</h4><p>Use the original PDF, document, image, or scan when you can. A cleaner source usually gives a cleaner result, especially for conversion, compression, splitting, and page edits.</p></article>
+          <article><h4>2. Open ${escapeHtml(page.toolName)}</h4><p>The related tool is built for this job, so you do not have to search through a large editor. Choose the file, review the available settings, and process it in the browser workspace.</p></article>
+          <article><h4>3. Check the output before sharing</h4><p>Open the downloaded file and look at page order, formatting, file size, readability, and any private information. This last check is the difference between a quick fix and a second round of rework.</p></article>
+        </div>
+      </section>
+      <section class="seo-section" aria-labelledby="use-cases-title">
         <div class="section-heading">
           <p class="eyebrow">Use cases</p>
-          <h2 id="use-cases-title">When this workflow helps.</h2>
+          <h2 id="use-cases-title">When this guide is useful.</h2>
+          <p>These are common moments where a focused ${escapeHtml(page.toolName)} workflow is faster than opening a full desktop editor or starting the document from scratch.</p>
         </div>
-        <div class="faq-grid">${page.useCases.map((item) => `<article><h4>${escapeHtml(item)}</h4><p>Use ${escapeHtml(page.toolName)} when this document needs a cleaner, smaller, or more submission-ready PDF workflow.</p></article>`).join("")}</div>
+        <div class="faq-grid">${page.useCases.map((item) => `<article><h4>${escapeHtml(item)}</h4><p>This workflow helps when you need a file that is easier to review, submit, share, or keep organized without changing the original more than necessary.</p></article>`).join("")}</div>
       </section>
       <section class="seo-section" aria-labelledby="tool-link-title">
         <div class="section-heading">
-          <p class="eyebrow">Start here</p>
-          <h2 id="tool-link-title">Open the related PDF tool.</h2>
+          <p class="eyebrow">Do the file work</p>
+          <h2 id="tool-link-title">Open ${escapeHtml(page.toolName)} when you are ready.</h2>
+          <p>The guide gives you the checklist; the tool page is where the actual upload, processing, and download happen. Your source file stays selected only for the browser session.</p>
           <p><a class="button primary" href="/tools/${escapeHtml(page.toolSlug)}/">Open ${escapeHtml(page.toolName)}</a></p>
+        </div>
+      </section>
+      <section class="seo-section" aria-labelledby="quality-title">
+        <div class="section-heading">
+          <p class="eyebrow">Before you finish</p>
+          <h2 id="quality-title">A quick quality check saves headaches.</h2>
+          <p>Before submitting the final file, scan the first page, the last page, and any page with a table, signature, image, or form field. If the destination has a size limit or format requirement, confirm that too. For sensitive files, make sure the output does not reveal information you meant to remove.</p>
         </div>
       </section>
       <section class="seo-section" aria-labelledby="faq-title">
