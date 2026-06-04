@@ -338,6 +338,31 @@ const tools = [
 ];
 
 const INITIAL_TOOL_STORAGE_KEY = "cloudpdf.initialTool";
+const toolPageSlugs = {
+  merge: "merge-pdf",
+  split: "split-pdf",
+  "remove-pages": "remove-pages-from-pdf",
+  "extract-pages": "extract-pdf-pages",
+  compress: "compress-pdf",
+  repair: "repair-pdf",
+  "jpg-to-pdf": "jpg-to-pdf",
+  "pdf-to-word": "pdf-to-word",
+  "pdf-to-powerpoint": "pdf-to-powerpoint",
+  "pdf-to-excel": "pdf-to-excel",
+  "pdf-to-jpg": "pdf-to-jpg",
+  "word-to-pdf": "word-to-pdf",
+  "powerpoint-to-pdf": "powerpoint-to-pdf",
+  "excel-to-pdf": "excel-to-pdf",
+  rotate: "rotate-pdf",
+  watermark: "watermark-pdf",
+  "page-numbers": "add-page-numbers-to-pdf",
+  crop: "crop-pdf",
+  sign: "sign-pdf",
+  redact: "redact-pdf",
+  compare: "compare-pdf",
+  ocr: "extract-pdf-text",
+  summarize: "summarize-pdf",
+};
 
 const categoryTabs = document.querySelector("#category-tabs");
 const toolGrid = document.querySelector("#tool-grid");
@@ -403,19 +428,21 @@ function renderTools() {
   const visibleTools = selectedCategory === "All" ? tools : tools.filter((tool) => tool.category === selectedCategory);
   for (const tool of visibleTools) {
     const style = toolLogos[tool.id] ?? categoryStyles[tool.category];
-    const button = document.createElement("button");
-    button.type = "button";
-    button.className = `tool-card ${tool.id === selectedTool.id ? "active" : ""}`;
-    button.dataset.tone = style.tone;
-    button.innerHTML = `
+    const link = document.createElement("a");
+    link.className = `tool-card ${tool.id === selectedTool.id ? "active" : ""}`;
+    link.dataset.tone = style.tone;
+    link.href = `/tools/${toolPageSlugs[tool.id] ?? "merge-pdf"}/`;
+    link.target = "_blank";
+    link.rel = "noopener";
+    link.setAttribute("aria-label", `Open ${tool.name} page in a new tab`);
+    link.innerHTML = `
       ${renderToolLogo(tool)}
       <span class="tool-copy">
         <strong>${tool.name}</strong>
         <small>${tool.category}</small>
       </span>
     `;
-    button.addEventListener("click", () => selectTool(tool.id, true));
-    toolGrid.append(button);
+    toolGrid.append(link);
   }
 }
 
