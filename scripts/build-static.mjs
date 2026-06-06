@@ -8,6 +8,8 @@ const builtAt = new Date().toISOString();
 const googleTagId = "G-D05GDHTV7C";
 const adsensePublisherId = "ca-pub-8501020285416333";
 const googleSearchConsoleVerification = "PASTE_GOOGLE_SEARCH_CONSOLE_VERIFICATION_TOKEN";
+const stylesVersion = "responsive-v3";
+const criticalCss = `:root{--ink:#171923;--muted:#596174;--line:rgba(31,36,48,.12);--surface:#fff;--glass:rgba(255,255,255,.72);--hero-bg:linear-gradient(135deg,#fffaf1,#fff 48%,#f4fbff);--accent-dark:#bd1238;--font-body:"Segoe UI",Inter,ui-sans-serif,system-ui,sans-serif;--font-display:"Trebuchet MS","Segoe UI",ui-sans-serif,system-ui,sans-serif;--font-hero:"Arial Black","Trebuchet MS","Segoe UI",ui-sans-serif,system-ui,sans-serif}*{box-sizing:border-box}body{margin:0;min-width:320px;overflow-x:hidden;color:var(--ink);background:#f7fbff;font-family:var(--font-body);line-height:1.5}.topbar{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;gap:20px;min-height:68px;padding:0 28px;border-bottom:1px solid var(--line);background:var(--glass);backdrop-filter:blur(20px) saturate(1.4)}.brand,.nav-links,.topbar-actions,.hero-actions{display:inline-flex;align-items:center}.brand{gap:10px;font-family:var(--font-display);font-weight:900;flex:0 0 auto}.brand-logo{width:58px;height:38px;object-fit:contain}.nav-links{flex-wrap:wrap;justify-content:center;gap:6px;color:var(--muted);font-size:.92rem}.nav-links a,.primary-link{min-height:40px;padding:0 12px;border-radius:999px;color:inherit;text-decoration:none}.primary-link{display:inline-flex;align-items:center;background:#171923;color:#fff;font-weight:900}.hero{display:grid;grid-template-columns:minmax(0,.92fr) minmax(320px,.78fr);gap:clamp(22px,4vw,54px);align-items:center;min-height:calc(100vh - 104px);padding:54px 28px 40px;background:var(--hero-bg)}.hero-copy{max-width:850px}.eyebrow{margin:0 0 8px;color:var(--accent-dark);font-size:.78rem;font-weight:900;text-transform:uppercase}.hero-eyebrow{display:inline-flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}.hero-eyebrow span{display:inline-flex;align-items:center;min-height:28px;padding:0 10px;border-radius:999px;background:rgba(255,79,94,.12)}h1#page-title,h2#hero-title,h3#tool-title{margin:0 0 12px;max-width:760px;font-family:var(--font-hero);font-size:clamp(3.1rem,8vw,7.4rem);line-height:.88;letter-spacing:0}.hero-short{display:flex;flex-wrap:wrap;gap:.25em .42em;margin:0 0 8px;font-family:var(--font-display);font-size:clamp(1.6rem,4vw,3.45rem);font-weight:900;line-height:1.02}.hero-visual{margin:0;overflow:hidden;width:100%;max-width:620px;justify-self:center;border:1px solid var(--line);border-radius:24px}.mock-window{display:grid;gap:18px;aspect-ratio:1/.82;min-height:420px;padding:22px}.mock-docs{display:grid;grid-template-columns:1fr 1fr;gap:14px}@media (max-width:760px){.topbar{min-height:auto;padding:10px 14px;align-items:flex-start;flex-wrap:wrap}.nav-links{order:3;width:100%;justify-content:flex-start;overflow-x:auto;white-space:nowrap}.hero{grid-template-columns:1fr;min-height:auto;gap:18px;padding:24px 14px}h1#page-title,h2#hero-title,h3#tool-title{font-size:clamp(2.55rem,14vw,3.8rem)}.hero-visual{transform:none;max-width:520px}.mock-window{min-height:300px;padding:16px;border-radius:20px}}`;
 
 const toolPages = [
   {
@@ -697,12 +699,38 @@ for (const page of longTailPages) {
 console.log("Static site written to public/");
 
 function buildRobots() {
-  return `User-agent: *
-Allow: /
+  const allowedAgents = [
+    "*",
+    "Googlebot",
+    "Google-Extended",
+    "GPTBot",
+    "ChatGPT-User",
+    "OAI-SearchBot",
+    "ClaudeBot",
+    "Claude-User",
+    "anthropic-ai",
+    "PerplexityBot",
+    "Applebot",
+    "CCBot",
+    "Bytespider",
+    "YouBot",
+    "Amazonbot",
+    "Meta-ExternalAgent",
+    "FacebookBot",
+  ];
+
+  return `${allowedAgents.map((agent) => `User-agent: ${agent}\nAllow: /`).join("\n\n")}
 
 Sitemap: ${siteUrl}/sitemap.xml
 Host: www.cloudpdf.online
 `;
+}
+
+function buildStylesHead() {
+  return `<style>${criticalCss}</style>
+    <link rel="preload" as="style" href="/styles.css?v=${stylesVersion}" />
+    <link rel="stylesheet" href="/styles.css?v=${stylesVersion}" media="print" onload="this.media='all'" />
+    <noscript><link rel="stylesheet" href="/styles.css?v=${stylesVersion}" /></noscript>`;
 }
 
 function buildSitemap() {
@@ -778,19 +806,34 @@ ${longTailPages.map((page) => `- [${page.heading}](${siteUrl}/${page.slug}/): ${
 }
 
 function buildAdsenseHead() {
-  return `<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsensePublisherId}"
-      crossorigin="anonymous"></script>`;
+  return "";
 }
 
 function buildGoogleTagHead() {
-  return `<!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=${googleTagId}"></script>
-    <script>
+  return `<script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-
       gtag('config', '${googleTagId}');
+      window.addEventListener('load', () => {
+        const loadThirdParty = () => {
+          const tag = document.createElement('script');
+          tag.async = true;
+          tag.src = 'https://www.googletagmanager.com/gtag/js?id=${googleTagId}';
+          document.head.append(tag);
+
+          const ads = document.createElement('script');
+          ads.async = true;
+          ads.crossOrigin = 'anonymous';
+          ads.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsensePublisherId}';
+          document.head.append(ads);
+        };
+        if ('requestIdleCallback' in window) {
+          requestIdleCallback(loadThirdParty, { timeout: 2500 });
+        } else {
+          setTimeout(loadThirdParty, 1200);
+        }
+      }, { once: true });
     </script>`;
 }
 
@@ -956,8 +999,8 @@ function buildToolPage(tool) {
     ${buildAdsenseHead()}
     ${buildGoogleSearchConsoleHead()}
     <link rel="canonical" href="${url}" />
-    <link rel="icon" type="image/png" href="/assets/cloudpdf-favicon.png?v=1" />
-    <link rel="apple-touch-icon" href="/assets/cloudpdf-favicon.png?v=1" />
+    <link rel="icon" type="image/svg+xml" href="/assets/cloudpdf-favicon.svg?v=1" />
+    <link rel="apple-touch-icon" href="/assets/ourpdf-new-icon.png?v=1" />
     <link rel="manifest" href="/site.webmanifest" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="CloudPDF" />
@@ -970,14 +1013,14 @@ function buildToolPage(tool) {
     <meta name="twitter:description" content="${escapeHtml(tool.description)}" />
     <meta name="twitter:image" content="${siteUrl}/assets/cloudpdf-logo.png" />
     <script defer src="/theme.js?v=security-v2"></script>
-    <link rel="stylesheet" href="/styles.css?v=responsive-v2" />
+    ${buildStylesHead()}
     <script defer src="/_vercel/speed-insights/script.js" data-sdkn="@vercel/speed-insights" data-sdkv="2.0.0"></script>
     <script type="application/ld+json">${jsonLd.replace(/</g, "\\u003c")}</script>
   </head>
   <body>
     <header class="topbar">
       <a class="brand" href="/" aria-label="CloudPDF home">
-        <img class="brand-logo" src="/assets/cloudpdf-logo.png?v=1" alt="" width="56" height="36" aria-hidden="true" />
+        <img class="brand-logo" src="/assets/cloudpdf-logo.svg?v=1" alt="" width="56" height="36" aria-hidden="true" decoding="async" />
         <span>CloudPDF</span>
       </a>
       <nav class="nav-links" aria-label="Primary navigation">
@@ -1294,7 +1337,7 @@ function buildMergePdfOnlineFreeNoLimitPage(page) {
     <meta name="twitter:description" content="${metaDescription}" />
     <meta name="twitter:image" content="${siteUrl}/assets/cloudpdf-logo.png" />
     <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg" />
-    <link rel="stylesheet" href="/styles.css?v=responsive-v2" />
+    ${buildStylesHead()}
     ${buildGoogleTagHead()}
     ${buildAdsenseHead()}
     ${buildGoogleSearchConsoleHead()}
@@ -1754,27 +1797,27 @@ function getLongTailVisuals(page) {
 
   return {
     hero: {
-      src: "/assets/cloudpdf-logo.png?v=1",
+      src: "/assets/cloudpdf-logo.svg?v=1",
       alt: `${page.toolName} guide visual`,
       caption: `${page.toolName} workflow guide for faster PDF tasks.`,
     },
     why: {
-      src: "/assets/cloudpdf-logo.png?v=1",
+      src: "/assets/cloudpdf-logo.svg?v=1",
       alt: `${page.toolName} document workflow visual`,
       caption: "Keep the document workflow focused and easy to review.",
     },
     steps: {
-      src: "/assets/cloudpdf-logo.png?v=1",
+      src: "/assets/cloudpdf-logo.svg?v=1",
       alt: `${page.toolName} step by step workflow visual`,
       caption: "Use a simple upload, process, and download workflow.",
     },
     useCases: {
-      src: "/assets/cloudpdf-logo.png?v=1",
+      src: "/assets/cloudpdf-logo.svg?v=1",
       alt: `${page.toolName} use cases visual`,
       caption: "Useful for school, business, freelance, and everyday document work.",
     },
     quality: {
-      src: "/assets/cloudpdf-logo.png?v=1",
+      src: "/assets/cloudpdf-logo.svg?v=1",
       alt: `${page.toolName} quality check visual`,
       caption: "Review the output before sharing or uploading it.",
     },
@@ -1802,8 +1845,8 @@ function buildSimplePage({ url, title, description, eyebrow, heading, body, json
     ${buildAdsenseHead()}
     ${buildGoogleSearchConsoleHead()}
     <link rel="canonical" href="${url}" />
-    <link rel="icon" type="image/png" href="/assets/cloudpdf-favicon.png?v=1" />
-    <link rel="apple-touch-icon" href="/assets/cloudpdf-favicon.png?v=1" />
+    <link rel="icon" type="image/svg+xml" href="/assets/cloudpdf-favicon.svg?v=1" />
+    <link rel="apple-touch-icon" href="/assets/ourpdf-new-icon.png?v=1" />
     <link rel="manifest" href="/site.webmanifest" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="CloudPDF" />
@@ -1813,12 +1856,12 @@ function buildSimplePage({ url, title, description, eyebrow, heading, body, json
     <meta property="og:image" content="${siteUrl}/assets/cloudpdf-logo.png" />
     <script defer src="/theme.js?v=security-v2"></script>
     <script type="application/ld+json">${jsonLd.replace(/</g, "\\u003c")}</script>
-    <link rel="stylesheet" href="/styles.css?v=responsive-v2" />
+    ${buildStylesHead()}
   </head>
   <body>
     <header class="topbar">
       <a class="brand" href="/" aria-label="CloudPDF home">
-        <img class="brand-logo" src="/assets/cloudpdf-logo.png?v=1" alt="" width="56" height="36" aria-hidden="true" />
+        <img class="brand-logo" src="/assets/cloudpdf-logo.svg?v=1" alt="" width="56" height="36" aria-hidden="true" decoding="async" />
         <span>CloudPDF</span>
       </a>
       <nav class="nav-links" aria-label="Primary navigation">

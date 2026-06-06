@@ -45,6 +45,10 @@ function getCacheControl(pathname) {
     return "public, max-age=0, must-revalidate";
   }
 
+  if (pathname === "/site.webmanifest") {
+    return "public, max-age=86400, stale-while-revalidate=604800";
+  }
+
   if (pathname.startsWith("/assets/")) {
     return "public, max-age=31536000, immutable";
   }

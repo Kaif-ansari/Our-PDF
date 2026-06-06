@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 112 72" role="img" aria-labelledby="title desc">
+  <title id="title">CloudPDF</title>
+  <desc id="desc">CloudPDF logo mark</desc>
+  <defs>
+    <linearGradient id="cloud" x1="18" y1="18" x2="78" y2="58" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#8fd0ff"/>
+      <stop offset="1" stop-color="#eef8ff"/>
+    </linearGradient>
+    <linearGradient id="arc" x1="21" y1="48" x2="71" y2="22" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0069ff"/>
+      <stop offset=".52" stop-color="#28b6ff"/>
+      <stop offset="1" stop-color="#33d69f"/>
+    </linearGradient>
+  </defs>
+  <path fill="url(#cloud)" d="M29 52h52c8 0 14-6 14-14s-6-14-14-14c-2 0-4 0-6 1C71 15 61 8 49 8 35 8 23 19 22 33 13 34 7 41 7 50v2h22Z"/>
+  <path fill="#fff" d="M29 52h52c7 0 13-5 14-12-9 4-20 6-32 6-22 0-41-7-54-18a21 21 0 0 0-2 9c0 8 6 15 14 15h8Z" opacity=".72"/>
+  <path fill="none" stroke="url(#arc)" stroke-linecap="round" stroke-width="10" d="M23 53c5-17 18-29 34-29 14 0 26 9 31 22"/>
+  <circle cx="61" cy="46" r="10" fill="#0069ff"/>
+  <circle cx="61" cy="46" r="4" fill="#fff"/>
+  <path fill="#ff4f5e" d="M76 37h25v27H76z"/>
+  <path fill="#fff" d="M81 43h15v4H81zm0 8h15v4H81z"/>
+</svg>

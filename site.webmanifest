@@ -8,9 +8,9 @@
   "theme_color": "#10131a",
   "icons": [
     {
-      "src": "/assets/cloudpdf-favicon.png",
-      "sizes": "512x512",
-      "type": "image/png"
+      "src": "/assets/cloudpdf-favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
     }
   ]
 }
