@@ -735,21 +735,21 @@ function buildStylesHead() {
 
 function buildSitemap() {
   const urls = [
-    { loc: `${siteUrl}/`, priority: "1.0", changefreq: "weekly" },
+    { loc: `${siteUrl}/`, priority: "1.0", changefreq: "daily" },
     ...toolPages.map((tool) => ({
       loc: `${siteUrl}/tools/${tool.slug}/`,
       priority: tool.slug === "merge-pdf" || tool.slug === "compress-pdf" ? "0.9" : "0.8",
-      changefreq: "monthly",
+      changefreq: "daily",
     })),
     ...longTailPages.map((page) => ({
       loc: `${siteUrl}/${page.slug}/`,
       priority: "0.72",
-      changefreq: "monthly",
+      changefreq: "daily",
     })),
     ...trustPages.map((page) => ({
       loc: `${siteUrl}/${page.slug}/`,
       priority: page.slug === "about" ? "0.7" : "0.6",
-      changefreq: "yearly",
+      changefreq: "daily",
     })),
   ];
 
