@@ -978,8 +978,18 @@ h4 {
 }
 
 .section-heading h2,
+.workspace-header h1,
 .workspace-header h2 {
   max-width: 820px;
+}
+
+.seo-section {
+  content-visibility: auto;
+  contain-intrinsic-size: 1px 760px;
+}
+
+.tool-guide-links {
+  margin-top: 12px;
 }
 
 .category-tabs {

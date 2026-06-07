@@ -224,6 +224,119 @@ const appToolIdsBySlug = {
   "summarize-pdf": "summarize",
 };
 
+const toolSeoProfiles = {
+  "merge-pdf": {
+    primaryKeyword: "merge PDF online",
+    secondaryKeywords: ["combine PDF files", "join PDF files online", "free PDF merger", "merge multiple PDFs", "combine documents into one PDF"],
+    relatedTools: ["split-pdf", "compress-pdf", "remove-pages-from-pdf", "add-page-numbers-to-pdf", "rotate-pdf", "watermark-pdf"],
+  },
+  "split-pdf": {
+    primaryKeyword: "split PDF online",
+    secondaryKeywords: ["separate PDF pages", "extract pages from PDF", "PDF splitter", "split PDF into individual pages", "divide PDF file"],
+    relatedTools: ["merge-pdf", "extract-pdf-pages", "remove-pages-from-pdf", "rotate-pdf", "compress-pdf", "add-page-numbers-to-pdf"],
+  },
+  "remove-pages-from-pdf": {
+    primaryKeyword: "remove pages from PDF",
+    secondaryKeywords: ["delete PDF pages", "PDF page remover", "remove unwanted pages", "delete pages from PDF online", "clean PDF pages"],
+    relatedTools: ["split-pdf", "extract-pdf-pages", "merge-pdf", "crop-pdf", "redact-pdf", "compress-pdf"],
+  },
+  "extract-pdf-pages": {
+    primaryKeyword: "extract PDF pages",
+    secondaryKeywords: ["save PDF pages", "PDF page extractor", "extract pages online", "copy pages from PDF", "create PDF from selected pages"],
+    relatedTools: ["split-pdf", "remove-pages-from-pdf", "merge-pdf", "compress-pdf", "rotate-pdf", "pdf-to-jpg"],
+  },
+  "compress-pdf": {
+    primaryKeyword: "compress PDF online",
+    secondaryKeywords: ["reduce PDF size", "PDF compressor", "make PDF smaller", "compress PDF for email", "compress PDF under 1MB"],
+    relatedTools: ["merge-pdf", "split-pdf", "pdf-to-jpg", "jpg-to-pdf", "word-to-pdf", "repair-pdf"],
+  },
+  "repair-pdf": {
+    primaryKeyword: "repair PDF online",
+    secondaryKeywords: ["fix PDF file", "PDF repair tool", "rewrite PDF structure", "recover PDF document", "repair corrupted PDF"],
+    relatedTools: ["compress-pdf", "merge-pdf", "split-pdf", "extract-pdf-text", "pdf-to-jpg", "pdf-to-word"],
+  },
+  "jpg-to-pdf": {
+    primaryKeyword: "JPG to PDF converter",
+    secondaryKeywords: ["image to PDF", "convert JPG to PDF", "PNG to PDF", "combine images into PDF", "photo to PDF online"],
+    relatedTools: ["pdf-to-jpg", "merge-pdf", "compress-pdf", "crop-pdf", "rotate-pdf", "word-to-pdf"],
+  },
+  "pdf-to-jpg": {
+    primaryKeyword: "PDF to JPG converter",
+    secondaryKeywords: ["convert PDF to image", "PDF to JPEG", "save PDF pages as JPG", "PDF image converter", "high quality PDF to JPG"],
+    relatedTools: ["jpg-to-pdf", "pdf-to-word", "pdf-to-powerpoint", "extract-pdf-pages", "compress-pdf", "crop-pdf"],
+  },
+  "pdf-to-excel": {
+    primaryKeyword: "PDF to Excel converter",
+    secondaryKeywords: ["convert PDF to Excel", "PDF to XLSX", "extract PDF tables", "PDF spreadsheet converter", "PDF data to Excel"],
+    relatedTools: ["excel-to-pdf", "extract-pdf-text", "pdf-to-word", "pdf-to-powerpoint", "compare-pdf", "compress-pdf"],
+  },
+  "pdf-to-powerpoint": {
+    primaryKeyword: "PDF to PowerPoint converter",
+    secondaryKeywords: ["PDF to PPT", "convert PDF to slides", "PDF presentation converter", "PDF to PPTX", "turn PDF into presentation"],
+    relatedTools: ["powerpoint-to-pdf", "pdf-to-jpg", "pdf-to-word", "merge-pdf", "compress-pdf", "extract-pdf-pages"],
+  },
+  "pdf-to-word": {
+    primaryKeyword: "PDF to Word converter",
+    secondaryKeywords: ["convert PDF to Word", "PDF to DOCX", "editable Word from PDF", "PDF document converter", "PDF to Word online"],
+    relatedTools: ["word-to-pdf", "extract-pdf-text", "pdf-to-excel", "pdf-to-powerpoint", "compress-pdf", "compare-pdf"],
+  },
+  "word-to-pdf": {
+    primaryKeyword: "Word to PDF converter",
+    secondaryKeywords: ["DOCX to PDF", "convert Word to PDF", "document to PDF", "make PDF from Word", "Word file to PDF online"],
+    relatedTools: ["pdf-to-word", "merge-pdf", "compress-pdf", "add-page-numbers-to-pdf", "watermark-pdf", "sign-pdf"],
+  },
+  "redact-pdf": {
+    primaryKeyword: "redact PDF online",
+    secondaryKeywords: ["hide text in PDF", "cover sensitive PDF content", "PDF redaction tool", "black out PDF text", "remove private information from PDF"],
+    relatedTools: ["sign-pdf", "watermark-pdf", "extract-pdf-text", "compare-pdf", "remove-pages-from-pdf", "crop-pdf"],
+  },
+  "sign-pdf": {
+    primaryKeyword: "sign PDF online",
+    secondaryKeywords: ["add signature to PDF", "PDF signature", "sign document online", "free PDF signer", "type signature on PDF"],
+    relatedTools: ["redact-pdf", "watermark-pdf", "word-to-pdf", "merge-pdf", "compress-pdf", "add-page-numbers-to-pdf"],
+  },
+  "crop-pdf": {
+    primaryKeyword: "crop PDF online",
+    secondaryKeywords: ["trim PDF margins", "remove white border from PDF", "resize PDF pages", "PDF crop tool", "crop PDF pages"],
+    relatedTools: ["rotate-pdf", "remove-pages-from-pdf", "pdf-to-jpg", "jpg-to-pdf", "compress-pdf", "redact-pdf"],
+  },
+  "add-page-numbers-to-pdf": {
+    primaryKeyword: "add page numbers to PDF",
+    secondaryKeywords: ["number PDF pages", "insert page numbers PDF", "PDF page numbering", "add footer numbers to PDF", "paginate PDF online"],
+    relatedTools: ["merge-pdf", "watermark-pdf", "rotate-pdf", "word-to-pdf", "split-pdf", "compress-pdf"],
+  },
+  "watermark-pdf": {
+    primaryKeyword: "add watermark to PDF",
+    secondaryKeywords: ["watermark PDF online", "stamp PDF", "add text watermark", "PDF watermark tool", "mark PDF as confidential"],
+    relatedTools: ["sign-pdf", "redact-pdf", "add-page-numbers-to-pdf", "merge-pdf", "compress-pdf", "word-to-pdf"],
+  },
+  "rotate-pdf": {
+    primaryKeyword: "rotate PDF online",
+    secondaryKeywords: ["turn PDF pages", "fix PDF orientation", "rotate PDF pages", "rotate PDF permanently", "change PDF page direction"],
+    relatedTools: ["crop-pdf", "split-pdf", "merge-pdf", "extract-pdf-pages", "add-page-numbers-to-pdf", "compress-pdf"],
+  },
+  "powerpoint-to-pdf": {
+    primaryKeyword: "PowerPoint to PDF converter",
+    secondaryKeywords: ["PPT to PDF", "PPTX to PDF", "slides to PDF", "convert presentation to PDF", "PowerPoint file to PDF"],
+    relatedTools: ["pdf-to-powerpoint", "merge-pdf", "compress-pdf", "watermark-pdf", "add-page-numbers-to-pdf", "pdf-to-jpg"],
+  },
+  "summarize-pdf": {
+    primaryKeyword: "summarize PDF online",
+    secondaryKeywords: ["PDF summary", "summarize document", "AI PDF summary", "local PDF summarizer", "summarize PDF text"],
+    relatedTools: ["extract-pdf-text", "pdf-to-word", "compare-pdf", "redact-pdf", "compress-pdf", "merge-pdf"],
+  },
+  "extract-pdf-text": {
+    primaryKeyword: "extract text from PDF",
+    secondaryKeywords: ["PDF text extractor", "copy text from PDF", "extract selectable PDF text", "PDF OCR preview", "PDF to text"],
+    relatedTools: ["summarize-pdf", "pdf-to-word", "pdf-to-excel", "compare-pdf", "redact-pdf", "repair-pdf"],
+  },
+  "compare-pdf": {
+    primaryKeyword: "compare PDF files",
+    secondaryKeywords: ["PDF comparison", "compare documents online", "PDF diff", "find PDF differences", "compare two PDFs"],
+    relatedTools: ["extract-pdf-text", "redact-pdf", "pdf-to-word", "merge-pdf", "compress-pdf", "sign-pdf"],
+  },
+};
+
 const trustPages = [
   {
     slug: "privacy-policy",
@@ -849,6 +962,10 @@ function buildAdsTxt() {
 function buildToolWorkspacePage(tool) {
   const url = `${siteUrl}/tools/${tool.slug}/`;
   const appToolId = appToolIdsBySlug[tool.slug] ?? "merge";
+  const faqs = buildToolFaqs(tool);
+  const keywords = getToolKeywords(tool);
+  const jsonLd = JSON.stringify(buildToolStructuredData(tool, url, faqs), null, 2);
+  const toolSeoContent = buildToolSeoContent(tool, faqs);
   const categoryBySlug = {
     "merge-pdf": "Organize PDF",
     "split-pdf": "Organize PDF",
@@ -878,7 +995,7 @@ function buildToolWorkspacePage(tool) {
     .replace(/<title>[\s\S]*?<\/title>/, `<title>${escapeHtml(tool.title)}</title>`)
     .replace(
       /<meta\s+name="description"\s+content="[\s\S]*?"\s*\/>/,
-      `<meta name="description" content="${escapeHtml(tool.description)}" />`
+      `<meta name="description" content="${escapeHtml(tool.description)}" />\n    <meta name="keywords" content="${escapeHtml(keywords.join(", "))}" />`
     )
     .replace(/<link rel="canonical" href="[\s\S]*?" \/>/, `<link rel="canonical" href="${url}" />`)
     .replace(/<meta property="og:title" content="[\s\S]*?" \/>/, `<meta property="og:title" content="${escapeHtml(tool.title)}" />`)
@@ -893,8 +1010,10 @@ function buildToolWorkspacePage(tool) {
       `<meta name="twitter:description" content="${escapeHtml(tool.description)}" />`
     )
     .replace(/<p class="eyebrow" id="active-category">[\s\S]*?<\/p>/, `<p class="eyebrow" id="active-category">${escapeHtml(categoryBySlug[tool.slug] ?? "PDF Tool")}</p>`)
-    .replace(/<h2 id="workspace-title">[\s\S]*?<\/h2>/, `<h2 id="workspace-title">${escapeHtml(tool.name)}</h2>`)
+    .replace(/<h2 id="workspace-title">[\s\S]*?<\/h2>/, `<h1 id="workspace-title">${escapeHtml(tool.name)} Online</h1>`)
     .replace(/<p id="workspace-description">[\s\S]*?<\/p>/, `<p id="workspace-description">${escapeHtml(tool.description)}</p>`)
+    .replace(/<script type="application\/ld\+json">[\s\S]*?<\/script>/, `<script type="application/ld+json">${jsonLd.replace(/</g, "\\u003c")}</script>`)
+    .replace('alt="" width="56" height="36" aria-hidden="true" decoding="async"', 'alt="" width="56" height="36" aria-hidden="true" decoding="async" fetchpriority="high"')
     .replace("<body>", `<body data-tool-id="${escapeHtml(appToolId)}">`)
     .replaceAll('href="#tools"', 'href="/#tools"')
     .replaceAll('href="#popular"', 'href="/#popular"')
@@ -919,8 +1038,185 @@ function buildToolWorkspacePage(tool) {
       ${breadcrumbs}
       ${hiddenToolDirectory}
       ${workspace}
+      ${toolSeoContent}
       ${afterWorkspace}
     ${page.slice(mainClose)}`;
+}
+
+function buildToolStructuredData(tool, url, faqs) {
+  const keywords = getToolKeywords(tool);
+  const relatedTools = getRelatedTools(tool);
+  const relatedGuides = getRelatedGuides(tool);
+
+  return {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebPage",
+        "@id": `${url}#webpage`,
+        name: tool.title.replace(" | CloudPDF", ""),
+        url,
+        description: tool.description,
+        keywords: keywords.join(", "),
+        isPartOf: { "@id": `${siteUrl}/#website` },
+        about: { "@id": `${url}#app` },
+        inLanguage: "en",
+      },
+      {
+        "@type": "SoftwareApplication",
+        "@id": `${url}#app`,
+        name: tool.name,
+        applicationCategory: "BusinessApplication",
+        operatingSystem: "Any",
+        url,
+        description: tool.description,
+        keywords: keywords.join(", "),
+        offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+        publisher: { "@id": `${siteUrl}/#organization` },
+        featureList: [
+          tool.intent,
+          ...keywords.slice(0, 6),
+          "Free online PDF workflow",
+          "Browser-based document processing",
+          "No mandatory signup for the core tool",
+        ],
+      },
+      {
+        "@type": "HowTo",
+        "@id": `${url}#howto`,
+        name: `How to use ${tool.name} online`,
+        description: `Use CloudPDF to ${tool.intent}.`,
+        totalTime: "PT2M",
+        step: [
+          {
+            "@type": "HowToStep",
+            position: 1,
+            name: "Choose your file",
+            text: `Open ${tool.name} and choose the PDF or supported file you want to process.`,
+          },
+          {
+            "@type": "HowToStep",
+            position: 2,
+            name: "Adjust the options",
+            text: "Review the available settings and confirm the file order, page range, conversion option, or edit setting.",
+          },
+          {
+            "@type": "HowToStep",
+            position: 3,
+            name: "Download the result",
+            text: "Process the file, download the output, and review it before sharing or submitting it.",
+          },
+        ],
+      },
+      {
+        "@type": "BreadcrumbList",
+        "@id": `${url}#breadcrumbs`,
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "Home", item: `${siteUrl}/` },
+          { "@type": "ListItem", position: 2, name: "PDF Tools", item: `${siteUrl}/#tools` },
+          { "@type": "ListItem", position: 3, name: tool.name, item: url },
+        ],
+      },
+      {
+        "@type": "FAQPage",
+        "@id": `${url}#faq`,
+        mainEntity: faqs.map((faq) => ({
+          "@type": "Question",
+          name: faq.question,
+          acceptedAnswer: { "@type": "Answer", text: faq.answer },
+        })),
+      },
+      {
+        "@type": "ItemList",
+        "@id": `${url}#related-tools`,
+        name: `Related ${tool.name} tools`,
+        itemListElement: relatedTools.map((relatedTool, index) => ({
+          "@type": "ListItem",
+          position: index + 1,
+          name: relatedTool.name,
+          url: `${siteUrl}/tools/${relatedTool.slug}/`,
+        })),
+      },
+      ...(relatedGuides.length
+        ? [
+            {
+              "@type": "ItemList",
+              "@id": `${url}#related-guides`,
+              name: `Related ${tool.name} guides`,
+              itemListElement: relatedGuides.map((guide, index) => ({
+                "@type": "ListItem",
+                position: index + 1,
+                name: guide.heading,
+                url: `${siteUrl}/${guide.slug}/`,
+              })),
+            },
+          ]
+        : []),
+    ],
+  };
+}
+
+function buildToolSeoContent(tool, faqs) {
+  const profile = getToolSeoProfile(tool);
+  const keywords = getToolKeywords(tool);
+  const relatedTools = getRelatedTools(tool);
+  const relatedGuides = getRelatedGuides(tool);
+  const relatedToolLinks = relatedTools
+    .map((relatedTool) => `<a href="/tools/${relatedTool.slug}/">${escapeHtml(relatedTool.name)}</a>`)
+    .join("");
+  const relatedGuideLinks = relatedGuides
+    .map((guide) => `<a href="/${guide.slug}/">${escapeHtml(guide.heading)}</a>`)
+    .join("");
+
+  return `<section class="seo-section tool-seo-summary" aria-labelledby="tool-seo-title">
+        <div class="section-heading">
+          <p class="eyebrow">Online PDF tool</p>
+          <h2 id="tool-seo-title">${escapeHtml(profile.primaryKeyword)} for fast browser-based document work.</h2>
+          <p>${escapeHtml(tool.name)} helps you ${escapeHtml(tool.intent)}. CloudPDF keeps the workflow focused: choose your file, review the relevant settings, process it in the browser workspace, and download the finished result.</p>
+          <p>This page targets ${keywords.map((keyword) => escapeHtml(keyword)).join(", ")} with a dedicated canonical URL, sitemap discovery, indexable copy, and tool-specific structured data.</p>
+        </div>
+        <div class="faq-grid">
+          <article><h4>How to use ${escapeHtml(tool.name)}</h4><p>Open the workspace, choose your file, adjust the available options, then download and review the result before sharing it.</p></article>
+          <article><h4>Why this page should be indexed</h4><p>It has a dedicated canonical URL, unique title and description, indexable page copy, tool-specific FAQ answers, and structured data tied to the exact PDF workflow.</p></article>
+          <article><h4>Related search intent</h4><p>${keywords.map((keyword) => escapeHtml(keyword)).join(", ")}.</p></article>
+        </div>
+        <div class="section-heading">
+          <p class="eyebrow">Internal backlinks</p>
+          <h2>Related pages that support ${escapeHtml(profile.primaryKeyword)}.</h2>
+          <p>These internal links help users and crawlers discover closely related PDF workflows from this page.</p>
+        </div>
+        <div class="seo-link-grid">${relatedToolLinks}</div>
+        ${relatedGuideLinks ? `<div class="seo-link-grid tool-guide-links">${relatedGuideLinks}</div>` : ""}
+        <div class="faq-grid" aria-label="${escapeHtml(tool.name)} frequently asked questions">
+          ${faqs.slice(0, 6).map((faq) => `<article><h4>${escapeHtml(faq.question)}</h4><p>${escapeHtml(faq.answer)}</p></article>`).join("")}
+        </div>
+      </section>`;
+}
+
+function getToolSeoProfile(tool) {
+  return toolSeoProfiles[tool.slug] ?? {
+    primaryKeyword: tool.keywords[0] ?? `${tool.name} online`,
+    secondaryKeywords: tool.keywords.slice(1),
+    relatedTools: toolPages.filter((item) => item.slug !== tool.slug).slice(0, 6).map((item) => item.slug),
+  };
+}
+
+function getToolKeywords(tool) {
+  const profile = getToolSeoProfile(tool);
+  return [...new Set([profile.primaryKeyword, ...profile.secondaryKeywords, ...tool.keywords])];
+}
+
+function getRelatedTools(tool) {
+  const profile = getToolSeoProfile(tool);
+  const preferred = profile.relatedTools
+    .map((slug) => toolPages.find((item) => item.slug === slug))
+    .filter(Boolean);
+  const fallback = toolPages.filter((item) => item.slug !== tool.slug && !preferred.some((related) => related.slug === item.slug));
+  return [...preferred, ...fallback].slice(0, 8);
+}
+
+function getRelatedGuides(tool) {
+  return longTailPages.filter((page) => page.toolSlug === tool.slug).slice(0, 8);
 }
 
 function buildToolPage(tool) {
