@@ -5,6 +5,8 @@ const root = process.cwd();
 const output = join(root, "public");
 const siteUrl = "https://www.cloudpdf.online";
 const builtAt = new Date().toISOString();
+const defaultPublishedDate = "2026-06-07T00:00:00.000Z";
+const defaultModifiedDate = builtAt;
 const googleTagId = "G-D05GDHTV7C";
 const adsensePublisherId = "ca-pub-8501020285416333";
 const googleSearchConsoleVerification = "PASTE_GOOGLE_SEARCH_CONSOLE_VERIFICATION_TOKEN";
@@ -649,13 +651,17 @@ const longTailPages = [
   },
   {
     slug: "powerpoint-to-pdf-without-losing-animations",
-    title: "PowerPoint to PDF Without Losing Animations | CloudPDF",
-    description: "Convert PowerPoint files to PDF and learn what to check when animations become static PDF pages.",
+    title: "PowerPoint to PDF Without Losing Animations: What Actually Works | CloudPDF",
+    description: "Learn why PowerPoint animations become static in PDF, how to preserve each animation step as pages, and when to use video instead.",
     heading: "PowerPoint to PDF without losing animations",
     toolSlug: "powerpoint-to-pdf",
     toolName: "PowerPoint to PDF",
-    intent: "turn a PowerPoint deck into a shareable PDF copy",
+    intent: "turn a PowerPoint deck into a shareable PDF copy while checking how animated slides will appear",
     useCases: ["Class slides", "Client decks", "Presentation handouts"],
+    primaryKeyword: "PowerPoint to PDF without losing animations",
+    keywords: ["PowerPoint to PDF without losing animations", "PPT to PDF animations", "PPTX to PDF with animations", "convert animated PowerPoint to PDF"],
+    publishedAt: "2026-06-07T00:00:00.000Z",
+    modifiedAt: builtAt,
   },
   {
     slug: "unlock-pdf-without-password-online-free",
@@ -848,21 +854,24 @@ function buildStylesHead() {
 
 function buildSitemap() {
   const urls = [
-    { loc: `${siteUrl}/`, priority: "1.0", changefreq: "daily" },
+    { loc: `${siteUrl}/`, priority: "1.0", changefreq: "daily", lastmod: builtAt },
     ...toolPages.map((tool) => ({
       loc: `${siteUrl}/tools/${tool.slug}/`,
       priority: tool.slug === "merge-pdf" || tool.slug === "compress-pdf" ? "0.9" : "0.8",
       changefreq: "daily",
+      lastmod: builtAt,
     })),
     ...longTailPages.map((page) => ({
       loc: `${siteUrl}/${page.slug}/`,
-      priority: "0.72",
-      changefreq: "daily",
+      priority: page.slug === "powerpoint-to-pdf-without-losing-animations" ? "0.86" : "0.72",
+      changefreq: page.slug === "powerpoint-to-pdf-without-losing-animations" ? "weekly" : "daily",
+      lastmod: page.modifiedAt ?? defaultModifiedDate,
     })),
     ...trustPages.map((page) => ({
       loc: `${siteUrl}/${page.slug}/`,
       priority: page.slug === "about" ? "0.7" : "0.6",
       changefreq: "daily",
+      lastmod: builtAt,
     })),
   ];
 
@@ -872,7 +881,7 @@ ${urls
   .map(
     (url) => `  <url>
     <loc>${url.loc}</loc>
-    <lastmod>${builtAt}</lastmod>
+    <lastmod>${url.lastmod}</lastmod>
     <changefreq>${url.changefreq}</changefreq>
     <priority>${url.priority}</priority>
   </url>`
@@ -951,6 +960,10 @@ function buildGoogleTagHead() {
 }
 
 function buildGoogleSearchConsoleHead() {
+  if (!googleSearchConsoleVerification || googleSearchConsoleVerification.includes("PASTE_")) {
+    return "";
+  }
+
   return `<meta name="google-site-verification" content="${googleSearchConsoleVerification}" />`;
 }
 
@@ -1621,6 +1634,7 @@ function buildMergePdfOnlineFreeNoLimitPage(page) {
     <title>${metaTitle}</title>
     <meta name="description" content="${metaDescription}" />
     <meta name="keywords" content="Merge PDF Online Free, combine PDF files, PDF merger online, merge PDFs free, online PDF merger, PDF combine tool, merge PDF without software" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
     <link rel="canonical" href="${url}" />
     <meta property="og:type" content="article" />
     <meta property="og:title" content="${metaTitle}" />
@@ -1896,6 +1910,7 @@ function buildLongTailPage(page) {
     return buildMergePdfOnlineFreeNoLimitPage(page);
   }
 
+  const isAnimationGuide = page.slug === "powerpoint-to-pdf-without-losing-animations";
   const url = `${siteUrl}/${page.slug}/`;
   const toolUrl = `${siteUrl}/tools/${page.toolSlug}/`;
   const visuals = getLongTailVisuals(page);
@@ -1906,18 +1921,35 @@ function buildLongTailPage(page) {
     .map((item) => `<a href="/${item.slug}/">${escapeHtml(item.heading)}</a>`)
     .join("");
   const faqs = [
-    {
-      question: `What is the fastest way to ${page.heading.toLowerCase()}?`,
-      answer: `Open ${page.toolName}, choose your file, use the available settings, and download the result after checking the output.`,
-    },
-    {
-      question: `Is ${page.heading.toLowerCase()} free on CloudPDF?`,
-      answer: `CloudPDF provides this workflow through the free ${page.toolName} page without a mandatory signup step.`,
-    },
-    {
-      question: "What should I check before submitting the file?",
-      answer: "Review page order, formatting, file size, readability, and any sensitive information before sharing or uploading the final document.",
-    },
+    ...(isAnimationGuide
+      ? [
+          {
+            question: "Can a PDF keep PowerPoint animations?",
+            answer: "A standard PDF cannot play PowerPoint animation timelines. The reliable workaround is to export each animation step as a separate slide or page, or share a video when movement must remain playable.",
+          },
+          {
+            question: "How do I make animated PowerPoint slides readable as a PDF?",
+            answer: "Duplicate the slide for each build step, reveal one additional element per duplicate slide, then convert the deck to PDF so each animation state becomes its own PDF page.",
+          },
+          {
+            question: "Should I use PDF or video for an animated presentation?",
+            answer: "Use PDF for printable handouts, email attachments, LMS uploads, and review copies. Use video or PowerPoint when timing, motion paths, audio, or automatic playback matter.",
+          },
+        ]
+      : [
+          {
+            question: `What is the fastest way to ${page.heading.toLowerCase()}?`,
+            answer: `Open ${page.toolName}, choose your file, use the available settings, and download the result after checking the output.`,
+          },
+          {
+            question: `Is ${page.heading.toLowerCase()} free on CloudPDF?`,
+            answer: `CloudPDF provides this workflow through the free ${page.toolName} page without a mandatory signup step.`,
+          },
+          {
+            question: "What should I check before submitting the file?",
+            answer: "Review page order, formatting, file size, readability, and any sensitive information before sharing or uploading the final document.",
+          },
+        ]),
   ];
   const jsonLd = JSON.stringify(
     {
@@ -1929,6 +1961,8 @@ function buildLongTailPage(page) {
           name: page.heading,
           url,
           description: page.description,
+          keywords: (page.keywords ?? [page.primaryKeyword, page.toolName, page.heading]).filter(Boolean).join(", "),
+          inLanguage: "en",
           isPartOf: { "@id": `${siteUrl}/#website` },
         },
         {
@@ -1939,6 +1973,11 @@ function buildLongTailPage(page) {
           author: { "@type": "Organization", name: "CloudPDF" },
           publisher: { "@id": `${siteUrl}/#organization` },
           mainEntityOfPage: { "@id": `${url}#webpage` },
+          datePublished: page.publishedAt ?? defaultPublishedDate,
+          dateModified: page.modifiedAt ?? defaultModifiedDate,
+          image: `${siteUrl}${visuals.hero.src.replace(/\?.*$/, "")}`,
+          articleSection: "PDF conversion guides",
+          keywords: (page.keywords ?? [page.primaryKeyword, page.toolName, page.heading]).filter(Boolean).join(", "),
         },
         {
           "@type": "BreadcrumbList",
@@ -1964,12 +2003,44 @@ function buildLongTailPage(page) {
     2
   );
   const lowerHeading = page.heading.toLowerCase();
-  const body = [
-    `If you are trying to ${lowerHeading}, you are usually not looking for another complicated PDF editor. You just need a clean way to handle the file, check the result, and move on.`,
-    `This guide walks through the practical version of that workflow: what to prepare, when ${page.toolName} is the right starting point, and what to review before you send, upload, or archive the finished document.`,
-    `The examples below are written for real situations like ${page.useCases.join(", ").toLowerCase()}, where a small formatting mistake or oversized file can slow everything down.`,
-  ];
-  const extra = `<section class="seo-section blog-section" aria-labelledby="why-title">
+  const body = isAnimationGuide
+    ? [
+        "PDF is excellent for sharing a stable slide handout, but it does not run PowerPoint's animation engine. That means entrances, exits, motion paths, timings, audio cues, and trigger-based effects usually become static once the deck is converted.",
+        "The practical solution is to decide what the PDF needs to preserve: the final slide only, every build step as separate pages, speaker handouts, or a video-like version of the presentation. Once that choice is clear, conversion becomes much more predictable.",
+        "This guide explains the safe workflow for class slides, client decks, and presentation handouts, then links directly to the PowerPoint to PDF tool when you are ready to create the PDF copy.",
+      ]
+    : [
+        `If you are trying to ${lowerHeading}, you are usually not looking for another complicated PDF editor. You just need a clean way to handle the file, check the result, and move on.`,
+        `This guide walks through the practical version of that workflow: what to prepare, when ${page.toolName} is the right starting point, and what to review before you send, upload, or archive the finished document.`,
+        `The examples below are written for real situations like ${page.useCases.join(", ").toLowerCase()}, where a small formatting mistake or oversized file can slow everything down.`,
+      ];
+  const animationGuideExtra = isAnimationGuide
+    ? `<section class="seo-section" aria-labelledby="animation-reality-title">
+        <div class="section-heading">
+          <p class="eyebrow">Important limitation</p>
+          <h2 id="animation-reality-title">A PDF can show animation steps, but it cannot play PowerPoint animations.</h2>
+          <p>When PowerPoint exports to PDF, each slide is flattened into page content. The PDF can keep text, images, shapes, speaker-friendly layout, and slide order, but it does not preserve the PowerPoint animation timeline as interactive motion.</p>
+          <p>For most handouts, that is fine. For a slide where bullet points appear one by one, duplicate the slide several times and reveal one additional bullet on each duplicate. The resulting PDF will show the build sequence page by page, which is readable for students, reviewers, and clients.</p>
+        </div>
+        <div class="faq-grid">
+          <article><h4>Best for PDF</h4><p>Use PDF when the audience needs a printable, searchable, easy-to-share copy of the deck.</p></article>
+          <article><h4>Best for video</h4><p>Use video when exact timing, audio, transitions, or motion paths need to play automatically.</p></article>
+          <article><h4>Best for PowerPoint</h4><p>Share the original PPTX when the recipient needs to edit slides or present with live animations.</p></article>
+        </div>
+      </section>
+      <section class="seo-section" aria-labelledby="animation-steps-title">
+        <div class="section-heading">
+          <p class="eyebrow">Recommended workflow</p>
+          <h2 id="animation-steps-title">How to convert animated PowerPoint slides to a useful PDF.</h2>
+        </div>
+        <div class="faq-grid">
+          <article><h4>1. Review animated slides</h4><p>Find slides that depend on builds, reveal effects, motion paths, audio, or timed transitions. Decide whether the final state is enough or each step needs a separate PDF page.</p></article>
+          <article><h4>2. Duplicate build states</h4><p>For important reveal animations, duplicate the slide and manually show the next item on each copy. This creates a clean page-by-page reading order after conversion.</p></article>
+          <article><h4>3. Convert and inspect</h4><p>Convert the deck to PDF, then check slide order, text readability, charts, speaker notes, and any slide that originally had animation.</p></article>
+        </div>
+      </section>`
+    : "";
+  const extra = `${animationGuideExtra}<section class="seo-section blog-section" aria-labelledby="why-title">
         <div class="blog-split">
         <div class="section-heading">
           <p class="eyebrow">Why it matters</p>
@@ -2050,6 +2121,7 @@ function buildLongTailPage(page) {
     url,
     title: page.title,
     description: page.description,
+    keywords: page.keywords,
     eyebrow: "Long-tail PDF workflow",
     heading: page.heading,
     body,
@@ -2061,6 +2133,36 @@ function buildLongTailPage(page) {
 }
 
 function getLongTailVisuals(page) {
+  if (page.slug === "powerpoint-to-pdf-without-losing-animations") {
+    return {
+      hero: {
+        src: "/assets/blog-powerpoint-pdf-animation.svg",
+        alt: "Animated PowerPoint slide states converted into separate PDF pages",
+        caption: "PDFs can preserve animation steps as separate pages, but not live PowerPoint motion.",
+      },
+      why: {
+        src: "/assets/blog-powerpoint-pdf-animation.svg",
+        alt: "PowerPoint animation timeline becoming static PDF pages",
+        caption: "Flattened PDF pages are reliable for handouts and review copies.",
+      },
+      steps: {
+        src: "/assets/blog-powerpoint-pdf-animation.svg",
+        alt: "Three step workflow for exporting animated PowerPoint slides to PDF",
+        caption: "Duplicate build states, convert the deck, and inspect the PDF output.",
+      },
+      useCases: {
+        src: "/assets/blog-powerpoint-pdf-animation.svg",
+        alt: "Presentation handout PDF for class slides and client decks",
+        caption: "Useful for classes, client reviews, and shareable presentation handouts.",
+      },
+      quality: {
+        src: "/assets/blog-powerpoint-pdf-animation.svg",
+        alt: "Checklist for reviewing converted PowerPoint PDF pages",
+        caption: "Check animated slides carefully after conversion.",
+      },
+    };
+  }
+
   if (page.slug === "convert-pdf-to-word-without-losing-formatting") {
     return {
       hero: {
@@ -2127,7 +2229,9 @@ function buildBlogFigure(visual) {
         </figure>`;
 }
 
-function buildSimplePage({ url, title, description, eyebrow, heading, body, jsonLd, extra = "", heroImage = null, primaryAction = null }) {
+function buildSimplePage({ url, title, description, keywords = [], eyebrow, heading, body, jsonLd, extra = "", heroImage = null, primaryAction = null }) {
+  const shareImage = heroImage ? `${siteUrl}${heroImage.src.replace(/\?.*$/, "")}` : `${siteUrl}/assets/cloudpdf-logo.png`;
+
   return `<!doctype html>
 <html lang="en">
   <head>
@@ -2135,6 +2239,7 @@ function buildSimplePage({ url, title, description, eyebrow, heading, body, json
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>${escapeHtml(title)}</title>
     <meta name="description" content="${escapeHtml(description)}" />
+    ${keywords.length ? `<meta name="keywords" content="${escapeHtml(keywords.join(", "))}" />` : ""}
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
     <meta name="theme-color" content="#fffaf2" />
     ${buildGoogleTagHead()}
@@ -2149,7 +2254,11 @@ function buildSimplePage({ url, title, description, eyebrow, heading, body, json
     <meta property="og:title" content="${escapeHtml(title)}" />
     <meta property="og:description" content="${escapeHtml(description)}" />
     <meta property="og:url" content="${url}" />
-    <meta property="og:image" content="${siteUrl}/assets/cloudpdf-logo.png" />
+    <meta property="og:image" content="${shareImage}" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="${escapeHtml(title)}" />
+    <meta name="twitter:description" content="${escapeHtml(description)}" />
+    <meta name="twitter:image" content="${shareImage}" />
     <script defer src="/theme.js?v=security-v2"></script>
     <script type="application/ld+json">${jsonLd.replace(/</g, "\\u003c")}</script>
     ${buildStylesHead()}

@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="620" viewBox="0 0 920 620" role="img" aria-labelledby="title desc">
+  <title id="title">PowerPoint animation states converted to PDF pages</title>
+  <desc id="desc">A presentation slide with animation steps turning into separate PDF pages for a printable handout.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#fff7ed"/>
+      <stop offset="0.55" stop-color="#f8fbff"/>
+      <stop offset="1" stop-color="#eefdf6"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="18" stdDeviation="18" flood-color="#172033" flood-opacity="0.16"/>
+    </filter>
+  </defs>
+  <rect width="920" height="620" rx="40" fill="url(#bg)"/>
+  <g filter="url(#shadow)">
+    <rect x="70" y="78" width="470" height="330" rx="24" fill="#ffffff"/>
+    <rect x="70" y="78" width="470" height="54" rx="24" fill="#1f2937"/>
+    <circle cx="104" cy="105" r="7" fill="#ff6b6b"/>
+    <circle cx="128" cy="105" r="7" fill="#ffd166"/>
+    <circle cx="152" cy="105" r="7" fill="#4ecdc4"/>
+    <text x="190" y="112" font-family="Segoe UI, Arial, sans-serif" font-size="18" font-weight="700" fill="#ffffff">Animated slide</text>
+    <rect x="112" y="168" width="188" height="24" rx="12" fill="#e11d48"/>
+    <rect x="112" y="220" width="330" height="18" rx="9" fill="#e5e7eb"/>
+    <rect x="112" y="260" width="268" height="18" rx="9" fill="#e5e7eb"/>
+    <rect x="112" y="300" width="210" height="18" rx="9" fill="#e5e7eb"/>
+    <path d="M470 210c-20 0-36 16-36 36s16 36 36 36 36-16 36-36-16-36-36-36zm-8 18 28 18-28 18z" fill="#14b8a6"/>
+  </g>
+  <path d="M558 248h70" stroke="#334155" stroke-width="8" stroke-linecap="round"/>
+  <path d="m612 222 32 30-32 30" fill="none" stroke="#334155" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+  <g filter="url(#shadow)">
+    <rect x="674" y="102" width="118" height="154" rx="16" fill="#ffffff"/>
+    <rect x="694" y="132" width="78" height="12" rx="6" fill="#e11d48"/>
+    <rect x="694" y="166" width="70" height="9" rx="5" fill="#cbd5e1"/>
+    <text x="705" y="226" font-family="Segoe UI, Arial, sans-serif" font-size="34" font-weight="800" fill="#1f2937">1</text>
+    <rect x="720" y="272" width="118" height="154" rx="16" fill="#ffffff"/>
+    <rect x="740" y="302" width="78" height="12" rx="6" fill="#e11d48"/>
+    <rect x="740" y="336" width="70" height="9" rx="5" fill="#cbd5e1"/>
+    <rect x="740" y="360" width="54" height="9" rx="5" fill="#cbd5e1"/>
+    <text x="751" y="396" font-family="Segoe UI, Arial, sans-serif" font-size="34" font-weight="800" fill="#1f2937">2</text>
+    <rect x="616" y="344" width="118" height="154" rx="16" fill="#ffffff"/>
+    <rect x="636" y="374" width="78" height="12" rx="6" fill="#e11d48"/>
+    <rect x="636" y="408" width="70" height="9" rx="5" fill="#cbd5e1"/>
+    <rect x="636" y="432" width="54" height="9" rx="5" fill="#cbd5e1"/>
+    <rect x="636" y="456" width="64" height="9" rx="5" fill="#cbd5e1"/>
+    <text x="647" y="468" font-family="Segoe UI, Arial, sans-serif" font-size="34" font-weight="800" fill="#1f2937">3</text>
+  </g>
+  <g>
+    <rect x="92" y="450" width="392" height="74" rx="18" fill="#111827"/>
+    <text x="120" y="484" font-family="Segoe UI, Arial, sans-serif" font-size="20" font-weight="800" fill="#ffffff">PDF handout mode</text>
+    <text x="120" y="510" font-family="Segoe UI, Arial, sans-serif" font-size="15" fill="#cbd5e1">Export each important animation state as its own page.</text>
+  </g>
+</svg>
