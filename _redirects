@@ -1,3 +1,6 @@
+http://cloudpdf.online/*  https://www.cloudpdf.online/:splat  301!
+https://cloudpdf.online/*  https://www.cloudpdf.online/:splat  301!
+http://www.cloudpdf.online/*  https://www.cloudpdf.online/:splat  301!
 /index.html  /  301
 /sitemap  /sitemap.xml  301!
 /sitemap.xml  /sitemap.xml  200!

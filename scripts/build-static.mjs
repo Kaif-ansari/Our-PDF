@@ -818,27 +818,8 @@ for (const page of longTailPages) {
 console.log("Static site written to public/");
 
 function buildRobots() {
-  const allowedAgents = [
-    "*",
-    "Googlebot",
-    "Google-Extended",
-    "GPTBot",
-    "ChatGPT-User",
-    "OAI-SearchBot",
-    "ClaudeBot",
-    "Claude-User",
-    "anthropic-ai",
-    "PerplexityBot",
-    "Applebot",
-    "CCBot",
-    "Bytespider",
-    "YouBot",
-    "Amazonbot",
-    "Meta-ExternalAgent",
-    "FacebookBot",
-  ];
-
-  return `${allowedAgents.map((agent) => `User-agent: ${agent}\nAllow: /`).join("\n\n")}
+  return `User-agent: *
+Allow: /
 
 Sitemap: ${siteUrl}/sitemap.xml
 Host: www.cloudpdf.online
