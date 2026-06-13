@@ -8,6 +8,7 @@ const builtAt = new Date().toISOString();
 const defaultPublishedDate = "2026-06-07T00:00:00.000Z";
 const defaultModifiedDate = builtAt;
 const googleTagId = "G-D05GDHTV7C";
+const googleTagManagerId = "GTM-T7KM2D5G";
 const adsensePublisherId = "ca-pub-8501020285416333";
 const googleSearchConsoleVerification = "PASTE_GOOGLE_SEARCH_CONSOLE_VERIFICATION_TOKEN";
 const stylesVersion = "responsive-v3";
@@ -912,6 +913,23 @@ function buildAdsenseHead() {
   return "";
 }
 
+function buildGoogleTagManagerHead() {
+  return `<!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','${googleTagManagerId}');</script>
+    <!-- End Google Tag Manager -->`;
+}
+
+function buildGoogleTagManagerBody() {
+  return `<!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=${googleTagManagerId}"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->`;
+}
+
 function buildGoogleTagHead() {
   return `<script>
       window.dataLayer = window.dataLayer || [];
@@ -1279,6 +1297,7 @@ function buildToolPage(tool) {
   return `<!doctype html>
 <html lang="en">
   <head>
+    ${buildGoogleTagManagerHead()}
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>${escapeHtml(tool.title)}</title>
@@ -1308,6 +1327,7 @@ function buildToolPage(tool) {
     <script type="application/ld+json">${jsonLd.replace(/</g, "\\u003c")}</script>
   </head>
   <body>
+    ${buildGoogleTagManagerBody()}
     <header class="topbar">
       <a class="brand" href="/" aria-label="CloudPDF home">
         <img class="brand-logo" src="/assets/cloudpdf-logo.svg?v=1" alt="" width="56" height="36" aria-hidden="true" decoding="async" />
@@ -1610,6 +1630,7 @@ function buildMergePdfOnlineFreeNoLimitPage(page) {
   return `<!doctype html>
 <html lang="en">
   <head>
+    ${buildGoogleTagManagerHead()}
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>${metaTitle}</title>
@@ -1635,6 +1656,7 @@ function buildMergePdfOnlineFreeNoLimitPage(page) {
     <script type="application/ld+json">${jsonLd}</script>
   </head>
   <body>
+    ${buildGoogleTagManagerBody()}
     <main class="simple-page">
       <section class="hero simple-hero">
         <a class="breadcrumb" href="/">CloudPDF</a>
@@ -2216,6 +2238,7 @@ function buildSimplePage({ url, title, description, keywords = [], eyebrow, head
   return `<!doctype html>
 <html lang="en">
   <head>
+    ${buildGoogleTagManagerHead()}
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>${escapeHtml(title)}</title>
@@ -2245,6 +2268,7 @@ function buildSimplePage({ url, title, description, keywords = [], eyebrow, head
     ${buildStylesHead()}
   </head>
   <body>
+    ${buildGoogleTagManagerBody()}
     <header class="topbar">
       <a class="brand" href="/" aria-label="CloudPDF home">
         <img class="brand-logo" src="/assets/cloudpdf-logo.svg?v=1" alt="" width="56" height="36" aria-hidden="true" decoding="async" />
