@@ -1,11 +1,11 @@
 :root {
   color-scheme: light;
-  --ink: #171923;
-  --muted: #596174;
-  --line: rgba(31, 36, 48, 0.12);
+  --ink: #151515;
+  --muted: #686868;
+  --line: rgba(21, 21, 21, 0.1);
   --surface: #ffffff;
-  --surface-2: #f7f9fd;
-  --surface-3: #ecfff8;
+  --surface-2: #f7f6f3;
+  --surface-3: #fff1f1;
   --panel: rgba(255, 255, 255, 0.9);
   --panel-strong: rgba(255, 255, 255, 0.98);
   --glass: rgba(255, 255, 255, 0.72);
@@ -15,9 +15,9 @@
   --tile-ink: #11141d;
   --visual-tile-label: #171923;
   --drop-label: #bd1238;
-  --hero-bg: linear-gradient(135deg, #fffaf1, #ffffff 48%, #f4fbff);
-  --accent: #ff4f5e;
-  --accent-dark: #bd1238;
+  --hero-bg: linear-gradient(135deg, #ffffff 0%, #faf8f4 55%, #fff3f3 100%);
+  --accent: #e71922;
+  --accent-dark: #c50f19;
   --coral: #ff5a4e;
   --green: #31c48d;
   --blue: #3974f2;
@@ -28,14 +28,14 @@
   --rose: #ff4f5e;
   --indigo: #4e63ff;
   --gold: #ffb703;
-  --shadow: 0 28px 80px rgba(22, 26, 38, 0.14);
-  --shadow-soft: 0 14px 34px rgba(22, 26, 38, 0.09);
-  --font-body: "Canva Sans", CanvaSans, "Segoe UI", Inter, ui-sans-serif, system-ui, sans-serif;
-  --font-hero: "Arial Black", "Trebuchet MS", "Canva Sans", CanvaSans, ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Trebuchet MS", "Arial Rounded MT Bold", "Canva Sans", CanvaSans, ui-sans-serif, system-ui, sans-serif;
-  --font-ui: "Trebuchet MS", "Canva Sans", CanvaSans, Inter, ui-sans-serif, system-ui, sans-serif;
-  --font-reading: "Segoe UI", "Canva Sans", CanvaSans, Inter, ui-sans-serif, system-ui, sans-serif;
-  --font-number: "Arial Black", "Aptos Display", "Canva Sans", CanvaSans, ui-sans-serif, system-ui, sans-serif;
+  --shadow: 0 18px 50px rgba(16, 16, 16, 0.08);
+  --shadow-soft: 0 10px 24px rgba(16, 16, 16, 0.07);
+  --font-body: Inter, "Segoe UI", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-hero: Inter, "Segoe UI", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-display: Inter, "Segoe UI", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-ui: Inter, "Segoe UI", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-reading: Inter, "Segoe UI", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-number: Inter, "Segoe UI", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 :root[data-theme="dark"] {
@@ -74,11 +74,7 @@ body {
   min-width: 320px;
   overflow-x: hidden;
   color: var(--ink);
-  background:
-    radial-gradient(circle at 12% 8%, rgba(255, 191, 47, 0.18), transparent 28%),
-    radial-gradient(circle at 86% 18%, rgba(53, 167, 255, 0.16), transparent 30%),
-    linear-gradient(180deg, #fffaf2 0%, #f7fbff 42%, #f9f7ff 100%),
-    var(--surface-2);
+  background: linear-gradient(180deg, #ffffff 0%, #faf9f6 52%, #ffffff 100%);
   font-family: var(--font-body);
   line-height: 1.5;
   transition:
@@ -128,7 +124,7 @@ code {
   padding: 0 28px;
   border-bottom: 1px solid var(--line);
   background: var(--glass);
-  backdrop-filter: blur(20px) saturate(1.4);
+  backdrop-filter: blur(14px);
 }
 
 .brand,
@@ -196,10 +192,10 @@ code {
 }
 
 .brand-logo {
-  width: 58px;
-  height: 38px;
-  object-fit: contain;
-  filter: drop-shadow(0 5px 8px rgba(31, 37, 58, 0.16));
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  object-fit: cover;
 }
 
 .nav-links {
@@ -230,13 +226,9 @@ code {
   grid-template-columns: minmax(0, 0.92fr) minmax(320px, 0.78fr);
   gap: clamp(22px, 4vw, 54px);
   align-items: center;
-  min-height: calc(100vh - 104px);
-  padding: 54px 28px 40px;
-  background:
-    radial-gradient(circle at 68% 38%, rgba(230, 236, 246, 0.62), transparent 24%),
-    var(--hero-bg),
-    var(--surface);
-  perspective: 1200px;
+  min-height: min(760px, calc(100vh - 88px));
+  padding: 62px 28px 46px;
+  background: var(--hero-bg);
 }
 
 :root[data-theme="dark"] .hero {
@@ -315,21 +307,14 @@ h3#hero-title,
 h3#tool-title,
 h1#page-title,
 h3#page-title {
-  margin-bottom: 12px;
+  margin-bottom: 16px;
   max-width: 760px;
   font-family: var(--font-hero);
-  font-size: clamp(3.1rem, 8vw, 7.4rem);
-  line-height: 0.88;
+  font-size: clamp(3rem, 7vw, 6.6rem);
+  line-height: 0.94;
   letter-spacing: 0;
-  color: #151821;
-  font-weight: 950;
-  transform: translateZ(0);
-  text-shadow:
-    1px 1px 0 #d8deea,
-    2px 2px 0 #cfd6e3,
-    3px 3px 0 #c7cfdd,
-    4px 4px 0 #bec7d6,
-    10px 16px 34px rgba(20, 24, 34, 0.16);
+  color: #111111;
+  font-weight: 850;
 }
 
 :root[data-theme="dark"] h2#hero-title,
@@ -338,12 +323,7 @@ h3#page-title {
 :root[data-theme="dark"] h1#page-title,
 :root[data-theme="dark"] h3#page-title {
   color: #f5f7fb;
-  text-shadow:
-    1px 1px 0 #334057,
-    2px 2px 0 #2b3548,
-    3px 3px 0 #232c3d,
-    4px 4px 0 #1d2533,
-    10px 16px 34px rgba(0, 0, 0, 0.34);
+  text-shadow: none;
 }
 
 .hero-eyebrow {
@@ -359,11 +339,11 @@ h3#page-title {
   min-height: 28px;
   padding: 0 10px;
   border-radius: 999px;
-  background: rgba(255, 79, 94, 0.12);
-  color: #bd1238;
+  background: rgba(231, 25, 34, 0.08);
+  color: #c50f19;
   font-family: var(--font-ui);
   font-size: 0.78rem;
-  font-weight: 950;
+  font-weight: 800;
 }
 
 .hero-eyebrow span:nth-child(2) {
@@ -377,11 +357,11 @@ h3#page-title {
 }
 
 h2#hero-title span:first-child {
-  color: #bd1238;
+  color: #c50f19;
 }
 
 h2#hero-title span:last-child {
-  color: #1f7b5c;
+  color: inherit;
 }
 
 h2 {
@@ -419,15 +399,11 @@ h4 {
   flex-wrap: wrap;
   gap: 0.25em 0.42em;
   margin-bottom: 8px;
-  color: #202635;
+  color: #282828;
   font-family: var(--font-display);
-  font-size: clamp(1.6rem, 4vw, 3.45rem) !important;
-  font-weight: 900;
-  font-style: italic;
-  line-height: 1.02;
-  text-shadow:
-    1px 1px 0 rgba(255, 255, 255, 0.78),
-    6px 10px 22px rgba(20, 24, 34, 0.16);
+  font-size: clamp(1.1rem, 2vw, 1.45rem) !important;
+  font-weight: 750;
+  line-height: 1.25;
 }
 
 .hero-short span:nth-child(2n) {
@@ -526,24 +502,19 @@ h4 {
 .hero-visual {
   margin: 0;
   overflow: hidden;
-  width: 100%;
-  max-width: 620px;
+  width: min(100%, 460px);
+  aspect-ratio: 1;
   justify-self: center;
-  background: transparent;
-  transform:
-    rotateY(calc(-10deg + var(--tilt-y, 0deg)))
-    rotateX(calc(7deg + var(--tilt-x, 0deg)))
-    rotateZ(1deg)
-    translate3d(var(--lift-x, 0), var(--lift-y, 0), 0);
-  transform-style: preserve-3d;
-  transition:
-    transform 120ms ease,
-    filter 160ms ease;
-  will-change: transform;
+  border-radius: 28px;
+  background: #050505;
+  box-shadow: 0 24px 70px rgba(17, 17, 17, 0.16);
 }
 
-.hero-visual:hover {
-  filter: saturate(1.03);
+.brand-hero-visual img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .trust-strip {
